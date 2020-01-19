@@ -50,16 +50,51 @@
 		<!-- Where do our Java sources come from? -->
 		<sourceDirectory>${src.dir}</sourceDirectory>
 
-		<resources>
+		<!-- Revert to Maven's default resource directory (src/main/resources) -->
+		<!-- <resources>
 			<resource>
 				<directory>resources</directory>
 			</resource>
-		</resources>
+		</resources> -->
+
 
 		<!-- Plugin Management for users working with the Eclipse IDE. org.eclipse.m2e:lifecycle-mapping
          instructs eclipse how to build the maven project -->
 		<pluginManagement>
 			<plugins>
+				<!-- Resources Plugin: Copy the JSON and Deck to the target directory for the .jar.
+				This is to simplify testing, as running the .jar from the /target directory makes it
+				complain.
+				-->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.1</version>
+					<executions>
+						<execution>
+							<id>copy-resources</id>
+							<!-- When running mvn package -->
+							<phase>package</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>target/</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${basedir}</directory>
+										<includes>
+											<!-- Only copy the .json and .txt files -->
+											<include>*.json</include>
+											<include>*.txt</include>
+										</includes>
+
+									</resource>
+								</resources>
+
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
