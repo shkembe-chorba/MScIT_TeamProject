@@ -30,7 +30,7 @@ public class PlayerTest {
         void playerIsPassedAnEmptyString() {
 
             assertThrows(IllegalArgumentException.class, () -> {
-                Player p = new Player(emptyName);
+                new Player(emptyName);
             }, "Constructor fails");
 
             assertThrows(IllegalArgumentException.class, () -> {
@@ -43,7 +43,7 @@ public class PlayerTest {
         void nameLengthGreaterThan32() {
 
             assertThrows(IllegalArgumentException.class, () -> {
-                Player p = new Player(longName);
+                new Player(longName);
             }, "Constructor fails");
 
             assertThrows(IllegalArgumentException.class, () -> {
