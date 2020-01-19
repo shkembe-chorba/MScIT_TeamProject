@@ -13,20 +13,20 @@ public class PlayerTest {
 
     @Nested
     @DisplayName("Unsupported Names")
-    class UnsupportedNames {
+    public class UnsupportedNames {
 
         final public String emptyName = "";
         final public String longName = "ThisIsSuchACrazyNameIAmSureItWillNotWork";
         private Player testPlayer;
 
         @BeforeEach
-        void init() {
+        public void init() {
             testPlayer = new Player("Gonzo");
         }
 
         @Test
         @DisplayName("A player must have a name which isn't an empty string.")
-        void playerIsPassedAnEmptyString() {
+        public void playerIsPassedAnEmptyString() {
 
             assertThrows(IllegalArgumentException.class, () -> {
                 new Player(emptyName);
@@ -39,7 +39,7 @@ public class PlayerTest {
 
         @Test
         @DisplayName("The name must be below 32 characters for database storage")
-        void nameLengthGreaterThan32() {
+        public void nameLengthGreaterThan32() {
 
             assertThrows(IllegalArgumentException.class, () -> {
                 new Player(longName);
