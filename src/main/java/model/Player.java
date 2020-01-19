@@ -12,7 +12,7 @@ public class Player {
     }
 
     public void setName(String name) {
-        if (name.equals("") || name.length() > 32) {
+        if ("".equals(name) || name.length() > 32) {
             throw new IllegalArgumentException("Invalid name, must be between 1 and 32 characters");
         }
 
