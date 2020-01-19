@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Player.java
+ * 
+ * Example class to illustrate testing. 
+ * TODO - Change for production
+ */
 public class Player {
     private String name;
 
