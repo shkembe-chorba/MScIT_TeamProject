@@ -171,7 +171,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<!-- Set output .jar to be TopTrumps for commandline ease -->
+							<!-- Set output .jar to be the package.name property -->
 							<finalName>${package.name}</finalName>
 							<filters>
 								<filter>
