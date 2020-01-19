@@ -13,7 +13,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<!-- Set the source directory for new directory structure -->
 		<src.dir>src/main/java</src.dir>
-
+		<!-- Set the .jar name for the package build -->
+		<package.name>TopTrumps</package.name>
 	</properties>
 
 	<!-- These are the other software libruaries developed by third parties that we need -->
@@ -170,6 +171,8 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<!-- Set output .jar to be TopTrumps for commandline ease -->
+							<finalName>${package.name}</finalName>
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
