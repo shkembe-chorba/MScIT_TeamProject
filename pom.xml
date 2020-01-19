@@ -70,6 +70,7 @@
 		<!-- Plugin Management for users working with the Eclipse IDE. org.eclipse.m2e:lifecycle-mapping
          instructs eclipse how to build the maven project -->
 		<pluginManagement>
+
 			<plugins>
 				<!-- Resources Plugin: Copy the JSON and Deck to the target directory for the .jar.
 				This is to simplify testing, as running the .jar from the /target directory makes it
@@ -104,6 +105,15 @@
 						</execution>
 					</executions>
 				</plugin>
+
+				<!-- Allows a site to be built with reports etc. 
+				Found in target/site -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.7.1</version>
+				</plugin>
+
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -223,6 +233,7 @@
 
 			<!-- Packages those sources in a Jar file -->
 			<plugin>
+
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>1.4</version>
@@ -253,6 +264,28 @@
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 							</transformers>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Looks at code to generate test coverage reports -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- attached to Maven test phase -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
