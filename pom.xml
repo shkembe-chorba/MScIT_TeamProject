@@ -21,6 +21,13 @@
 	<!-- These are the other software libruaries developed by third parties that we need -->
 	<dependencies>
 
+		<!-- PostreSQL Driver -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.9</version>
+		</dependency>
+
 		<!-- Dropwizard is a bundle of REST API hosting tools -->
 		<dependency>
 			<groupId>io.dropwizard</groupId>
@@ -49,6 +56,12 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 
