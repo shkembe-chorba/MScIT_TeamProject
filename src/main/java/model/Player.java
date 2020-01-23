@@ -12,7 +12,7 @@ package model;
  * Player class that represents human player
  * and is a superclass to AIPlayer class.
  * It allows assigning Player a pile of cards,
- * creating new playersand retrieving them
+ * creating new players and retrieving them
  */
 
 public class Player {
@@ -25,13 +25,17 @@ public class Player {
         this.name = name;
     }
 
-    /** Sets the name*/
+    /**
+     * Sets the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** Used in the beginning of a game to assign a pile to a player
-     @param playerHand pile of cards   */
+    /**
+     * Used in the beginning of a game to assign a pile to a player
+     * @param playerHand pile of cards
+     */
     public void setPlayerHand(Pile playerHand) {
         this.playerHand = playerHand;
     }
@@ -60,9 +64,13 @@ public class Player {
         return nextCard;
     }
 
+    /**
+     * Returns name of a player
+     * @return name of the player
+     */
     public String toString() {
         return name;}
-        
+
     }
 
 
