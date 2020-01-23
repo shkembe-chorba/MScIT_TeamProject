@@ -21,6 +21,13 @@
 	<!-- These are the other software libruaries developed by third parties that we need -->
 	<dependencies>
 
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.7.22</version>
+		</dependency>
+
 		<!-- PostreSQL Driver -->
 		<dependency>
 			<groupId>org.postgresql</groupId>

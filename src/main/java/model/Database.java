@@ -5,7 +5,7 @@ import java.sql.*;
 
 public class Database {
 
-    static Connection connection = null;
+    private static Connection connection = null;
 
     //Database Connection parameters.
     private static String URL = "jdbc:postgresql://localhost:5432/m_19_2175499m";
@@ -30,6 +30,14 @@ public class Database {
         final RetrievedGameStatistics statistics = retrieveGameStats();
 
         disconnect();
+    }
+
+    /**
+     * Getter for the database connection.
+     * @return the database connection
+     */
+    static Connection getConnection() {
+        return connection;
     }
 
     /**

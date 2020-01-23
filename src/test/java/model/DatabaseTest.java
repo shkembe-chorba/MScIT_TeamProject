@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DatabaseTest {
 
@@ -20,7 +22,7 @@ class DatabaseTest {
             Database.connect();
 
             //Get the database connection.
-            Connection conn = Database.connection;
+            Connection conn = Database.getConnection();
 
             //Turn off autoCommit for test.
             conn.setAutoCommit(false);
@@ -40,32 +42,39 @@ class DatabaseTest {
             statement.addBatch(sqlString);
             statement.executeBatch();
 
-            //Set up players for test.
-            Player user = new Player("USER");
-            Player ai1 = new Player("AI1");
-            Player ai2 = new Player("AI2");
-            Player ai3 = new Player("AI3");
-            Player ai4 = new Player("AI4");
+            //Set up mock players for test.
+            Player user = mock(Player.class);
+            Player ai1 = mock(Player.class);
+            Player ai2 = mock(Player.class);
+            Player ai3 = mock(Player.class);
+            Player ai4 = mock(Player.class);
+
+            //Set up names of players.
+            when(user.getName()).thenReturn("USER");
+            when(ai1.getName()).thenReturn("AI1");
+            when(ai2.getName()).thenReturn("AI2");
+            when(ai3.getName()).thenReturn("AI3");
+            when(ai4.getName()).thenReturn("AI4");
 
             //Set up player array for test.
             Player[] players = {user, ai1, ai2, ai3, ai4};
 
             //Set the roundsWon for the players in the first game for the test.
-            user.setRoundsWon(2);
-            ai1.setRoundsWon(8);
-            ai2.setRoundsWon(3);
-            ai3.setRoundsWon(3);
-            ai4.setRoundsWon(4);
+            when(user.getRoundsWon()).thenReturn(2);
+            when(ai1.getRoundsWon()).thenReturn(8);
+            when(ai2.getRoundsWon()).thenReturn(3);
+            when(ai3.getRoundsWon()).thenReturn(3);
+            when(ai4.getRoundsWon()).thenReturn(4);
 
             //Upload the first game to the database.
             Database.uploadGameStats(2,20,"AI1",players);
 
             //Set the roundsWon for the players in the second game for the test.
-            user.setRoundsWon(5);
-            ai1.setRoundsWon(3);
-            ai2.setRoundsWon(2);
-            ai3.setRoundsWon(3);
-            ai4.setRoundsWon(2);
+            when(user.getRoundsWon()).thenReturn(5);
+            when(ai1.getRoundsWon()).thenReturn(3);
+            when(ai2.getRoundsWon()).thenReturn(2);
+            when(ai3.getRoundsWon()).thenReturn(3);
+            when(ai4.getRoundsWon()).thenReturn(2);
 
             //Upload the second game to the database.
             Database.uploadGameStats(3,15,"USER",players);
