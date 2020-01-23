@@ -25,13 +25,6 @@ public class Player {
         this.name = name;
     }
 
-    /** Retrieves the name
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
-
     /** Sets the name*/
     public void setName(String name) {
         this.name = name;
@@ -66,4 +59,11 @@ public class Player {
         Card nextCard = playerHand.peek();
         return nextCard;
     }
-}
+
+    public String toString() {
+        return name;}
+        
+    }
+
+
+
