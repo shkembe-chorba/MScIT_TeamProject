@@ -11,17 +11,24 @@ import java.util.Random;
  * 2493194s:Gareth Sears
  *
  * Class that represents the game model,
- * initiliazes
+ * initiliazes the game with players
+ * and distributing the deck between players and communal pile.
  */
 
 public class GameModel {
     private GameState gameState;
     private int roundNumber;
     private Player[] players;
-    private Player[] playersInGame;
-    private Player activePlayer;
+    private Player[] playersInGame; // players still left in the game
+    private Player activePlayer; // active player that chooses the attribute
     private Pile CommunalPile;
 
+    /**
+     * Initialization of the game - needs the whole deck and number of AI players as a parameter
+     * sets up a players array based on the number of players
+     * and creates and puts players both human and AI into a players array
+     * randomly selects first player
+     */
     public GameModel(Pile WholeDeck, int numAIPlayers) {
         Player[] players = new Player[numAIPlayers + 1];
         this.players = players;
@@ -29,9 +36,10 @@ public class GameModel {
         createAIPlayers(numAIPlayers);
         WholeDeck.shuffle();
         assignCards(WholeDeck, players);
-        activePlayer = randomlySelectFirstPlayer(players);
+        this.activePlayer = randomlySelectFirstPlayer(players);
         this.playersInGame = players;
     }
+
 
     public void createHumanPlayer() {
         Player HumanPlayer = new Player("USER");
@@ -52,15 +60,16 @@ public class GameModel {
         }
     }
 
+    public void playRoundwithAtrribute() {
+        //TODO: play round with attribute - compares attributes of players
+        selects a winner, sets a next active player
+    }
+
     public Player randomlySelectFirstPlayer(Player [] players) {
         Random rand = new Random();
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
     }
-
-//    public void removePlayerinGame(int ) {
-//
-//        }
 
     public GameState getGameState() {
         return gameState;
@@ -70,21 +79,15 @@ public class GameModel {
         return roundNumber;
     }
 
-    public Player getActivePlayer() {
-        //TODO: return next active player - needs to be person who won last
-        return activePlayer;
-    }
+    public Player getActivePlayer() { return activePlayer; }
 
-    public void playRoundwithAtrribute() {
-        //TODO: play round with attribute
-    }
+    public void setActivePlayer(Player player) { Player player = this.activePlayer; }
+
     public Player[] getPlayers() {
         return players;
     }
 
-    public String playersinGame() {
-            return s;
-        }
+
 
 }
 
