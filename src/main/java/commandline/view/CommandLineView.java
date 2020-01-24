@@ -9,11 +9,6 @@ import java.util.function.Predicate;
 
 public class CommandLineView {
 
-    public static void main(String[] args) {
-        CommandLineView v = new CommandLineView();
-        v.getUserInput(x -> "".equals(x), "Try again");
-    }
-
     final public static String USER_PROMPT = ">> ";
 
     private Scanner scanner;
