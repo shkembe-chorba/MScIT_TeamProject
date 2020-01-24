@@ -1,6 +1,6 @@
 package commandline.view;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +54,6 @@ public class ListUtilityTest {
             assertEquals(expectedOutput, list.getBulletList());
         }
     }
-
 
     @DisplayName("getIndentedList()")
     @Nested
