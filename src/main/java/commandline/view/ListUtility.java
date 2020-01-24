@@ -6,7 +6,7 @@ public class ListUtility {
 
     final public static String INDENT_STRING = "    ";
 
-    Collection<?> targetObject;
+    private Collection<?> targetObject;
 
     ListUtility(Collection<?> targetObject) {
         this.targetObject = targetObject;
@@ -59,9 +59,9 @@ public class ListUtility {
      */
     private class ListItem {
 
-        String string;
-        int indent;
-        String bullet = "";
+        private String string;
+        private int indent;
+        private String bullet = "";
 
         public ListItem(String string, int indent, String bullet) {
             this.string = string;
