@@ -1,10 +1,10 @@
-package commandline.view;
+package commandline.utils;
 
 import java.util.Collection;
 
 public class ListUtility {
 
-    final public static String INDENT_STRING = "    ";
+    public static final String INDENT_STRING = "    ";
 
     private Collection<?> targetObject;
 
@@ -59,8 +59,8 @@ public class ListUtility {
      */
     private class ListItem {
 
-        private String string;
-        private int indent;
+        private final String string;
+        private final int indent;
         private String bullet = "";
 
         public ListItem(String string, int indent, String bullet) {
