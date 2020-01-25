@@ -8,7 +8,7 @@ public class ListUtility {
 
     private Collection<?> targetObject;
 
-    ListUtility(Collection<?> targetObject) {
+    public ListUtility(Collection<?> targetObject) {
         this.targetObject = targetObject;
     }
 
