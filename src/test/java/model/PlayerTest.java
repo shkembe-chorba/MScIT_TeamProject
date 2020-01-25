@@ -14,7 +14,9 @@ public void testGetName() {
         assertEquals(expectedString, actualString);
     }
 
-    @Test
+        Player testPlayer = new Player("USER");
+
+        @Test
 public void testIncrementingRounds() {
         testPlayer.wonRound();
         int expectedNumber = 1;
