@@ -23,21 +23,14 @@ public class Player {
     public Player(String name) {
         setName(name);
         this.name = name;
+        Pile playerHand = new Pile();
     }
-
-    /**
-     * Sets the name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     /**
      * Used in the beginning of a game to assign a pile to a player
      * @param playerHand pile of cards
      */
-    public void setPlayerHand(Pile playerHand) {
-        this.playerHand = playerHand;
+    public void addtoHand(Pile addedPile) {
+        playerHand = playerHand + addedPile;
     }
 
     /**
@@ -59,7 +52,7 @@ public class Player {
      * Method that takes the following card in the player's hand
      * @return nextCard
      */
-    public Card getNextCard() {
+    public Card peekCard() {
         Card nextCard = playerHand.peek();
         return nextCard;
     }
@@ -70,7 +63,6 @@ public class Player {
      */
     public String toString() {
         return name;}
-
     }
 
 
