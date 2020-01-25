@@ -167,8 +167,8 @@ public class CommandLineView {
         if (size < 1) {
             throw new IllegalArgumentException("List must have a size of at least 1");
         }
-        ListMessage listMessage = new ListMessage(list);
-        printStream.print(listMessage.getEnumeratedList());
+        ListUtility listUtility = new ListUtility(list);
+        printStream.print(listUtility.getEnumeratedList());
 
         String indexString = getUserInput(str -> {
             try {
