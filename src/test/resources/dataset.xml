@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <game gid="1" draws="5"  rounds="10" winner="USER" />
+    <game gid="2" draws="7"  rounds="11" winner="AI1" />
+    <game gid="3" draws="5"  rounds="8" winner="USER" />
+    <game gid="4" draws="0"  rounds="8" winner="AI4" />
+
+    <rounds_won gid="1" player="USER" r_won="3" />
+</dataset>
