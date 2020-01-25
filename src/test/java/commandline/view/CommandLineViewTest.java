@@ -167,23 +167,6 @@ public class CommandLineViewTest {
             assertFalse(view.addGlobalCommand(gc2));
         }
 
-        @DisplayName("displayGlobalCommands() outputs pretty list to user in alphabetic order")
-        @Test
-        public void returnPrettyListToUser() {
-            String tab = ListUtility.INDENT_STRING;
-            CommandLineView view = new CommandLineView();
-            view.addGlobalCommand(new GlobalCommand("help", "displays the app commands"));
-            view.addGlobalCommand(new GlobalCommand("quit", "quits the program"));
-            view.addGlobalCommand(new GlobalCommand("descriptionless"));
-
-            String outputMessage = "Global Commands:\n" + tab + "descriptionless\n" + tab
-                    + "help - displays the app commands\n" + tab + "quit - quits the program\n";
-
-            view.displayGlobalCommands();
-
-            assertEquals(outputMessage, outContent.toString());
-        }
-
         // Private class for test below
 
         @DisplayName("Inputing a global command notifies listeners")
