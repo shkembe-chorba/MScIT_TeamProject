@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
+import commandline.utils.ListUtility;
 
 public class CommandLineView {
 
@@ -151,7 +152,7 @@ public class CommandLineView {
         if (size < 1) {
             throw new IllegalArgumentException("List must have a size of at least 1");
         }
-        ListMessage listMessage = new ListMessage(list);
+        ListUtility listMessage = new ListUtility(list);
         printStream.print(listMessage.getEnumeratedList());
 
         String indexString = getUserInput(str -> {
