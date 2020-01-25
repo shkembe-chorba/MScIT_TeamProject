@@ -3,6 +3,7 @@ package commandline.view;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
@@ -225,9 +226,8 @@ public class CommandLineView {
     /**
      * Outputs any global commands in a menu form for the user with their descriptions.
      */
-    public void displayGlobalCommands() {
-        displayMessage(GLOBAL_COMMAND_DISPLAY_STRING);
-        displayIndentedList(globalCommands);
+    public Iterator<GlobalCommand> getGlobalCommandIterator() {
+        return globalCommands.iterator();
     }
 
     /**
