@@ -1,6 +1,7 @@
 package commandline.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -148,5 +149,74 @@ public class CommandLineViewTest {
             view.getUserSelectionIndex(Arrays.asList(input)); // Convert array to list.
             assertTrue(outContent.toString().contains(expectedErrorMessage));
         }
+    }
+
+    @DisplayName("Global commands")
+    @Nested
+    public class GlobalCommands {
+
+        @DisplayName("Returns false for repeated global commands, otherwise true")
+        @Test
+        public void doesNotAcceptRepeatedGlobalCommands() {
+
+            GlobalCommand gc1 = new GlobalCommand("quit");
+            GlobalCommand gc2 = new GlobalCommand("quit");
+
+            CommandLineView view = new CommandLineView();
+            assertTrue(view.addGlobalCommand(gc1));
+            assertFalse(view.addGlobalCommand(gc2));
+        }
+
+        @DisplayName("displayGlobalCommands() outputs pretty list to user in alphabetic order")
+        @Test
+        public void returnPrettyListToUser() {
+            String tab = ListUtility.INDENT_STRING;
+            CommandLineView view = new CommandLineView();
+            view.addGlobalCommand(new GlobalCommand("help", "displays the app commands"));
+            view.addGlobalCommand(new GlobalCommand("quit", "quits the program"));
+            view.addGlobalCommand(new GlobalCommand("descriptionless"));
+
+            String outputMessage = "Global Commands:\n" + tab + "descriptionless\n" + tab
+                    + "help - displays the app commands\n" + tab + "quit - quits the program\n";
+
+            view.displayGlobalCommands();
+
+            assertEquals(outputMessage, outContent.toString());
+        }
+
+        // Private class for test below
+
+        @DisplayName("Inputing a global command notifies listeners")
+        @Test
+        public void globalCommandInputNotifiesListeners() {
+            provideInput("quit\n\n");
+
+            GlobalCommandListenerTest gcl = new GlobalCommandListenerTest();
+            GlobalCommand gc = new GlobalCommand("quit");
+            gc.addCommandListener(gcl);
+
+            CommandLineView view = new CommandLineView();
+            view.addGlobalCommand(gc);
+            view.getUserInput();
+
+            assertTrue(gcl.triggered);
+        }
+
+        @DisplayName("Not inputting a global command does not notify listeners")
+        @Test
+        public void noGlobalCommandDoesNotAffectListeners() {
+            provideInput("x\n\n");
+
+            GlobalCommandListenerTest gcl = new GlobalCommandListenerTest();
+            GlobalCommand gc = new GlobalCommand("quit");
+            gc.addCommandListener(gcl);
+
+            CommandLineView view = new CommandLineView();
+            view.addGlobalCommand(gc);
+            view.getUserInput();
+
+            assertFalse(gcl.triggered);
+        }
+
     }
 }
