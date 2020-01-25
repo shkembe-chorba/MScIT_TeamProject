@@ -22,6 +22,8 @@ public class TopTrumpsCLIApplication {
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.addView(view);
 
+		conroller.run();
+
 		// THE BELOW LOOP HAS BEEN MOVED TO THE CONTROLLER
 
 		// // This will be moved to the controller.
