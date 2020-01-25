@@ -5,11 +5,16 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 public class CommandLineView {
 
+    final public static String GLOBAL_COMMAND_DISPLAY_STRING = "Global Commands:";
     final public static String USER_PROMPT = ">> ";
+
+    // A tree set which orders commands alphabetically.
+    private Collection<GlobalCommand> globalCommands = new TreeSet<GlobalCommand>();
 
     private Scanner scanner;
     private PrintStream printStream;
@@ -102,7 +107,18 @@ public class CommandLineView {
      */
     public String getUserInput() {
         printStream.print(USER_PROMPT);
-        return scanner.nextLine().trim();
+
+        String input = scanner.nextLine().trim();
+
+        GlobalCommand matchingGlobalCommand = getMatchingGlobalCommand(input);
+        // If the input is a global command, notify any listeners.
+        while (matchingGlobalCommand != null) {
+            matchingGlobalCommand.notifyCommandListeners();
+            input = getUserInput();
+            matchingGlobalCommand = getMatchingGlobalCommand(input);
+        }
+
+        return input;
     }
 
     /**
@@ -179,6 +195,53 @@ public class CommandLineView {
      */
     public <T> T getUserSelection(List<T> list) {
         return list.get(getUserSelectionIndex(list));
+    }
+
+    // Global Command Functionality
+
+    /**
+     * Add a GlobalCommand which can notify its GlobalCommandListeners when it is entered in the
+     * command prompt, for short circuiting game flow.
+     * 
+     * @param command
+     * @param description a description of the command's functionality
+     * @return
+     */
+    public boolean addGlobalCommand(GlobalCommand gc) {
+        return globalCommands.add(gc);
+    }
+
+    /**
+     * Removes a GlobalCommand.
+     * 
+     * @param command
+     * @param description a description of the command's functionality
+     * @return
+     */
+    public boolean removeGlobalCommand(GlobalCommand gc) {
+        return globalCommands.remove(gc);
+    }
+
+    /**
+     * Outputs any global commands in a menu form for the user with their descriptions.
+     */
+    public void displayGlobalCommands() {
+        displayMessage(GLOBAL_COMMAND_DISPLAY_STRING);
+        displayIndentedList(globalCommands);
+    }
+
+    /**
+     * Searches the currently held global commands for a command and returns it if it exists,
+     * otherwise it returns null.
+     * 
+     * @param command the string of the command to search for
+     * @return the GlobalCommand object, otherwise null
+     */
+    private GlobalCommand getMatchingGlobalCommand(String command) {
+        GlobalCommand glob = globalCommands.stream().filter(gc -> gc.getCommand().equals(command))
+                .findAny().orElse(null);
+
+        return glob;
     }
 
 }
