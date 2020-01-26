@@ -72,14 +72,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- For testing databases. https://mvnrepository.com/artifact/org.dbunit/dbunit -->
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-			<version>2.6.0</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
