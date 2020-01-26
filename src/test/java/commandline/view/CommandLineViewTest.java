@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class CommandLineViewTest {
 
-
     // Setup I/O for each test
     // ------------------------
 
@@ -170,7 +169,7 @@ public class CommandLineViewTest {
         @ParameterizedTest
         // This test gets its provider from the source below. This allows different arrays to be
         // tested (to check the length in the message) is correct.
-        @MethodSource("commandline.view.StringArrayProviders#numbers")
+        @MethodSource("commandline.view.ArrayProviderTest#stringArrayProvider")
         public void displaysErrorOnInvalidInput(String[] input) {
 
             provideInput("wrong\n" + "1\n"); // 1 is always a valid value
