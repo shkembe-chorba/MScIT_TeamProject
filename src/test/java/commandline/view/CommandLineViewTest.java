@@ -20,7 +20,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class CommandLineViewTest {
 
-    // Set up mock System.in / System.out before each test
+    // Setup I/O for each test
+    // ------------------------
+
     private final InputStream originalIn = System.in;
     private final PrintStream originalOut = System.out;
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -40,17 +42,45 @@ public class CommandLineViewTest {
     private void provideInput(String data) {
         System.setIn(new ByteArrayInputStream(data.getBytes()));
     }
+    // --- End Setup ----
 
-    @DisplayName("displayMessage()")
+    @DisplayName("display...() methods")
     @Nested
-    public class DisplayMessage {
+    public class DisplayMethods {
 
-        @DisplayName("Displays a string to the PrintStream with new line")
+        @DisplayName("displayMessage outputs string with new line")
         @Test
-        public void displayStringToUser() {
+        public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
             assertEquals(outContent.toString(), "Output message\n");
+        }
+
+        @DisplayName("display...List finishes with just one new line")
+        @Test
+        public void displayListOutputsWithOnlyOneNewLine() {
+            CommandLineView view = new CommandLineView();
+
+            List<String> testList = Arrays.asList(new String[] {"a", "b", "c"});
+
+            view.displayBulletList(testList);
+            assertFalse(outContent.toString().endsWith("\n\n"));
+
+            view.displayIndentedList(testList);
+            assertFalse(outContent.toString().endsWith("\n\n"));
+
+        }
+
+        @DisplayName("displayDivider seperates messages with a new line")
+        @Test
+        public void displayDividerSeperatesWithNewLine() {
+            String expectedOutput =
+                    "first\n" + CommandLineView.DEFAULT_MESSAGE_DIVIDER + "\nsecond\n";
+            CommandLineView view = new CommandLineView();
+            view.displayMessage("first");
+            view.displayDivider();
+            view.displayMessage("second");
+            assertEquals(expectedOutput, outContent.toString());
         }
     }
 
@@ -107,8 +137,6 @@ public class CommandLineViewTest {
             assertTrue(outContent.toString().contains("Does not match one word.\n"));
         }
     }
-
-
     @DisplayName("getUserSelection() / getUserSelectionIndex()")
     @Nested
     public class GetUserSelection {
@@ -139,7 +167,7 @@ public class CommandLineViewTest {
         @ParameterizedTest
         // This test gets its provider from the source below. This allows different arrays to be
         // tested (to check the length in the message) is correct.
-        @MethodSource("commandline.view.StringArrayProviders#numbers")
+        @MethodSource("commandline.view.ArrayProviderTest#stringArrayProvider")
         public void displaysErrorOnInvalidInput(String[] input) {
 
             provideInput("wrong\n" + "1\n"); // 1 is always a valid value
