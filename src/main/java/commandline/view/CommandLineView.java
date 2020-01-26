@@ -2,7 +2,6 @@ package commandline.view;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -10,7 +9,7 @@ import commandline.utils.ListUtility;
 
 public class CommandLineView {
 
-    final public static String USER_PROMPT = ">> ";
+    public static final String USER_PROMPT = ">> ";
 
     private Scanner scanner;
     private PrintStream printStream;
@@ -21,17 +20,12 @@ public class CommandLineView {
      * @param inputStream
      * @param printStream
      */
-    CommandLineView(InputStream inputStream, PrintStream printStream) {
+    public CommandLineView(InputStream inputStream, PrintStream printStream) {
         this.printStream = printStream;
         this.scanner = new Scanner(inputStream);
     }
 
-    /**
-     * 
-     * An object which allows high level interfacing with the i/o streams. Defaults to System.in and
-     * System.out
-     */
-    CommandLineView() {
+    public CommandLineView() {
         this(System.in, System.out);
     }
 
@@ -44,56 +38,22 @@ public class CommandLineView {
         printStream.println(message);
     }
 
-    /**
-     * Displays a bullet point list to the user.
-     * 
-     * <pre>
-     * {@code
-        public class Test {
-            CommandLineView view = new CommandLineView();
-            List<Integer> list = Arrays.asList(new Integer[] {1, 2, 3});
-            view.displayBulletList(list);
-        }
-    
-        // OUTPUTS:
-        // > 1
-        // > 2
-        // > 3
-     * }
-     * </pre>
-     * 
-     * @param colllection
-     */
-    public <T> void displayBulletList(Collection<T> collection) {
-        ListUtility listMessage = new ListUtility(collection);
-        printStream.print(listMessage.getBulletList());
+    public <T> void displayBulletSelection(List<T> list, int selectedIndex) {
+        ListUtility lu = new ListUtility(list);
+        printStream.print(lu.getBulletList(selectedIndex));
     }
 
-    /**
-     * Displays an indented list to the user.
-     * 
-     * <pre>
-     * {@code
-        public class Test {
-            CommandLineView view = new CommandLineView();
-            List<Integer> list = Arrays.asList(new Integer[] {1, 2, 3});
-            view.displayMessage("See the list below");
-            view.displayIndentedList(list);
-        }
-    
-        // OUTPUTS:
-        // See the list below:
-        //     1
-        //     2
-        //     3
-     * }
-     * </pre>
-     * 
-     * @param col
-     */
-    public <T> void displayIndentedList(Collection<T> col) {
-        ListUtility listMessage = new ListUtility(col);
-        printStream.print(listMessage.getIndentedList());
+    public <T> void displayBulletList(List<T> list) {
+        displayBulletSelection(list, -1);
+    }
+
+    public <T> void displayIndentedSelection(List<T> list, int selectedIndex) {
+        ListUtility lu = new ListUtility(list);
+        printStream.print(lu.getIndentedList(selectedIndex));
+    }
+
+    public <T> void displayIndentedList(List<T> list) {
+        displayIndentedSelection(list, -1);
     }
 
     /**
@@ -149,13 +109,19 @@ public class CommandLineView {
      */
     public <T> int getUserSelectionIndex(List<T> list) {
         int size = list.size();
+        // Check for valid list
         if (size < 1) {
             throw new IllegalArgumentException("List must have a size of at least 1");
         }
-        ListUtility listMessage = new ListUtility(list);
-        printStream.print(listMessage.getEnumeratedList());
+        String userInstruction = "Enter a number between 1-" + size + ":";
+        String choiceList = new ListUtility(list).getEnumeratedList();
+
+        // Display options to user with an instruction
+        printStream.print(choiceList);
+        printStream.println(userInstruction);
 
         String indexString = getUserInput(str -> {
+            // Check the input to see if it's a valid range.
             try {
                 int index = Integer.parseInt(str);
                 if (index > 0 && index <= size) {
@@ -166,9 +132,10 @@ public class CommandLineView {
             } catch (NumberFormatException e) {
                 return false;
             }
+            // Reprint userInstruction and reprompt user if this fails.
+        }, userInstruction);
 
-        }, "Enter a number between 1-" + size + ":");
-
+        // Return the index (the user selection - 1)
         return Integer.parseInt(indexString) - 1;
     }
 
