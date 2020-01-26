@@ -3,16 +3,16 @@ package commandline.view;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import commandline.utils.ListUtility;
 
 public class CommandLineView {
 
-    final public static String GLOBAL_COMMAND_DISPLAY_STRING = "Global Commands:";
-    final public static String USER_PROMPT = ">> ";
+    public static final String USER_PROMPT = ">> ";
+    public static final String DEFAULT_MESSAGE_DIVIDER = "---";
 
     // A tree set which orders commands alphabetically.
     private Collection<GlobalCommand> globalCommands = new TreeSet<GlobalCommand>();
@@ -26,22 +26,17 @@ public class CommandLineView {
      * @param inputStream
      * @param printStream
      */
-    CommandLineView(InputStream inputStream, PrintStream printStream) {
+    public CommandLineView(InputStream inputStream, PrintStream printStream) {
         this.printStream = printStream;
         this.scanner = new Scanner(inputStream);
     }
 
-    /**
-     * 
-     * An object which allows high level interfacing with the i/o streams. Defaults to System.in and
-     * System.out
-     */
-    CommandLineView() {
+    public CommandLineView() {
         this(System.in, System.out);
     }
 
     /**
-     * Displays a message to the user. Always finishes with a new line.
+     * Outputs a message to the user. Always finishes with a new line.
      * 
      * @param message
      */
@@ -50,61 +45,79 @@ public class CommandLineView {
     }
 
     /**
-     * Displays a bullet point list to the user.
-     * 
-     * <pre>
-     * {@code
-        public class Test {
-            CommandLineView view = new CommandLineView();
-            List<Integer> list = Arrays.asList(new Integer[] {1, 2, 3});
-            view.displayBulletList(list);
-        }
-    
-        // OUTPUTS:
-        // > 1
-        // > 2
-        // > 3
-     * }
-     * </pre>
-     * 
-     * @param colllection
+     * Outputs a divider for seperating message blocks.
      */
-    public <T> void displayBulletList(Collection<T> collection) {
-        ListUtility listMessage = new ListUtility(collection);
-        printStream.print(listMessage.getBulletList());
+    public void displayDivider() {
+        displayMessage(DEFAULT_MESSAGE_DIVIDER);
     }
 
     /**
-     * Displays an indented list to the user.
+     * Outputs an enumerated list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: <--
      * 
-     * <pre>
-     * {@code
-        public class Test {
-            CommandLineView view = new CommandLineView();
-            List<Integer> list = Arrays.asList(new Integer[] {1, 2, 3});
-            view.displayMessage("See the list below");
-            view.displayIndentedList(list);
-        }
-    
-        // OUTPUTS:
-        // See the list below:
-        //     1
-        //     2
-        //     3
-     * }
-     * </pre>
-     * 
-     * @param col
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
      */
-    public <T> void displayIndentedList(Collection<T> col) {
-        ListUtility listMessage = new ListUtility(col);
-        printStream.print(listMessage.getIndentedList());
+    public <T> void displayEnumeratedSelection(List<T> list, int selectedIndex) {
+        ListUtility lu = new ListUtility(list);
+        printStream.print(lu.getEnumeratedList(selectedIndex));
+    }
+
+    /**
+     * Outputs an enumerated list of the .toString() method of each item in 'list'.
+     * 
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public <T> void displayEnumeratedList(List<T> list) {
+        displayEnumeratedSelection(list, -1);
+    }
+
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: <--
+     * 
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
+    public <T> void displayBulletSelection(List<T> list, int selectedIndex) {
+        ListUtility lu = new ListUtility(list);
+        printStream.print(lu.getBulletList(selectedIndex));
+    }
+
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'.
+     * 
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public <T> void displayBulletList(List<T> list) {
+        displayBulletSelection(list, -1);
+    }
+
+    /**
+     * Outputs an indented list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: <--
+     * 
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
+    public <T> void displayIndentedSelection(List<T> list, int selectedIndex) {
+        ListUtility lu = new ListUtility(list);
+        printStream.print(lu.getIndentedList(selectedIndex));
+    }
+
+    /**
+     * Outputs an indented point list of the .toString() method of each item in 'list'.
+     * 
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public <T> void displayIndentedList(List<T> list) {
+        displayIndentedSelection(list, -1);
     }
 
     /**
      * Prompts the user for input and returns it as a trimmed String.
      * 
-     * @return The user input string
+     * @return The user input, trimmed of whitespace
      */
     public String getUserInput() {
         printStream.print(USER_PROMPT);
@@ -128,8 +141,8 @@ public class CommandLineView {
      * displayed an error message and prompted for input again.
      * 
      * @param errorCheck   A lambda function for acceptable input.
-     * @param errorMessage The message displayed to the user
-     * @return The user input.
+     * @param errorMessage The error message displayed to the user
+     * @return The user input, trimmed of whitespace
      * 
      */
     public String getUserInput(Predicate<String> errorCheck, String errorMessage) {
@@ -158,20 +171,25 @@ public class CommandLineView {
     }
 
     /**
-     * Outputs an enumerated list of items to the user for selection.
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
      * 
-     * @param list A List item
-     * @return The list index from the user choice.
+     * @param list The list of possible user choices
+     * @return The list index from the user choice
      */
     public <T> int getUserSelectionIndex(List<T> list) {
         int size = list.size();
+        // Check for valid list
         if (size < 1) {
             throw new IllegalArgumentException("List must have a size of at least 1");
         }
-        ListUtility listUtility = new ListUtility(list);
-        printStream.print(listUtility.getEnumeratedList());
+
+        String userInstruction = "Enter a number between 1-" + size + ".";
+        // Display list and prompt to the user
+        displayEnumeratedList(list);
+        displayMessage(userInstruction);
 
         String indexString = getUserInput(str -> {
+            // Check the input to see if it's a valid range.
             try {
                 int index = Integer.parseInt(str);
                 if (index > 0 && index <= size) {
@@ -182,17 +200,19 @@ public class CommandLineView {
             } catch (NumberFormatException e) {
                 return false;
             }
+            // Reprint userInstruction and reprompt user if this fails.
+        }, userInstruction);
 
-        }, "Enter a number between 1-" + size + ":");
-
+        // Return the index (the user selection - 1)
         return Integer.parseInt(indexString) - 1;
     }
 
     /**
-     * Outputs an enumerated list of items to the user for selection.
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
+     * A convenience method for directly returning the object
      * 
-     * @param list a List item
-     * @return the selected item
+     * @param list The list of possible user choices
+     * @return The list object selected
      */
     public <T> T getUserSelection(List<T> list) {
         return list.get(getUserSelectionIndex(list));
@@ -224,13 +244,6 @@ public class CommandLineView {
     }
 
     /**
-     * Outputs any global commands in a menu form for the user with their descriptions.
-     */
-    public Iterator<GlobalCommand> getGlobalCommandIterator() {
-        return globalCommands.iterator();
-    }
-
-    /**
      * Searches the currently held global commands for a command and returns it if it exists,
      * otherwise it returns null.
      * 
@@ -238,10 +251,10 @@ public class CommandLineView {
      * @return the GlobalCommand object, otherwise null
      */
     private GlobalCommand getMatchingGlobalCommand(String command) {
-        GlobalCommand glob = globalCommands.stream().filter(gc -> gc.getCommand().equals(command))
-                .findAny().orElse(null);
-
-        return glob;
+        return globalCommands.stream()
+            .filter(gc -> gc.getCommand().equals(command))
+            .findAny()
+            .orElse(null);
     }
 
 }
