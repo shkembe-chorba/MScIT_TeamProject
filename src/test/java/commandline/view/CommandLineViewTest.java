@@ -1,6 +1,7 @@
 package commandline.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class CommandLineViewTest {
 
-    // Set up mock System.in / System.out before each test
+
+    // Setup I/O for each test
+    // ------------------------
+
     private final InputStream originalIn = System.in;
     private final PrintStream originalOut = System.out;
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -39,17 +43,45 @@ public class CommandLineViewTest {
     private void provideInput(String data) {
         System.setIn(new ByteArrayInputStream(data.getBytes()));
     }
+    // --- End Setup ----
 
-    @DisplayName("displayMessage()")
+    @DisplayName("display...() methods")
     @Nested
-    public class DisplayMessage {
+    public class DisplayMethods {
 
-        @DisplayName("Displays a string to the PrintStream with new line")
+        @DisplayName("displayMessage outputs string with new line")
         @Test
-        public void displayStringToUser() {
+        public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
             assertEquals(outContent.toString(), "Output message\n");
+        }
+
+        @DisplayName("display...List finishes with just one new line")
+        @Test
+        public void displayListOutputsWithOnlyOneNewLine() {
+            CommandLineView view = new CommandLineView();
+
+            List<String> testList = Arrays.asList(new String[] {"a", "b", "c"});
+
+            view.displayBulletList(testList);
+            assertFalse(outContent.toString().endsWith("\n\n"));
+
+            view.displayIndentedList(testList);
+            assertFalse(outContent.toString().endsWith("\n\n"));
+
+        }
+
+        @DisplayName("displayDivider seperates messages with a new line")
+        @Test
+        public void displayDividerSeperatesWithNewLine() {
+            String expectedOutput =
+                    "first\n" + CommandLineView.DEFAULT_MESSAGE_DIVIDER + "\nsecond\n";
+            CommandLineView view = new CommandLineView();
+            view.displayMessage("first");
+            view.displayDivider();
+            view.displayMessage("second");
+            assertEquals(expectedOutput, outContent.toString());
         }
     }
 
