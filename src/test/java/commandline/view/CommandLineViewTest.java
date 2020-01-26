@@ -171,7 +171,7 @@ public class CommandLineViewTest {
         public void displaysErrorOnInvalidInput(String[] input) {
 
             provideInput("wrong\n" + "1\n"); // 1 is always a valid value
-            String expectedErrorMessage = "Enter a number between 1-" + input.length + ":\n";
+            String expectedErrorMessage = "Enter a number between 1-" + input.length + ".\n";
 
             CommandLineView view = new CommandLineView();
             view.getUserSelectionIndex(Arrays.asList(input)); // Convert array to list.
