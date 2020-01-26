@@ -137,8 +137,6 @@ public class CommandLineViewTest {
             assertTrue(outContent.toString().contains("Does not match one word.\n"));
         }
     }
-
-
     @DisplayName("getUserSelection() / getUserSelectionIndex()")
     @Nested
     public class GetUserSelection {
