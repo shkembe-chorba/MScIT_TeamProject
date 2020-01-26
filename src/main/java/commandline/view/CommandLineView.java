@@ -10,6 +10,7 @@ import commandline.utils.ListUtility;
 public class CommandLineView {
 
     public static final String USER_PROMPT = ">> ";
+    public static final String DEFAULT_MESSAGE_DIVIDER = "---";
 
     private Scanner scanner;
     private PrintStream printStream;
@@ -30,7 +31,7 @@ public class CommandLineView {
     }
 
     /**
-     * Displays a message to the user. Always finishes with a new line.
+     * Outputs a message to the user. Always finishes with a new line.
      * 
      * @param message
      */
@@ -38,20 +39,51 @@ public class CommandLineView {
         printStream.println(message);
     }
 
+    /**
+     * Outputs a divider for seperating message blocks.
+     */
+    public void displayDivider() {
+        displayMessage(DEFAULT_MESSAGE_DIVIDER);
+    }
+
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: <--
+     * 
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
     public <T> void displayBulletSelection(List<T> list, int selectedIndex) {
         ListUtility lu = new ListUtility(list);
         printStream.print(lu.getBulletList(selectedIndex));
     }
 
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'.
+     * 
+     * @param list the list of items whose .toString() methods will be displayed
+     */
     public <T> void displayBulletList(List<T> list) {
         displayBulletSelection(list, -1);
     }
 
+    /**
+     * Outputs an indented list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: <--
+     * 
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
     public <T> void displayIndentedSelection(List<T> list, int selectedIndex) {
         ListUtility lu = new ListUtility(list);
         printStream.print(lu.getIndentedList(selectedIndex));
     }
 
+    /**
+     * Outputs an indented point list of the .toString() method of each item in 'list'.
+     * 
+     * @param list the list of items whose .toString() methods will be displayed
+     */
     public <T> void displayIndentedList(List<T> list) {
         displayIndentedSelection(list, -1);
     }
@@ -59,7 +91,7 @@ public class CommandLineView {
     /**
      * Prompts the user for input and returns it as a trimmed String.
      * 
-     * @return The user input string
+     * @return The user input, trimmed of whitespace
      */
     public String getUserInput() {
         printStream.print(USER_PROMPT);
@@ -72,8 +104,8 @@ public class CommandLineView {
      * displayed an error message and prompted for input again.
      * 
      * @param errorCheck   A lambda function for acceptable input.
-     * @param errorMessage The message displayed to the user
-     * @return The user input.
+     * @param errorMessage The error message displayed to the user
+     * @return The user input, trimmed of whitespace
      * 
      */
     public String getUserInput(Predicate<String> errorCheck, String errorMessage) {
@@ -102,10 +134,10 @@ public class CommandLineView {
     }
 
     /**
-     * Outputs an enumerated list of items to the user for selection.
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
      * 
-     * @param list A List item
-     * @return The list index from the user choice.
+     * @param list The list of possible user choices
+     * @return The list index from the user choice
      */
     public <T> int getUserSelectionIndex(List<T> list) {
         int size = list.size();
@@ -140,10 +172,11 @@ public class CommandLineView {
     }
 
     /**
-     * Outputs an enumerated list of items to the user for selection.
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
+     * A convenience method for directly returning the object
      * 
-     * @param list a List item
-     * @return the selected item
+     * @param list The list of possible user choices
+     * @return The list object selected
      */
     public <T> T getUserSelection(List<T> list) {
         return list.get(getUserSelectionIndex(list));
