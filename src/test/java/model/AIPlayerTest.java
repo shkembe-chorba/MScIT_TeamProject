@@ -10,7 +10,7 @@ public class AIPlayerTest {
 
 
     @Test
-    public class tryAttitude() {
+    public class chooseRightAttribute() {
 
         int expected = ai.chooseAttribute();
         assertEquals(100, expected );
