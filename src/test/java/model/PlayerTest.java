@@ -24,4 +24,12 @@ public void testIncrementingRounds() {
         assertEquals(expectedNumber, actualNumber);
 }
 
+    @DisplayName("No cards should be returned when initialising with a blank deck")
+    @Test
+    void emptyDeckAfterInitialisation() {
+        Player player = new Player("Gareth");
+        assertEquals(null, player.peekNextCard());
+        assertEquals(null, player.removeNextCard());
+    }
+
 }
