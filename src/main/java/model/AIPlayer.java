@@ -6,8 +6,10 @@ public class AIPlayer extends Player {
         super(name);
     }
 
+
+    // 
     public void chooseAttribute() {
-        Card topCardValues [] = cardValues(peekCard);
+        Card topCardValues [] = getCategoryValues(peekCard);
         int max = 0;
         int i = 0;
 
