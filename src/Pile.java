@@ -1,6 +1,9 @@
+import jdk.nashorn.internal.parser.JSONParser;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 public class Pile {
@@ -26,10 +29,9 @@ public class Pile {
         c.add(a);
     }
 
-      public int playerSplit(int players, int cards){
+    public int playerSplit(int players, int cards){
         return cards%players;
     }
-
 
     //returns an Arraylist of all the piles to start the game with split equally to player piles and an extra pile with remained cards
     public ArrayList<Pile> split(int players, int cards) {
@@ -58,9 +60,16 @@ public class Pile {
         return p;
     }
 
+    public String getdeckFile(){
+        return this.getdeckFile();
+    }
+
     public Pile Reader() throws FileNotFoundException {
         Pile c = new Pile();
-        String fileName = "MScIT_TeamProject\\StarCitizenDeck.txt";
+
+        //using the JSONReader - not sure if this is what it should look like
+        String fileName = "MScIT_TeamProject\\"+getdeckFile()+".txt";
+
         FileReader fr = null;
         try {
             fr = new FileReader(fileName);
