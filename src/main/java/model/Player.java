@@ -28,7 +28,7 @@ public class Player {
      * @param playerHand pile of cards
      */
     public void addtoHand(Pile addedPile) {
-        playerHand = playerHand + addedPile;
+        playerHand.add(addedPile);
     }
 
     /**
