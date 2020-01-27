@@ -14,10 +14,6 @@ public class Player {
         return roundsWon;
     }
 
-    public void setRoundsWon(int roundsWon) {
-        this.roundsWon = roundsWon;
-    }
-
     public Player(String name) {
         setName(name);
     }

@@ -12,26 +12,6 @@ public class Database {
     private static String USER = "postgres";
     private static String PASS = "123456";
 
-    //REMOVE
-    public static void main(String[] args) {
-        connect();
-
-        // tests for uploading to database
-        /*uploadGameStats(2, 3, "USER",
-                new Player[]{
-                        new Player("USER"),
-                        new Player("AI1"),
-                        new Player("AI2"),
-                        new Player("AI3"),
-                        new Player("AI4")
-                }
-        );*/
-        // tests for retrieving stats from database
-        final RetrievedGameStatistics statistics = retrieveGameStats();
-
-        disconnect();
-    }
-
     /**
      * Getter for the database connection.
      * @return the database connection

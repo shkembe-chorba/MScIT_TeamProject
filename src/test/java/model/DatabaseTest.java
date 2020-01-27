@@ -25,7 +25,7 @@ class DatabaseTest {
     private Player ai3;
     private Player ai4;
 
-    Player[] players;
+    private Player[] players;
 
     @BeforeEach
     void setUp() throws Exception {
