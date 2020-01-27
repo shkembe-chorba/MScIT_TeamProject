@@ -1,12 +1,19 @@
 public class Card {
     String name;
-    Attribute a[];
+    Attribute att[];
 
     public Card(String n) {
-        this.a = new Attribute[5];
+        this.name = n;
+        this.att = new Attribute[5];
     }
 
     public int getValue(int i){
-        return this.a[i].value;
+        return this.att[i].getValue();
     }
+
+    public void setName(String newName){
+        this.name = newName;
+    }
+
+
 }

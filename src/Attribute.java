@@ -6,4 +6,20 @@ public class Attribute {
         this.name = n;
         this.value = v;
     }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getValue(){
+        return this.value;
+    }
+
+    public void setName(String newName){
+        this.name = newName;
+    }
+
+    public void setValue(int newValue){
+        this.value=newValue;
+    }
 }
