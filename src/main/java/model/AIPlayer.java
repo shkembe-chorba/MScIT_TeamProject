@@ -8,16 +8,17 @@ public class AIPlayer extends Player {
 
 
     // 
-    public void chooseAttribute() {
-        Card topCardValues [] = getCategoryValues(peekCard);
+    public int chooseAttribute() {
+        int [] topCardValues = peekCard().getCategoryValues();
         int max = 0;
-        int i = 0;
+        int index = 0;
 
         for (int i = 0; i < 5; i++) {
-            if (max < values[i]) {
-                max = values[i]; }
+            if (max < topCardValues[i]) {
+                max = topCardValues[i]; }
+            index = i;
         }
-        return i;
+        return index;
     }
 
 }
