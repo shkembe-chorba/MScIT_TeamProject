@@ -18,12 +18,10 @@ package model;
 public class Player {
     private String name;
     private int roundsWon;
-    private Pile playerHand;
+    private Pile playerHand = new Pile();
 
     public Player(String name) {
         setName(name);
-        this.name = name;
-        Pile playerHand = new Pile();
     }
     /**
      * Used in the beginning of a game to assign a pile to a player
