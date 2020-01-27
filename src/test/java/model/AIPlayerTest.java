@@ -13,6 +13,6 @@ public class AIPlayerTest {
     public class chooseRightAttribute() {
 
         int expected = ai.chooseAttribute();
-        assertEquals(100, expected );
+        assertEquals(4, expected );
     }
 }
