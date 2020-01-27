@@ -11,6 +11,10 @@ public class Card {
         return this.att[i].getValue();
     }
 
+    public Attribute[] getCategoryValues(){
+        return att;
+    }
+
     public void setName(String newName){
         this.name = newName;
     }
