@@ -21,7 +21,7 @@ public class Player {
     private Pile playerHand = new Pile();
 
     public Player(String name) {
-        setName(name);
+        this.name = name;
     }
     /**
      * Used in the beginning of a game to assign a pile to a player
