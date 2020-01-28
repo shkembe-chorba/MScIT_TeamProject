@@ -85,13 +85,17 @@ public class Database {
             //Create statement.
             Statement statement = connection.createStatement();
 
+            //Default gid for first game.
+            int gid = 1;
+
             //Get max gid up to now from the database
             //and make the gid variable larger by 1
             String sqlString = "SELECT max(gid) FROM game";
             ResultSet result = statement.executeQuery(sqlString);
-            result.next();
-            int gid = result.getInt("max") + 1;
 
+            if(result.next()) {
+                gid = result.getInt("max") + 1;
+            }
             //Add a statement to update the game relation in the statement batch.
             sqlString = "INSERT INTO game(gid,draws,rounds,winner) VALUES (" + gid + "," + draws + "," + rounds + ",'" + winner + "'); ";
             statement.addBatch(sqlString);
@@ -115,40 +119,48 @@ public class Database {
     public RetrievedGameStatistics retrieveGameStats() {
         RetrievedGameStatistics retrievedGameStatistics = null;
         try {
-            int gamesPlayed, aiWins, userWins, maxRounds;
-            double avgDraws;
+            int gamesPlayed = 0,
+                    aiWins = 0,
+                    userWins = 0,
+                    maxRounds = 0;
+            double avgDraws = 0;
 
             Statement statement = connection.createStatement();
 
             //Obtains the number of games played overall
             String sqlStringMaxGid = "SELECT max(gid) FROM game";
             ResultSet result = statement.executeQuery(sqlStringMaxGid);
-            result.next();
-            gamesPlayed = result.getInt("max");
+            if(result.next()) {
+                gamesPlayed = result.getInt("max");
+            }
 
             //Obtains the number of games won by AIs
             String sqlStringAIWins = "select count(winner) from game where winner!='USER' ";
             result = statement.executeQuery(sqlStringAIWins);
-            result.next();
-            aiWins = result.getInt("count");
+            if(result.next()) {
+                aiWins = result.getInt("count");
+            }
 
             //Obtains the number of games won by the human user
             String sqlStringUserWins = "select count(winner) from game where winner='USER'";
             result = statement.executeQuery(sqlStringUserWins);
-            result.next();
-            userWins = result.getInt("count");
+            if(result.next()) {
+                userWins = result.getInt("count");
+            }
 
             //Obtains the average draw number
             String sqlStringAvgDraws = "select avg(draws) from game";
             result = statement.executeQuery(sqlStringAvgDraws);
-            result.next();
-            avgDraws = result.getDouble("avg");
+            if(result.next()) {
+                avgDraws = result.getDouble("avg");
+            }
 
             //Obtains the max number of rounds
             String sqlStringMaxRounds = "select max(rounds) from game";
             result = statement.executeQuery(sqlStringMaxRounds);
-            result.next();
-            maxRounds = result.getInt("max");
+            if(result.next()) {
+                maxRounds = result.getInt("max");
+            }
 
             retrievedGameStatistics = new RetrievedGameStatistics(gamesPlayed, aiWins, userWins, avgDraws, maxRounds);
         } catch (SQLException e) {
