@@ -54,7 +54,7 @@ public class CommandLineViewTest {
         public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
-            assertEquals(outContent.toString(), "Output message\n");
+            assertEquals("Output message\n", outContent.toString());
         }
 
         @DisplayName("display...List finishes with just one new line")
