@@ -2,7 +2,9 @@ package model;
 
 import java.sql.*;
 
-
+/**
+ * This class holds the database functionality for the TopTrumpsGame.
+ */
 public class Database {
 
     private static Connection connection = null;
