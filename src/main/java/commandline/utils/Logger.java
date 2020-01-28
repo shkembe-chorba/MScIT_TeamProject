@@ -26,10 +26,15 @@ public class Logger {
          *                       java.util.logging.Logger objects.
          */
         public Logger(String outputFilepath, String loggerName) {
-                // Remove default logging behaviour which outputs to System.err
-                LogManager.getLogManager().reset();
+                if (javaLogger.getName().equals(loggerName)) {
+                        throw new IllegalArgumentException(
+                                        "There is already a logger with this name");
+                }
 
                 this.outputFilepath = outputFilepath;
+
+                // Remove default logging behaviour which outputs to System.err
+                LogManager.getLogManager().reset();
                 javaLogger = java.util.logging.Logger.getLogger(loggerName);
         }
 
@@ -75,11 +80,18 @@ public class Logger {
          * A static method which outputs a log to the target log file. This is static so it can be
          * used in many different classes while there is the 'master object' within the application
          * scope.
-         * 
+         *
          * @param logMessage
          */
-        public static void log(String logMessage) {
-                javaLogger.info(logMessage);
+        public static void log(String logMessage) throws NullPointerException {
+
+                if (javaLogger != null) {
+                        javaLogger.info(logMessage);
+                } else {
+                        throw new NullPointerException(
+                                        "No Logger object has been created in global scope");
+                }
+
         }
 
 
