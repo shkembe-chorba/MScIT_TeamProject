@@ -64,11 +64,11 @@ class DatabaseTest {
         players = new Player[] {user, ai1, ai2, ai3, ai4};
 
         //Set up names of players.
-        when(user.getName()).thenReturn("USER");
-        when(ai1.getName()).thenReturn("AI1");
-        when(ai2.getName()).thenReturn("AI2");
-        when(ai3.getName()).thenReturn("AI3");
-        when(ai4.getName()).thenReturn("AI4");
+        when(user.toString()).thenReturn("USER");
+        when(ai1.toString()).thenReturn("AI1");
+        when(ai2.toString()).thenReturn("AI2");
+        when(ai3.toString()).thenReturn("AI3");
+        when(ai4.toString()).thenReturn("AI4");
 
         //Set the roundsWon for the players in the first game for the test.
         when(user.getRoundsWon()).thenReturn(2);

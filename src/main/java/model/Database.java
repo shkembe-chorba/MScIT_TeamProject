@@ -79,7 +79,7 @@ public class Database {
 
             //Add statements to update the rounds_won relation in the statement batch.
             for (Player player : players) {
-                sqlString = "INSERT INTO rounds_won(gid,player,r_won) VALUES (" + gid + ",'" + player.getName() + "'," + player.getRoundsWon() + "); ";
+                sqlString = "INSERT INTO rounds_won(gid,player,r_won) VALUES (" + gid + ",'" + player.toString() + "'," + player.getRoundsWon() + "); ";
                 statement.addBatch(sqlString);
             }
 
