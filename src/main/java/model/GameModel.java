@@ -60,8 +60,8 @@ public class GameModel {
         }
     }
 
-    public void playRoundwithAtrribute() {
-        //TODO: play round with attribute - compares attributes of players
+    public void playRoundwithAtrribute(Attribute attribute) {
+        //TODO: play round with attribute - compares attributes of player,  takes in attribute or index
         selects a winner, sets a next active player
     }
 
