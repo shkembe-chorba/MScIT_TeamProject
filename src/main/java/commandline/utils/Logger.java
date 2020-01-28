@@ -7,28 +7,51 @@ import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+/**
+ * Sets up a Logger which is enabled as long as the object remains in scope. Usual use will be to
+ * call the static method Logger.log(message), which will output to the target destination file.
+ */
 public class Logger {
 
         private static final String LOGGER_DIVIDER_STRING = "--------";
         private static java.util.logging.Logger javaLogger;
-        private static Handler loggerHandler;
-        private static String outputFilepath;
+        private String outputFilepath;
 
+        /**
+         * Creates a logger object which will remain active as long as it is in scope. Best used
+         * within the main method to ensure it is not garbage collected.
+         *
+         * @param outputFilepath The target logfile destination path.
+         * @param loggerName     A unique identifier to be used if using other
+         *                       java.util.logging.Logger objects.
+         */
         public Logger(String outputFilepath, String loggerName) {
+                // Remove default logging behaviour which outputs to System.err
+                LogManager.getLogManager().reset();
 
                 this.outputFilepath = outputFilepath;
-                // Remove default logging output to System.err
-                LogManager.getLogManager().reset();
                 javaLogger = java.util.logging.Logger.getLogger(loggerName);
         }
 
+        /**
+         * The same as {@link #Logger(String, String)}, but defaults the logger name to
+         * "commandline".
+         *
+         * @param outputFilepath The target logfile destination path.
+         */
         public Logger(String outputFilepath) {
                 this(outputFilepath, "commandline");
         }
 
+        /**
+         * Creates the target log file.
+         *
+         * @throws SecurityException When there is a security exception while creating the file.
+         * @throws IOException       When there is a filesystem problem while creating the file.
+         */
         public void enable() throws SecurityException, IOException {
-                // Create a Logger object in main scope (so it isn't garbage collected).
-                loggerHandler = new FileHandler(outputFilepath);
+
+                Handler loggerHandler = new FileHandler(outputFilepath);
                 // The default format for messages is to append LOGGER_DIVIDER_STRING
                 loggerHandler.setFormatter(new Formatter() {
                         @Override
@@ -41,11 +64,20 @@ public class Logger {
                 javaLogger.setLevel(java.util.logging.Level.INFO);
         }
 
+        /**
+         * Disable logging globally for this logger.
+         */
         public void disable() {
                 javaLogger.setLevel(java.util.logging.Level.OFF);
         }
 
-        // As a static method for utility
+        /**
+         * A static method which outputs a log to the target log file. This is static so it can be
+         * used in many different classes while there is the 'master object' within the application
+         * scope.
+         * 
+         * @param logMessage
+         */
         public static void log(String logMessage) {
                 javaLogger.info(logMessage);
         }

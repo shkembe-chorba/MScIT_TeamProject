@@ -30,12 +30,15 @@ public class TopTrumpsCLIApplication {
 			writeGameLogsToFile = true; // Command line selection
 		}
 
-		// Setup Logger
+		// -------------
+		// Logger Setup
+		// -------------
 
 		Logger logger = new Logger(LOGGER_DIRECTORY + LOGGER_FILENAME);
 
 		if (writeGameLogsToFile) {
 			try {
+				// Creates a file handler and attaches it to the logger
 				logger.enable();
 			} catch (SecurityException e) { // Exit and Handle security errors gracefully
 				displayLoggerError(LOGGER_SECURITY_ERROR);
@@ -45,6 +48,7 @@ public class TopTrumpsCLIApplication {
 				System.exit(LOGGER_IO_ERROR_CODE);
 			}
 		} else {
+			// Resets all loggers as a precaution
 			logger.disable();
 		}
 
