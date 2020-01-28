@@ -18,6 +18,7 @@ package model;
 public class Player {
     private String name;
     private int roundsWon;
+    private Pile playerHand = new Pile();
 
     public Player(String name) {
         this.name = name;
@@ -61,6 +62,3 @@ public class Player {
     public String toString() {
         return name;}
     }
-
-
-
