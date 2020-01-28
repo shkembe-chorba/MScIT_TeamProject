@@ -7,8 +7,7 @@ public class AIPlayer extends Player {
     }
 
 
-    // 
-    public int chooseAttribute() {
+    public Attribute chooseAttribute() {
         int [] topCardValues = peekCard().getCategoryValues();
         int max = 0;
         int index = 0;
@@ -18,7 +17,7 @@ public class AIPlayer extends Player {
                 max = topCardValues[i]; }
             index = i;
         }
-        return index;
+        return peekCard().getAttribute(index);
     }
 
 }
