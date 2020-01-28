@@ -7,18 +7,37 @@ import java.sql.*;
  */
 public class Database {
 
-    private static Connection connection = null;
+    private Connection connection = null;
 
     //Database Connection parameters.
-    private static String URL = "jdbc:postgresql://localhost:5432/m_19_2175499m";
-    private static String USER = "postgres";
-    private static String PASS = "123456";
+    private String url;
+    private String user;
+    private String pass;
+
+    /**
+     * Database constructor.
+     * @param url database url
+     * @param user database username
+     * @param pass database password
+     */
+    public Database(String url, String user, String pass) {
+        this.url = url;
+        this.user = user;
+        this.pass = pass;
+    }
+
+    /**
+     * Default database constructor for TopTrumps.
+     */
+    public Database() {
+        this("jdbc:postgresql://localhost:5432/m_19_2175499m","postgres","123456");
+    }
 
     /**
      * Getter for the database connection.
      * @return the database connection
      */
-    static Connection getConnection() {
+    protected Connection getConnection() {
         return connection;
     }
 
@@ -26,11 +45,11 @@ public class Database {
      * This methods sets up a connection to the PostgreSQL database.
      * It needs to be run prior to any other methods.
      */
-    public static void connect() {
+    public void connect() {
         try {
 
             //Get connection.
-            connection = DriverManager.getConnection(URL, USER, PASS);
+            connection = DriverManager.getConnection(url, user, pass);
             System.out.println("Connected to database.");
 
         } catch (SQLException e) {
@@ -43,7 +62,7 @@ public class Database {
      * This method closes the connection to the PostgreSQL database.
      * It needs to be run after a code-user has finished with the Database class.
      */
-    public static void disconnect() {
+    public void disconnect() {
         try {
             connection.close();
             System.out.println("Disconnected from database.");
@@ -61,7 +80,7 @@ public class Database {
      * @param winner  the winner of the game
      * @param players an array holding all of the players in the game
      */
-    public static void uploadGameStats(int draws, int rounds, String winner, Player[] players) {
+    public void uploadGameStats(int draws, int rounds, String winner, Player[] players) {
         try {
             //Create statement.
             Statement statement = connection.createStatement();
@@ -93,7 +112,7 @@ public class Database {
      * Method creates an object that contains the retrieved overall game stats (5 metrics)
      * @return object containing stats
      */
-    public static RetrievedGameStatistics retrieveGameStats() {
+    public RetrievedGameStatistics retrieveGameStats() {
         RetrievedGameStatistics retrievedGameStatistics = null;
         try {
             int gamesPlayed, aiWins, userWins, maxRounds;

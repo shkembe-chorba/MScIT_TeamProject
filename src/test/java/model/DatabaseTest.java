@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 class DatabaseTest {
 
+    private Database database = new Database();
     private Connection conn;
     private Savepoint savepoint;
 
@@ -29,11 +30,12 @@ class DatabaseTest {
 
     @BeforeEach
     void setUp() throws Exception {
+
         //Connect to database.
-        Database.connect();
+        database.connect();
 
         //Get the database connection.
-        conn = Database.getConnection();
+        conn = database.getConnection();
 
         //Turn off autoCommit for test.
         conn.setAutoCommit(false);
@@ -78,7 +80,7 @@ class DatabaseTest {
         when(ai4.getRoundsWon()).thenReturn(4);
 
         //Upload the first game to the database.
-        Database.uploadGameStats(2, 20, "AI1", players);
+        database.uploadGameStats(2, 20, "AI1", players);
 
         //Set the roundsWon for the players in the second game for the test.
         when(user.getRoundsWon()).thenReturn(5);
@@ -88,7 +90,7 @@ class DatabaseTest {
         when(ai4.getRoundsWon()).thenReturn(2);
 
         //Upload the second game to the database.
-        Database.uploadGameStats(3, 15, "USER", players);
+        database.uploadGameStats(3, 15, "USER", players);
     }
 
     @AfterEach
@@ -97,7 +99,7 @@ class DatabaseTest {
         conn.rollback(savepoint);
 
         //Disconnect from database.
-        Database.disconnect();
+        database.disconnect();
     }
 
     /**
@@ -164,11 +166,11 @@ class DatabaseTest {
         when(ai4.getRoundsWon()).thenReturn(0);
 
         //Upload the third game to the database.
-        Database.uploadGameStats(5, 13, "AI3", players);
+        database.uploadGameStats(5, 13, "AI3", players);
 
         final RetrievedGameStatistics expectedStatistics =
                 new RetrievedGameStatistics(3, 2, 1, 3.333, 20);
-        final RetrievedGameStatistics returnedStatistics = Database.retrieveGameStats();
+        final RetrievedGameStatistics returnedStatistics = database.retrieveGameStats();
 
         assertEquals(expectedStatistics.getAvgDraws(), returnedStatistics.getAvgDraws(), 0.01); // 0.01 is the error margin
         assertEquals(expectedStatistics.getGamesWonByAi(), returnedStatistics.getGamesWonByAi());
