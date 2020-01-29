@@ -29,6 +29,4 @@ public class Attribute implements Comparable<Attribute> {
     public int compareTo(Attribute a) {
         return this.getValue()-a.getValue();
     }
-
-    public
 }
