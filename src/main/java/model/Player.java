@@ -29,7 +29,7 @@ public class Player {
      *
      * @param playerHand pile of cards
      */
-    public void addtoDeck(Pile addedPile) {
+    public void addToDeck(Pile addedPile) {
         playerDeck.add(addedPile);
     }
 
