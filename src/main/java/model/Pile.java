@@ -70,14 +70,14 @@ public class Pile {
     }
 
     public static String getdeckFile() {
-        return this.getdeckFile();
+        return getdeckFile();
     }
 
     public static Pile reader() throws IOException {
 
         // TODO: Move hard coding of this path up a level
 
-        FileReader fileReader = new FileReader("./StarCitizenDeck.txt");
+        FileReader fileReader = new FileReader("./" +getdeckFile()+".txt");
         Scanner scanner = new Scanner(fileReader);
         String[] headers = scanner.nextLine().split(" ");
 
