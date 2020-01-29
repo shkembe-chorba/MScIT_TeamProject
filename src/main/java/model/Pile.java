@@ -3,15 +3,30 @@ package model;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
+
 import com.google.gson.JsonObject;
 import commandline.utils.JsonUtility;
 
 
 public class Pile {
+
+    static void addCardHelper(Pile pile) {
+        for(int i = 0; i < 50; i++) {
+            pile.add(new Card(""+i));
+        }
+    }
+    public static void main(String[] args) {
+        Pile pile = new Pile();
+        addCardHelper(pile);
+//        System.out.println(pile);
+        ArrayList<Pile> list = pile.split(4, 50);
+        System.out.println(list.size() + "/5");
+        for(int i = 0; i < 4; i++) {
+            System.out.println(list.get(i).size() +"/12");
+        }
+        System.out.println(list.get(4).size() + "/2");
+    }
 
     private LinkedList<Card> cardList = new LinkedList<Card>();
 
@@ -56,25 +71,19 @@ public class Pile {
         // This is based on the number of players and cards
 
         int cardsPerPlayer = cards / numberOfPlayers;
-        int otherCards = cards % numberOfPlayers;
 
-        ArrayList<Pile> setOfDecks = new ArrayList<Pile>();
+        LinkedList<Card> cardListCopy = (LinkedList<Card>) cardList.clone();
 
-        // Player Decks
-        int j = 0;
-        while (j < numberOfPlayers) {
-            Pile playerDeck = new Pile();
-            for (int i = 0; i < cardsPerPlayer; i++) {
-                playerDeck.add(cardList.pop());
-            }
-            setOfDecks.add(playerDeck);
-            j++;
-        }
-        // Communal Pile
+        Pile[] decks = new Pile[numberOfPlayers];
         Pile communalPile = new Pile();
-        for (int i = 0; i < otherCards; i++) {
-            communalPile.add(cardList.pop());
+        int startingIndex = 0;
+        for(int i = 0; i < decks.length; i++) {
+            decks[i] = new Pile();
+            decks[i].cardList = new LinkedList<Card>(cardListCopy.subList(startingIndex, startingIndex + cardsPerPlayer));
+            startingIndex += cardsPerPlayer;
         }
+        communalPile.cardList = new LinkedList<Card>(cardListCopy.subList(startingIndex, cardListCopy.size()));
+        ArrayList<Pile> setOfDecks = new ArrayList<Pile>(Arrays.asList(decks));
         setOfDecks.add(communalPile);
         return setOfDecks;
     }

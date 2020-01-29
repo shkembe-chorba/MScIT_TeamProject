@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 class PileTest {
 
     static Card c0 = new Card("1");
@@ -12,10 +14,9 @@ class PileTest {
     static Card c3 = new Card("4");
 
     static void addCardHelper(Pile pile) {
-        pile.add(c0);
-        pile.add(c1);
-        pile.add(c2);
-        pile.add(c3);
+        for(int i = 0; i < 40; i++) {
+            pile.add(new Card(""+i));
+        }
     }
 
     @DisplayName("Initialises with an empty pile")
@@ -67,7 +68,7 @@ class PileTest {
     public void playerSplitWorking() {
         Pile pile = new Pile();
         int expectedInt = 5;
-        int actualInt = pile.playerSplit(52, 5);
+        int actualInt = pile.playerSplit(52, 4);
         assertEquals(expectedInt, actualInt);
     }
 
@@ -76,7 +77,7 @@ class PileTest {
     public void splitWorking() {
         Pile pile = new Pile();
         int expectedInt = 10;
-        int actualInt = pile.split(52,5).get(0).size();
+        int actualInt = pile.split(4,50).get(0).size();
         assertEquals(expectedInt, actualInt);
     }
 
@@ -84,13 +85,13 @@ class PileTest {
     @Test
     public void splitWorkingEqualPlayerCards() {
         Pile pile = new Pile();
-        int expectedInt = 0;
-        int actualInt1 = pile.split(52,5).get(0).size()-pile.split(52,5).get(2).size();
-        int actualInt2 = pile.split(52,5).get(1).size()-pile.split(52,5).get(3).size();
-        int actualInt3 = pile.split(52,5).get(1).size()-pile.split(52,5).get(4).size();
-        assertEquals(expectedInt, actualInt1);
-        assertEquals(expectedInt, actualInt2);
-        assertEquals(expectedInt, actualInt3);
+        addCardHelper(pile);
+        ArrayList<Pile> list = pile.split(4, 40);
+        assertEquals(5, list.size());
+        for(int i = 0; i < 4; i++) {
+            assertEquals(10, list.get(i).size());
+        }
+        assertEquals(0, list.get(4).size());
     }
 
     @DisplayName("Tests the cards split method for equal cards between the players")
