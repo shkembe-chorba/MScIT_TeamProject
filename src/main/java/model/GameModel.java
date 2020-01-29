@@ -1,4 +1,5 @@
 package model;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -60,28 +61,41 @@ public class GameModel {
         draws = 0;
     }
 
-
+    /**
+     * Creates human player always called 'USER'
+     */
     public void createHumanPlayer() {
         humanPlayer = new Player("USER");
         players[0] = humanPlayer;
     }
-
+    /**
+     * Creates expected number of AIPlayers and adds them to players in the game with the correct name
+     */
     public void createAIPlayers(int numOfAIPlayers) {
-        for (int i = 1; i < numOfAIPlayers; i++) {
+        for (int i = 1; i < numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index 0
             players[i] = new AIPlayer("AI" + i);
         }
     }
+
+    /**
+     * Splits the whole deck of 40 cards and assigns it to players
+     * it assigns the reminder of cards to communal pile
+     */
 
     public void assignCards(Pile wholeDeck, Player[] players) {
         ArrayList<Pile> split = wholeDeck.split(players.length, 40);
         for (int i = 0; i < players.length; i++) {
             players[i].addtoDeck(split.get(i));
         }
-        this.communalPile = split.get(players.length + 1);
+        communalPile = split.get(players.length + 1);
     }
 
-    // index of the attribute that the round is going to played with
-    public Player playRoundwithAtrribute(Attribute chosenAttribute) {
+    /**
+     * Takes in attribute and compares values of the peek card from all players
+     * on the chosen attribute
+     */
+
+    public Player playRoundWithAtrribute(Attribute chosenAttribute) {
         int maxValue = 0;
         int drawValue = 0;
         roundNumber++;
@@ -100,11 +114,11 @@ public class GameModel {
             else {}
         }
 
-
         // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
         if (maxValue == drawValue) {
+
             // pops the card from all the players and transfers them to communal pile
-            addCardstoCommunalPile();
+            addCardsToCommunalPile();
             draws++;
             // resets the roundWinner
             roundWinner = null;
@@ -117,7 +131,9 @@ public class GameModel {
             winningCard = roundWinner.peekCard();
 
             // waits for the popping of the card and adds it to the communal pile
-            addCardstoCommunalPile();
+            addCardsToCommunalPile();
+            // shuffles the communalPile
+            communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
             receiveCommunalPile(roundWinner);
 
@@ -126,6 +142,9 @@ public class GameModel {
         }
     }
 
+    /**
+     * Randomly selects first player from the players array
+     */
     public Player randomlySelectFirstPlayer(Player [] players) {
         Random rand = new Random();
         Player firstPlayer = players[rand.nextInt(players.length)];
@@ -144,37 +163,43 @@ public class GameModel {
     }
 
     //
-    public Player checkforWinner() {
-        if (playersInGame.size = 1) {
+    public Player checkForWinner() {
+        if (playersInGame.size() == 1) {
             return playersInGame.get(0);
         }
-        else (return null;)
+        else {return null;}
     }
 
-    public void checktoEliminate() {
+    // checks whether the player has another card and if not eliminates them from playersInGame
+    public ArrayList <Player> checkToEliminate() {
+        ArrayList <Player> eliminated = new <Player> ;
         for (int i = 0; i < playersInGame.size(); i++) {
             if (playersInGame.get(i).peekCard() == null){
+                eliminated.add(playersInGame.get(i));
                 eliminatePlayer(playersInGame.get(i));
             }
+            return eliminated;
         }
     }
 
-    public void addCardstoCommunalPile() {
+    //transfers cards to communal pile from all players
+    public void addCardsToCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
             Player playerToPopCard = playersInGame.get(i);
             communalPile.add(playerToPopCard.popCard());
         }
     }
-
     public void receiveCommunalPile(Player roundWinner) { this.roundWinner.addtoDeck(communalPile); }
 
     public GameState getGameState() { return gameState; }
 
     public Player getHumanPlayer() {return humanPlayer; }
 
-    public int getRoundNumber() { return roundNumber;
-    }
+    public int getRoundNumber() { return roundNumber; }
+
     public void increaseRoundNumber() { roundNumber++; }
+
+    public int getCommunalPileSize() {return communalPile.size(); }
 
     public Player getActivePlayer() { return activePlayer; }
 
