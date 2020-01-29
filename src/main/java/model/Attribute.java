@@ -1,6 +1,6 @@
 package model;
 
-public class Attribute {
+public class Attribute implements Comparable<Attribute> {
     protected String name;
     protected int value;
 
@@ -17,11 +17,12 @@ public class Attribute {
         return this.value;
     }
 
-    public void setName(String newName){
-        this.name = newName;
-    }
 
-    public void setValue(int newValue){
-        this.value=newValue;
+    @Override
+    public int compareTo(Attribute a) {
+        if (!this.getName().equals(a.getName())){
+            throw new IllegalArgumentException("Cannot compare different attributes");
+        }
+        return this.getValue()-a.getValue();
     }
 }
