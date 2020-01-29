@@ -1,6 +1,6 @@
 package model;
 
-public class Attribute {
+public class Attribute implements Comparable<Attribute> {
     protected String name;
     protected int value;
 
@@ -24,4 +24,11 @@ public class Attribute {
     public void setValue(int newValue){
         this.value=newValue;
     }
+
+    @Override
+    public int compareTo(Attribute a) {
+        return this.getValue()-a.getValue();
+    }
+
+    public
 }
