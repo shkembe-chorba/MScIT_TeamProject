@@ -22,7 +22,7 @@ public class CommandLineView {
 
     /**
      * An object which allows high level interfacing with the i/o streams.
-     * 
+     *
      * @param inputStream
      * @param printStream
      */
@@ -37,7 +37,7 @@ public class CommandLineView {
 
     /**
      * Outputs a message to the user. Always finishes with a new line.
-     * 
+     *
      * @param message
      */
     public void displayMessage(String message) {
@@ -54,7 +54,7 @@ public class CommandLineView {
     /**
      * Outputs an enumerated list of the .toString() method of each item in 'list'. Indicates the
      * selected index with an arrow: <--
-     * 
+     *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
      */
@@ -65,7 +65,7 @@ public class CommandLineView {
 
     /**
      * Outputs an enumerated list of the .toString() method of each item in 'list'.
-     * 
+     *
      * @param list the list of items whose .toString() methods will be displayed
      */
     public <T> void displayEnumeratedList(List<T> list) {
@@ -75,7 +75,7 @@ public class CommandLineView {
     /**
      * Outputs a bullet point list of the .toString() method of each item in 'list'. Indicates the
      * selected index with an arrow: <--
-     * 
+     *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
      */
@@ -86,7 +86,7 @@ public class CommandLineView {
 
     /**
      * Outputs a bullet point list of the .toString() method of each item in 'list'.
-     * 
+     *
      * @param list the list of items whose .toString() methods will be displayed
      */
     public <T> void displayBulletList(List<T> list) {
@@ -96,7 +96,7 @@ public class CommandLineView {
     /**
      * Outputs an indented list of the .toString() method of each item in 'list'. Indicates the
      * selected index with an arrow: <--
-     * 
+     *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
      */
@@ -107,7 +107,7 @@ public class CommandLineView {
 
     /**
      * Outputs an indented point list of the .toString() method of each item in 'list'.
-     * 
+     *
      * @param list the list of items whose .toString() methods will be displayed
      */
     public <T> void displayIndentedList(List<T> list) {
@@ -115,8 +115,11 @@ public class CommandLineView {
     }
 
     /**
-     * Prompts the user for input and returns it as a trimmed String.
-     * 
+     * Prompts the user for input. If there are any global commands added (using
+     * {@link #addGlobalCommand(GlobalCommand)}), then the input is checked to see if it matches any
+     * of those commands. If it does, the GlobalCommand listeners are notified. The user is then
+     * reprompted for new input.
+     *
      * @return The user input, trimmed of whitespace
      */
     public String getUserInput() {
@@ -139,11 +142,11 @@ public class CommandLineView {
      * Prompts the user for input, displaying the USER_PROMPT (>>). The user's input is passed to
      * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
      * displayed an error message and prompted for input again.
-     * 
+     *
      * @param errorCheck   A lambda function for acceptable input.
      * @param errorMessage The error message displayed to the user
      * @return The user input, trimmed of whitespace
-     * 
+     *
      */
     public String getUserInput(Predicate<String> errorCheck, String errorMessage) {
         String input = getUserInput();
@@ -162,7 +165,7 @@ public class CommandLineView {
      * Prompts the user for input, displaying the USER_PROMPT (>>). The user's input is passed to
      * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
      * prompted for input again.
-     * 
+     *
      * @param errorCheck
      * @return The user input.
      */
@@ -172,7 +175,7 @@ public class CommandLineView {
 
     /**
      * Displays an enumerated list of items to the user for selection, prompting them for a choice.
-     * 
+     *
      * @param list The list of possible user choices
      * @return The list index from the user choice
      */
@@ -210,7 +213,7 @@ public class CommandLineView {
     /**
      * Displays an enumerated list of items to the user for selection, prompting them for a choice.
      * A convenience method for directly returning the object
-     * 
+     *
      * @param list The list of possible user choices
      * @return The list object selected
      */
@@ -223,7 +226,7 @@ public class CommandLineView {
     /**
      * Add a GlobalCommand which can notify its GlobalCommandListeners when it is entered in the
      * command prompt, for short circuiting game flow.
-     * 
+     *
      * @param command
      * @param description a description of the command's functionality
      * @return
@@ -234,7 +237,7 @@ public class CommandLineView {
 
     /**
      * Removes a GlobalCommand.
-     * 
+     *
      * @param command
      * @param description a description of the command's functionality
      * @return
@@ -246,15 +249,13 @@ public class CommandLineView {
     /**
      * Searches the currently held global commands for a command and returns it if it exists,
      * otherwise it returns null.
-     * 
+     *
      * @param command the string of the command to search for
      * @return the GlobalCommand object, otherwise null
      */
     private GlobalCommand getMatchingGlobalCommand(String command) {
-        return globalCommands.stream()
-            .filter(gc -> gc.getCommand().equals(command))
-            .findAny()
-            .orElse(null);
+        return globalCommands.stream().filter(gc -> gc.getCommand().equals(command)).findAny()
+                .orElse(null);
     }
 
 }
