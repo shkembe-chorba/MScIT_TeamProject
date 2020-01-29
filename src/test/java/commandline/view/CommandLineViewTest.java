@@ -180,11 +180,63 @@ public class CommandLineViewTest {
         public void displaysErrorOnInvalidInput(String[] input) {
 
             provideInput("wrong\n" + "1\n"); // 1 is always a valid value
-            String expectedErrorMessage = "Enter a number between 1-" + input.length + ":\n";
+            String expectedErrorMessage = "Enter a number between 1-" + input.length + ".\n";
 
             CommandLineView view = new CommandLineView();
             view.getUserSelectionIndex(Arrays.asList(input)); // Convert array to list.
             assertTrue(outContent.toString().contains(expectedErrorMessage));
         }
+    }
+
+    @DisplayName("Global commands")
+    @Nested
+    public class GlobalCommands {
+
+        @DisplayName("Returns false for repeated global commands, otherwise true")
+        @Test
+        public void doesNotAcceptRepeatedGlobalCommands() {
+
+            GlobalCommand gc1 = new GlobalCommand("quit");
+            GlobalCommand gc2 = new GlobalCommand("quit");
+
+            CommandLineView view = new CommandLineView();
+            assertTrue(view.addGlobalCommand(gc1));
+            assertFalse(view.addGlobalCommand(gc2));
+        }
+
+        // Private class for test below
+
+        @DisplayName("Inputing a global command notifies listeners")
+        @Test
+        public void globalCommandInputNotifiesListeners() {
+            provideInput("quit\n\n");
+
+            GlobalCommandListenerTest gcl = new GlobalCommandListenerTest();
+            GlobalCommand gc = new GlobalCommand("quit");
+            gc.addCommandListener(gcl);
+
+            CommandLineView view = new CommandLineView();
+            view.addGlobalCommand(gc);
+            view.getUserInput();
+
+            assertTrue(gcl.triggered);
+        }
+
+        @DisplayName("Not inputting a global command does not notify listeners")
+        @Test
+        public void noGlobalCommandDoesNotAffectListeners() {
+            provideInput("x\n\n");
+
+            GlobalCommandListenerTest gcl = new GlobalCommandListenerTest();
+            GlobalCommand gc = new GlobalCommand("quit");
+            gc.addCommandListener(gcl);
+
+            CommandLineView view = new CommandLineView();
+            view.addGlobalCommand(gc);
+            view.getUserInput();
+
+            assertFalse(gcl.triggered);
+        }
+
     }
 }
