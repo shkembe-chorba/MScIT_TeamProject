@@ -32,7 +32,7 @@ public class Pile {
     public void add(Card a) {
         cardList.add(a);
     }
-    
+
     public int size() {
         return cardList.size();
     }
@@ -53,18 +53,17 @@ public class Pile {
         while (j<players) {
             Pile a = new Pile();
             for (int i = 0; i<playerCards; i++) {
-                a.add(cardList.peek());
-                cardList.remove();
-                }
+                a.add(cardList.pop());
+            }
             p.add(a);
             j++;
         }
-        Pile b = new Pile();
+        Pile extraPile = new Pile();
         for (int i = 0; i<otherCards; i++) {
-            b.add(cardList.peek());
+            extraPile.add(cardList.peek());
             cardList.remove();
         }
-        p.add(b);
+        p.add(extraPile);
         return p;
     }
 
@@ -83,21 +82,23 @@ public class Pile {
             fr = new FileReader(fileName);
             Scanner s = new Scanner(fr);
             String line = s.nextLine();
-            String[] categories = line.split(" ", 5);
+            String[] categories = line.split(" ", 6);
             while(s.hasNextLine()) {
                 String lineCard = s.nextLine();
-                String[] card = line.split(" ", 5);
-                Card a = new Card(card[0]);
+                String[] cardString = lineCard.split(" ", 6);
+                Card a = new Card(cardString[0]);
+                for (int i=1; i<cardString.length; i++){
+                
                 a.att[0].setName(categories[1]);
-                a.att[0].setValue(Integer.parseInt(card[1]));
+                a.att[0].setValue(Integer.parseInt(cardString[1]));
                 a.att[1].setName(categories[2]);
-                a.att[1].setValue(Integer.parseInt(card[2]));
+                a.att[1].setValue(Integer.parseInt(cardString[2]));
                 a.att[2].setName(categories[3]);
-                a.att[2].setValue(Integer.parseInt(card[3]));
+                a.att[2].setValue(Integer.parseInt(cardString[3]));
                 a.att[3].setName(categories[4]);
-                a.att[3].setValue(Integer.parseInt(card[4]));
+                a.att[3].setValue(Integer.parseInt(cardString[4]));
                 a.att[4].setName(categories[5]);
-                a.att[4].setValue(Integer.parseInt(card[5]));
+                a.att[4].setValue(Integer.parseInt(cardString[5]));
                 cardPile.add(a);
             }
         }catch(FileNotFoundException e) {
