@@ -23,7 +23,7 @@ public class GameModel {
     private GameState gameState;
     private int roundNumber;
     private Player[] players;
-    private List <Player> playersInGame ; // players still left in the game
+    private List <Player> playersInGame = null ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
     private Pile communalPile;
     private Player roundWinner;
@@ -81,14 +81,14 @@ public class GameModel {
     }
 
     // index of the attribute that the round is going to played with
-    public Player playRoundwithAtrributeIndex(int chosenAttribute) {
+    public Player playRoundwithAtrribute(Attribute chosenAttribute) {
         int maxValue = 0;
         int drawValue = 0;
         roundNumber++;
 
         for (int i = 0; i < playersInGame.size(); i++) {
             Card activeCard = playersInGame.get(i).peekCard();
-            int playersAttributeValue = activeCard.getValue(chosenAttribute);
+            int playersAttributeValue = activeCard.chosenAttribute.getValue();
 
             if (maxValue < playersAttributeValue) {
                 maxValue = playersAttributeValue;
@@ -141,6 +141,14 @@ public class GameModel {
     public boolean userSttillInGame() {
     if (playersInGame.contains(humanPlayer)) { return true; }
         else { return false; }
+    }
+
+    //
+    public Player checkforWinner() {
+        if (playersInGame.size = 1) {
+            return playersInGame.get(0);
+        }
+        else (return null;)
     }
 
     public void checktoEliminate() {
