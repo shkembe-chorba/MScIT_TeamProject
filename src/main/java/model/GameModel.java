@@ -29,6 +29,7 @@ public class GameModel {
     private Player roundWinner = null;
     private int draws;
     private Card winningCard = null;
+    private Pile wholeDeck;
 
     /**
      * Initialization of the game - needs the whole deck and number of AI players as a parameter
@@ -36,16 +37,19 @@ public class GameModel {
      * and creates and puts players both human and AI into a players array
      * randomly selects first player
      */
-    public GameModel(Pile WholeDeck, int numAIPlayers) {
-        Player[] players = new Player[numAIPlayers + 1];
-        this.players = players;
+    public GameModel() {
+        wholeDeck = Pile.reader();
+    }
+
+    public void reset(int numAIPlayers) {
+        players = new Player[numAIPlayers + 1];
         createHumanPlayer();
         createAIPlayers(numAIPlayers);
-        WholeDeck.Shuffle();
-        assignCards(WholeDeck, players);
-
-        this.activePlayer = randomlySelectFirstPlayer(players);
+        wholeDeck.shuffle();
+        assignCards(wholeDeck, players);
+        activePlayer = randomlySelectFirstPlayer(players);
         List <Player> playersInGame = Arrays.asList(players);
+
         int roundNumber = 0;
         int draws = 0;
     }
