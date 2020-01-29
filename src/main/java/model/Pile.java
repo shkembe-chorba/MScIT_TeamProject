@@ -7,34 +7,34 @@ import java.util.*;
 
 public class Pile {
 
-    private LinkedList<Card> c;
+    private LinkedList<Card> cardList;
 
     public Pile() {
-        c = new LinkedList<Card>();
+        cardList = new LinkedList<Card>();
     }
 
     public void shuffle() {
-        Collections.shuffle(c);
+        Collections.shuffle(cardList);
     }
 
     public Card peek() {
-        return c.peek();
+        return cardList.peek();
     }
 
     public Card pop() {
-        return c.pollFirst();
+        return cardList.pollFirst();
     }
 
     public void add(LinkedList a) {
-        c.addAll(a);
+        cardList.addAll(a);
     }
 
     public void add(Card a) {
-        c.add(a);
+        cardList.add(a);
     }
     
     public int size() {
-        return c.size();    
+        return cardList.size();
     }
 
     public int playerSplit(int players, int cards){
@@ -53,27 +53,27 @@ public class Pile {
         while (j<players) {
             Pile a = new Pile();
             for (int i = 0; i<playerCards; i++) {
-                a.add(c.peek());
-                c.remove();
+                a.add(cardList.peek());
+                cardList.remove();
                 }
             p.add(a);
             j++;
         }
         Pile b = new Pile();
         for (int i = 0; i<otherCards; i++) {
-            b.add(c.peek());
-            c.remove();
+            b.add(cardList.peek());
+            cardList.remove();
         }
         p.add(b);
         return p;
     }
 
-    public String getdeckFile(){
+    public static String getdeckFile(){
         return this.getdeckFile();
     }
 
-    public Pile reader() throws FileNotFoundException {
-        Pile c = new Pile();
+    public static Pile reader(){
+        Pile cardPile = new Pile();
 
         //using the JSONReader - not sure if this is what it should look like
         String fileName = "MScIT_TeamProject\\"+getdeckFile()+".txt";
@@ -98,7 +98,7 @@ public class Pile {
                 a.att[3].setValue(Integer.parseInt(card[4]));
                 a.att[4].setName(categories[5]);
                 a.att[4].setValue(Integer.parseInt(card[5]));
-                c.add(a);
+                cardPile.add(a);
             }
         }catch(FileNotFoundException e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class Pile {
                 }
             }
         }
-        return c;
+        return cardPile;
     }
 }
 
