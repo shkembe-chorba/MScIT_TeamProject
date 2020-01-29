@@ -111,7 +111,7 @@ public class GameModel {
             } else if (maxValue == playersAttributeValue) {
                 drawValue = maxValue;
             }
-            else {}
+
         }
 
         // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
