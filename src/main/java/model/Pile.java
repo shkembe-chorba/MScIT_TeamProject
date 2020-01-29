@@ -50,29 +50,30 @@ public class Pile {
         return cards % players;
     }
 
-    //returns an Arraylist of all the piles to start the game with split equally to player piles and an extra pile with remained cards
+    // returns an Arraylist of all the piles to start the game with split equally to player piles
+    // and an extra pile with remained cards
     public ArrayList<Pile> split(int numberOfPlayers, int cards) {
-        //This is based on the number of players and cards
+        // This is based on the number of players and cards
 
-        int cardsPerPlayer = cards/numberOfPlayers;
-        int otherCards = cards%numberOfPlayers;
+        int cardsPerPlayer = cards / numberOfPlayers;
+        int otherCards = cards % numberOfPlayers;
 
         ArrayList<Pile> setOfDecks = new ArrayList<Pile>();
 
         // Player Decks
-        int j =0;
-        while (j<numberOfPlayers) {
+        int j = 0;
+        while (j < numberOfPlayers) {
             Pile playerDeck = new Pile();
-            for (int i = 0; i<cardsPerPlayer; i++) {
-                playerDeck.add(pile.pop());
+            for (int i = 0; i < cardsPerPlayer; i++) {
+                playerDeck.add(cardList.pop());
             }
             setOfDecks.add(playerDeck);
             j++;
         }
-        //Communal Pile
+        // Communal Pile
         Pile communalPile = new Pile();
-        for (int i = 0; i<otherCards; i++) {
-            communalPile.add(pile.pop());
+        for (int i = 0; i < otherCards; i++) {
+            communalPile.add(cardList.pop());
         }
         setOfDecks.add(communalPile);
         return setOfDecks;
