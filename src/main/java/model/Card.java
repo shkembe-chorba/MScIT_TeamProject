@@ -32,9 +32,4 @@ public class Card {
         return this.name;
     }
 
-    public void setName(String newName){
-        this.name = newName;
-    }
-
-
 }

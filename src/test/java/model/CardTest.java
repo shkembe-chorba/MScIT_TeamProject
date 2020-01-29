@@ -26,15 +26,7 @@ public class CardTest {
         assertEquals(expectedString, actualString);
     }
 
-    @Test
-    public void testCardSetName() {
-        Card testCard = new Card("Spaceship");
-        testCard.setName("Rocket");
-        String expectedString = "Rocket";
-        String actualString = testCard.getName();
-        assertEquals(expectedString, actualString);
-    }
-
+   
     @DisplayName("Tests the ArrayList")
     @Test
     public void testGetCategoryValues() {
