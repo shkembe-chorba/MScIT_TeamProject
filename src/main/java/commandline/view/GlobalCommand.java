@@ -7,7 +7,7 @@ import java.util.Collection;
  * This class acts like a 'component' which can be added to a CommandLineView, much like a Button
  * can be added to a Swing Frame. Like a Button, you can attach listeners to it which are notified
  * when the command is triggered (by typing the command in the CommandLineView prompt).
- * 
+ *
  * This allows certain commands to bypass usual program flow. For example, 'quit' terminating the
  * application.
  */
@@ -20,7 +20,7 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
 
     /**
      * Creates a global command.
-     * 
+     *
      * @param command     the String which activates a global command
      * @param description a description of the global command (potentially for help menus etc.)
      */
@@ -70,7 +70,7 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
     @Override
     public String toString() {
         String output = command;
-        if (!description.equals("")) {
+        if (!"".equals(description)) {
             output += " - " + description;
         }
         return output;
@@ -78,7 +78,7 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
 
     /**
      * Registers a listener which is notified when a global command is entered.
-     * 
+     *
      * @param gcl a GlobalCommandListener
      */
     public void addCommandListener(GlobalCommandListener gcl) {
@@ -87,7 +87,7 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
 
     /**
      * Removes a global command listener.
-     * 
+     *
      * @param gcl a GlobalCommandListener
      */
     public void removeCommandListener(GlobalCommandListener gcl) {
