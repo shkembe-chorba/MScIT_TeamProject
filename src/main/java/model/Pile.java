@@ -1,16 +1,25 @@
 package model;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Scanner;
+import com.google.gson.JsonObject;
+import commandline.utils.JsonUtility;
+
 
 public class Pile {
 
-    private LinkedList<Card> cardList;
+    private LinkedList<Card> cardList = new LinkedList<Card>();
 
     public Pile() {
-        cardList = new LinkedList<Card>();
+    }
+
+    public LinkedList<Card> getCards() {
+        return cardList;
     }
 
     public void shuffle() {
@@ -25,12 +34,12 @@ public class Pile {
         return cardList.pollFirst();
     }
 
-    public void add(LinkedList a) {
-        cardList.addAll(a);
+    public void add(Pile pile) {
+        cardList.addAll(pile.getCards());
     }
 
-    public void add(Card a) {
-        cardList.add(a);
+    public void add(Card card) {
+        cardList.add(card);
     }
 
     public int size() {
@@ -69,16 +78,19 @@ public class Pile {
         return p;
     }
 
-    public static String getdeckFile() {
-        return getdeckFile();
-    }
-
     public static Pile reader() throws IOException {
 
-        // TODO: Move hard coding of this path up a level
+        // This should probably be dealt with outside of this class, not with hard coded
+        // inline paths...
 
-        FileReader fileReader = new FileReader("./" +getdeckFile()+".txt");
-        Scanner scanner = new Scanner(fileReader);
+        // Load the config .json
+        final String ROOT_DIR = System.getProperty("user.dir");
+        JsonObject config = JsonUtility.getJsonObjectFromFile(new File(ROOT_DIR, "TopTrumps.json"));
+
+        // Load the deck.txt
+        final String DECK_PATH = config.get("deckFile").getAsString();
+        Scanner scanner = new Scanner(new FileReader(DECK_PATH));
+
         String[] headers = scanner.nextLine().split(" ");
 
         Pile pile = new Pile();
@@ -99,6 +111,18 @@ public class Pile {
         return pile;
     }
 
+    @Override
+    public String toString() {
+        String output = "-------- START OF PILE -------- \n";
+
+        for (Card card : cardList) {
+            output += card + "\n";
+        }
+
+        output += "-------- END OF PILE -------- \n";
+
+        return output;
+    }
 }
 
 
