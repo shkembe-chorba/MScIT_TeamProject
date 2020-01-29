@@ -21,7 +21,7 @@ public class CardTest {
     }
 
     @Nested
-    private class Constructor {
+    class Constructor {
 
         @DisplayName("Throws if passed no name")
         @Test
@@ -34,11 +34,10 @@ public class CardTest {
 
     @Test
     public void canGetName() {
-            Card testCard= new Card("Strength");
-            String expectedString = "Strength";
-            String actualString = testCard.getName();
-            assertEquals(expectedString, actualString);
-        }
+        Card testCard = new Card("Strength");
+        String expectedString = "Strength";
+        String actualString = testCard.getName();
+        assertEquals(expectedString, actualString);
     }
 
     @Nested
@@ -53,6 +52,7 @@ public class CardTest {
         }
     }
 
+
     @Nested
     class GetAttributes {
         @DisplayName("Returns an attribute list")
@@ -62,18 +62,22 @@ public class CardTest {
             CardTest.addAttributesToCard(testCard);
 
             ArrayList<Attribute> expectedAttributeList = testCard.getAttributes();
-            ArrayList<Attribute> actualAttributeList = new  ArrayList<Attribute>();
+            ArrayList<Attribute> actualAttributeList = new ArrayList<Attribute>();
             actualAttributeList.add(CardTest.a0);
             actualAttributeList.add(CardTest.a1);
             actualAttributeList.add(CardTest.a2);
             assertEquals(expectedAttributeList, actualAttributeList);
         }
 
-    @Test
-    public void canGetAttributeByIndex() {
-        Card testCard = new Card("Spaceship");
-        CardTest.addAttributesToCard(testCard);
-        assertEquals(CardTest.a0, testCard.getAttribute(0));
-        assertEquals(CardTest.a2, testCard.getAttribute(2));
+        @Test
+        public void canGetAttributeByIndex() {
+            Card testCard = new Card("Spaceship");
+            CardTest.addAttributesToCard(testCard);
+            assertEquals(CardTest.a0, testCard.getAttribute(0));
+            assertEquals(CardTest.a2, testCard.getAttribute(2));
+        }
     }
+
 }
+
+
