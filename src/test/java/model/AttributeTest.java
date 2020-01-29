@@ -12,22 +12,6 @@ import org.junit.jupiter.api.Test;
 
 public class AttributeTest {
 
-    @Nested
-    private class Constructor {
-        @DisplayName("Constructor does not accept empty attribute names")
-        @Test
-        public void doesNotAcceptEmptyAttributeNames() {
-            assertThrows(IllegalArgumentException.class, () -> new Attribute("", 1));
-        }
-
-        @DisplayName("Does not accept attribute values less than 0")
-        @Test
-        public void doesNotAcceptValuesLessThanZero() {
-            assertThrows(IllegalArgumentException.class, () -> new Attribute("Test", -1));
-        }
-    }
-
-
     @Test
     public void testGetAttributeName() {
         Attribute testAttribute = new Attribute("Strength", 1);
@@ -68,7 +52,7 @@ public class AttributeTest {
         @Test
         public void attributeWithHigherValueIsGreater() {
             Attribute a1 = new Attribute("Strength", 10);
-            Attribute a2 = new Attribute("Stamina", 4);
+            Attribute a2 = new Attribute("Strength", 4);
             Attribute a3 = new Attribute("Strength", 10);
             Attribute a4 = new Attribute("Strength", 12);
 
