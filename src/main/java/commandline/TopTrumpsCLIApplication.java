@@ -1,5 +1,7 @@
 package commandline;
 
+import commandline.controller.CliController;
+import commandline.view.TopTrumpsView;
 import model.GameModel;
 
 /**
@@ -20,11 +22,10 @@ public class TopTrumpsCLIApplication {
 			writeGameLogsToFile = true; // Command line selection
 
 		GameModel model = new GameModel();
-		TopTrumpsController controller = new TopTrumpsController(model, writeGameLogsToFile);
+		CliController controller = new CliController(model);
 		TopTrumpsView view = new TopTrumpsView(controller);
-		controller.addView(view);
-
-		conroller.run();
+		controller.setView(view);
+		controller.run();
 
 		// THE BELOW LOOP HAS BEEN MOVED TO THE CONTROLLER
 

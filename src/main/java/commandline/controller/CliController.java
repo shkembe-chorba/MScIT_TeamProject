@@ -70,7 +70,7 @@ public class CliController implements TopTrumpsControllerInterface {
         view.displayRoundNumber(model.getRoundNumber());
 
         // Is human player still in game
-        if(userStillInGame()){
+        if(model.userStillInGame()){
             view.displayUserHand(model.getHumanPlayer());
         }
 
