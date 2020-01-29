@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import commandline.controller.TopTrumpsControllerInterface;
 
-import model.PlayerInterface;
-import model.CardInterface;
+import model.Player;
+import model.Card;
+
 
 /**
  * The view component of the app. Contains the high level functionality required by the game and
@@ -57,8 +58,8 @@ public class TopTrumpsView {
      * 
      * @param player
      */
-    public void displayHand(PlayerInterface player) {
-        CardInterface hand = player.getHand();
+    public void displayHand(Player player) {
+        Card hand = player.getHand();
         cli.displayMessage(String.format("%s drew '%s':", player.getName(), hand.getName()));
         cli.displayBulletList(hand.getAttributes());
     }
