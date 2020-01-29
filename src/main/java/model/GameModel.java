@@ -1,5 +1,5 @@
 package model;
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -28,7 +28,7 @@ public class GameModel {
     private Player activePlayer; // active player that chooses the attribute
     private Pile communalPile;
     private Player roundWinner;
-    private int draws;
+    private int drawRound;
     private Card winningCard;
     private Pile wholeDeck;
     private Player humanPlayer;
@@ -58,7 +58,7 @@ public class GameModel {
         roundWinner = null;
 
         roundNumber = 0;
-        draws = 0;
+        drawRound = 0;
     }
 
     /**
@@ -95,12 +95,14 @@ public class GameModel {
      * on the chosen attribute
      */
 
-    public Player playRoundWithAtrribute(Attribute chosenAttribute) {
+    public Player playRoundWithAttribute(Attribute chosenAttribute) {
         int maxValue = 0;
-        int drawValue = 0;
+        int drawMaxValue = 0;
+        // increases round number
         roundNumber++;
 
         for (int i = 0; i < playersInGame.size(); i++) {
+            // assigns top card for a player that is still in game as activeCard
             Card activeCard = playersInGame.get(i).peekCard();
             int playersAttributeValue = activeCard.getValue(chosenAttribute);
 
@@ -108,25 +110,26 @@ public class GameModel {
                 maxValue = playersAttributeValue;
                 roundWinner = playersInGame.get(i);
 
+            // if there is a draw, it stores it in the temporary draw value
             } else if (maxValue == playersAttributeValue) {
-                drawValue = maxValue;
+                drawMaxValue = maxValue;
             }
-
         }
 
-        // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
-        if (maxValue == drawValue) {
+        // if maxValue is also the drawMaxValue after going through all the values, it means that there is no higher value
+        if (maxValue == drawMaxValue) {
 
             // pops the card from all the players and transfers them to communal pile
             addCardsToCommunalPile();
-            draws++;
+            
+            drawRound++;
             // resets the roundWinner
             roundWinner = null;
             // returns null to controller
             return null;
 
         } else {
-            setActivePlayer(roundWinner);
+            // increases the won round
             roundWinner.wonRound();
             winningCard = roundWinner.peekCard();
 
@@ -135,7 +138,9 @@ public class GameModel {
             // shuffles the communalPile
             communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
-            receiveCommunalPile(roundWinner);
+            transferCommunalPile(roundWinner);
+        
+            setActivePlayer(roundWinner);
 
             // returns winner to the controller
             return roundWinner;
@@ -150,13 +155,13 @@ public class GameModel {
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
     }
+
     /**
      * Removes player from players in game
      */
     public void eliminatePlayer(Player eliminated) {
         playersInGame.remove(eliminated);
     }
-
 
     /**
      * Checks whether human player is still in game
@@ -199,23 +204,30 @@ public class GameModel {
             communalPile.add(playerToPopCard.popCard());
         }
     }
-    public void receiveCommunalPile(Player roundWinner) { this.roundWinner.addtoDeck(communalPile); }
+    /**
+     * Transfers communal pile to winner of the round
+     */
+    public void transferCommunalPile(Player roundWinner) { this.roundWinner.addToDeck(communalPile); }
 
+
+    // getters and setters
     public GameState getGameState() { return gameState; }
 
     public Player getHumanPlayer() {return humanPlayer; }
 
     public int getRoundNumber() { return roundNumber; }
 
+    public int getDraws() { return drawRound; }
+
     public void increaseRoundNumber() { roundNumber++; }
 
-    public int getCommunalPileSize() {return communalPile.size(); }
+    public int getCommunalPileSize() { return communalPile.size(); }
 
     public Player getActivePlayer() { return activePlayer; }
 
-    public Player getRoundWinner() {return roundWinner; }
+    public Player getRoundWinner() { return roundWinner; }
 
-    public Card getWinningCard() {return winningCard; }
+    public Card getWinningCard() { return winningCard; }
 
     public void setActivePlayer(Player playerActive) { this.activePlayer = playerActive; }
 
