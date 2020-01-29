@@ -26,8 +26,9 @@ public class GameModel {
     private List <Player> playersInGame ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
     private Pile CommunalPile;
-    private Player roundWinner;
-    private Card winningCard;
+    private Player roundWinner = null;
+    private int draws;
+    private Card winningCard = null;
 
     /**
      * Initialization of the game - needs the whole deck and number of AI players as a parameter
@@ -46,6 +47,7 @@ public class GameModel {
         this.activePlayer = randomlySelectFirstPlayer(players);
         List <Player> playersInGame = Arrays.asList(players);
         int roundNumber = 0;
+        int draws = 0;
     }
 
     public void createHumanPlayer() {
@@ -67,23 +69,38 @@ public class GameModel {
         this.CommunalPile = split.get(players.length + 1);
     }
 
-    public void playRoundwithAtrributeIndex(int chosenAttribute) {
+    public Player playRoundwithAtrributeIndex(int chosenAttribute) {
         int maxValue = 0;
-        Card winningCard = null;
-        for (int i = 0; i < playersInGame.size(); i++) {
-           Card activeCard = playersInGame.get(i).peekCard();
-           int playersAttributeValue = activeCard.getValue(chosenAttribute);
+        int drawValue = 0;
 
-           if (maxValue < playersAttributeValue) {
-               roundWinner = playersInGame.get(i);
-               maxValue = playersAttributeValue;
-               winningCard = activeCard;
-           }
+        for (int i = 0; i < playersInGame.size(); i++) {
+            Card activeCard = playersInGame.get(i).peekCard();
+            int playersAttributeValue = activeCard.getValue(chosenAttribute);
+
+            if (maxValue < playersAttributeValue) {
+                maxValue = playersAttributeValue;
+                Player roundWinner = playersInGame.get(i);
+
+            } else if (maxValue == playersAttributeValue) {
+                drawValue = maxValue;
+            }
+            else {}
+        }
+        addCardstoCommunalPile();
+
+        // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
+        if (maxValue == drawValue) {
+            draws++;
+            roundWinner = null;
+            return null;
+
+        } else {
             setActivePlayer(roundWinner);
             roundWinner.wonRound();
-
+            winningCard = roundWinner.peekCard();
+            receiveCommunalPile(roundWinner);
+            return roundWinner;
         }
-
     }
 
     public Player randomlySelectFirstPlayer(Player [] players) {
@@ -91,7 +108,6 @@ public class GameModel {
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
     }
-
 
     public void eliminatePlayer(Player eliminated) {
         playersInGame.remove(eliminated);
@@ -107,10 +123,23 @@ public class GameModel {
                 eliminatePlayer(playersInGame.get(i));
             }
         }
-
-    
-
     }
+
+    public void addCardstoCommunalPile() {
+        for (int i = 0; i < playersInGame.size(); i++) {
+            Player playing = playersInGame.get(i);
+            CommunalPile.add(playing.pop());
+        }
+    }
+    public void receiveCommunalPile(Player roundWinner) {
+        this.roundWinner.addtoHand(CommunalPile);
+    }
+
+
+
+
+
+
     public GameState getGameState() {
         return gameState;
     }
@@ -128,6 +157,8 @@ public class GameModel {
     public Player getActivePlayer() { return activePlayer; }
 
     public Player getRoundWinner() {return roundWinner; }
+
+    public Card getWinningCard() {return winningCard; }
 
     public void setActivePlayer(Player playerActive) { this.activePlayer = playerActive; }
 
