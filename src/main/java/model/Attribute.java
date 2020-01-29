@@ -9,20 +9,22 @@ public class Attribute implements Comparable<Attribute> {
         this.value = v;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public int getValue(){
+    public int getValue() {
         return this.value;
     }
 
 
     @Override
     public int compareTo(Attribute a) {
-        if (!this.getName().equals(a.getName())){
-            throw new IllegalArgumentException("Cannot compare different attributes");
-        }
-        return this.getValue()-a.getValue();
+        return this.getValue() - a.getValue();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: $d", name, value);
     }
 }
