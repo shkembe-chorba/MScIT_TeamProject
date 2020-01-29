@@ -57,14 +57,6 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
     }
 
     /**
-     * Compares global commands by the command string.
-     */
-    @Override
-    public int compareTo(GlobalCommand gc) {
-        return command.compareTo(gc.getCommand());
-    }
-
-    /**
      * Returns the global command and its description.
      */
     @Override
