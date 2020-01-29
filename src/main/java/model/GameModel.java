@@ -25,7 +25,7 @@ public class GameModel {
     private Player[] players;
     private List <Player> playersInGame ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
-    private Pile CommunalPile;
+    private Pile communalPile = null;
     private Player roundWinner = null;
     private int draws;
     private Card winningCard = null;
@@ -70,7 +70,7 @@ public class GameModel {
         for (int i = 0; i < players.length; i++) {
             players[i].addtoHand(split.get(i));
         }
-        this.CommunalPile = split.get(players.length + 1);
+        this.communalPile = split.get(players.length + 1);
     }
 
     public Player playRoundwithAtrributeIndex(int chosenAttribute) {
@@ -132,20 +132,19 @@ public class GameModel {
     public void addCardstoCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
             Player playing = playersInGame.get(i);
-            CommunalPile.add(playing.pop());
+            communalPile.add(playing.popCard());
         }
     }
     public void receiveCommunalPile(Player roundWinner) {
-        this.roundWinner.addtoHand(CommunalPile);
+        this.roundWinner.addtoHand(communalPile);
     }
-
-
-
-
-
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public int getRoundNumber() {
+        return roundNumber;
     }
 
     public String displayRoundNumber() {
