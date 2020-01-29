@@ -1,8 +1,10 @@
 package commandline.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import commandline.controller.TopTrumpsControllerInterface;
 
+import model.Attribute;
 import model.Player;
 import model.Card;
 
@@ -77,7 +79,7 @@ public class TopTrumpsView {
      * 
      * @param user a Player which is user controlled
      */
-    public void displayUserHand(PlayerInterface user) {
+    public void displayUserHand(Player user) {
         displayTopCard(user);
         displayRemainingCardCount(user);
         cli.displayDivider();
@@ -130,7 +132,7 @@ public class TopTrumpsView {
      * @param card             the winning card
      * @param winningAttribute the winning attribute to highligh
      */
-    public void displayWinningCard(CardInterface card, Attribute winningAttribute) {
+    public void displayWinningCard(Card card, Attribute winningAttribute) {
         List<Attribute> attributes = card.getAttributes();
         int winningIndex = attributes.indexOf(winningAttribute);
         cli.displayBulletSelection(String.format("The winning card was '%s':", card.getName()),
@@ -151,7 +153,13 @@ public class TopTrumpsView {
     /**
      * Displays the game over
      */
-    public void displayGameOver(String winningPlayerName, List<ScoreCard> scores) {
+    public void displayGameOver(String winningPlayerName, List<Player> players) {
+
+        List<String> scores = new ArrayList<>();
+        for(Player player: players) {
+            scores.add(player.toString() + ": " + player.getRoundsWon());
+        }
+
         cli.displayMessage("Game Over\nThe overall winner was " + winningPlayerName);
         cli.displayMessage("Scores:");
         cli.displayIndentedList(scores);
