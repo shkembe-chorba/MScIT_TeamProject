@@ -4,28 +4,27 @@ import java.util.ArrayList;
 
 public class Card {
     protected String name;
-    protected ArrayList<Attribute> card = new ArrayList<Attribute>();
+    protected ArrayList<Attribute> cardList = new ArrayList<Attribute>();
     protected ArrayList<Integer> cardIntegers = new ArrayList<Integer>();
 
     public Card(String n) {
         this.name = n;
-        this.card = new ArrayList<Attribute>();
-    }
+        }
 
     public void add(Attribute a){
-        this.card.add(a);
+        this.cardList.add(a);
     }
     public Attribute getAttribute(int i){
-        return this.card.get(i);
+        return this.cardList.get(i);
     }
 
     public ArrayList<Attribute> getAttributes(){
-        return this.card;
+        return this.cardList;
     }
 
     public ArrayList<Integer> getCategoryValues(){
-        for (int i=0; i<card.size(); i++){
-            cardIntegers.add(this.card.get(i).getValue());
+        for (int i=0; i<cardList.size(); i++){
+            cardIntegers.add(this.cardList.get(i).getValue());
         }
         return cardIntegers;
     }
