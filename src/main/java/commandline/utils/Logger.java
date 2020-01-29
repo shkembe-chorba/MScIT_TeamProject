@@ -13,7 +13,7 @@ import java.util.logging.LogRecord;
  */
 public class Logger {
 
-        private static final String LOGGER_DIVIDER_STRING = "--------";
+        public static final String LOGGER_DIVIDER_STRING = "--------";
         private static java.util.logging.Logger javaLogger;
         private String outputFilepath;
 
