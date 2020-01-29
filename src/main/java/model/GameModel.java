@@ -1,5 +1,9 @@
 package model;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.List;
+
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
  *
@@ -19,9 +23,11 @@ public class GameModel {
     private GameState gameState;
     private int roundNumber;
     private Player[] players;
-    private Player[] playersInGame; // players still left in the game
+    private List <Player> playersInGame ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
     private Pile CommunalPile;
+    private Player roundWinner;
+    private Card winningCard;
 
     /**
      * Initialization of the game - needs the whole deck and number of AI players as a parameter
@@ -34,12 +40,13 @@ public class GameModel {
         this.players = players;
         createHumanPlayer();
         createAIPlayers(numAIPlayers);
-        WholeDeck.shuffle();
+        WholeDeck.Shuffle();
         assignCards(WholeDeck, players);
-        this.activePlayer = randomlySelectFirstPlayer(players);
-        this.playersInGame = players;
-    }
 
+        this.activePlayer = randomlySelectFirstPlayer(players);
+        List <Player> playersInGame = Arrays.asList(players);
+        int roundNumber = 0;
+    }
 
     public void createHumanPlayer() {
         Player HumanPlayer = new Player("USER");
@@ -47,22 +54,36 @@ public class GameModel {
     }
 
     public void createAIPlayers(int numOfPlayers) {
-        for (int i = 1; i < numOfPlayers; i++) {
+        for (int i = 0; i < numOfPlayers-1; i++) {
             players[i] = new AIPlayer("AI" + i);
         }
     }
 
     public void assignCards(Pile wholeDeck, Player[] players) {
-        Pile split = wholeDeck.split();
-        for (int i = 0; i < 4; i++) {
-            players[i].setPlayerHand(split[i]);
-            //TODO: need to see what part of pile the person gets
+        ArrayList<Pile> split = wholeDeck.split(players.length, 40);
+        for (int i = 0; i < players.length; i++) {
+            players[i].addtoHand(split.get(i));
         }
+        this.CommunalPile = split.get(players.length + 1);
     }
 
-    public void playRoundwithAtrribute(Attribute attribute) {
-        //TODO: play round with attribute - compares attributes of player,  takes in attribute or index
-        selects a winner, sets a next active player
+    public void playRoundwithAtrributeIndex(int chosenAttribute) {
+        int maxValue = 0;
+        Card winningCard = null;
+        for (int i = 0; i < playersInGame.size(); i++) {
+           Card activeCard = playersInGame.get(i).peekCard();
+           int playersAttributeValue = activeCard.getValue(chosenAttribute);
+
+           if (maxValue < playersAttributeValue) {
+               roundWinner = playersInGame.get(i);
+               maxValue = playersAttributeValue;
+               winningCard = activeCard;
+           }
+            setActivePlayer(roundWinner);
+            roundWinner.wonRound();
+
+        }
+
     }
 
     public Player randomlySelectFirstPlayer(Player [] players) {
@@ -71,22 +92,55 @@ public class GameModel {
         return firstPlayer;
     }
 
+
+    public void eliminatePlayer(Player eliminated) {
+        playersInGame.remove(eliminated);
+    }
+
+    public Card getWinningCard() {
+        return winningCard;
+    }
+
+    public void checktoEliminate() {
+        for (int i = 0; i < playersInGame.size(); i++) {
+            if (playersInGame.get(i).peekCard() == null){
+                eliminatePlayer(playersInGame.get(i));
+            }
+        }
+
+    
+
+    }
     public GameState getGameState() {
         return gameState;
     }
 
-    public int getRoundNumber() {
-        return roundNumber;
+    public String displayRoundNumber() {
+        String s = "";
+        s = s+ roundNumber;
+        return s;
+    }
+
+    public void increaseRoundNumber() {
+        roundNumber++;
     }
 
     public Player getActivePlayer() { return activePlayer; }
 
-    public void setActivePlayer(Player player) { Player player = this.activePlayer; }
+    public Player getRoundWinner() {return roundWinner; }
 
-    public Player[] getPlayers() {
-        return players;
+    public void setActivePlayer(Player playerActive) { this.activePlayer = playerActive; }
+
+    public Player[] getPlayers() { return players; }
+
+    //array of players that were in the game in the beginning
+    public String toString(Player [] players) {
+        String s = "";
+        for (int i = 0; i < players.length; i++) {
+            s = players[i].toString();
+        }
+        return s;
     }
-
 
 
 }
