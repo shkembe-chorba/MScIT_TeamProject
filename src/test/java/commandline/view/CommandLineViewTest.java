@@ -2,6 +2,7 @@ package commandline.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,7 +54,7 @@ public class CommandLineViewTest {
         public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
-            assertEquals(outContent.toString(), "Output message\n");
+            assertEquals("Output message\n", outContent.toString());
         }
 
         @DisplayName("display...List finishes with just one new line")
@@ -141,6 +142,14 @@ public class CommandLineViewTest {
     @Nested
     public class GetUserSelection {
 
+        @DisplayName("Fails when passed an empty list")
+        @Test
+        public void failsWhenPassedEmptyList() {
+            List<String> list = Arrays.asList(new String[] {});
+            CommandLineView view = new CommandLineView();
+            assertThrows(IllegalArgumentException.class, () -> view.getUserSelectionIndex(list));
+        }
+
         @DisplayName("Returns list index from user selection")
         @Test
         public void returnsListIndexFromUserSelection() {
@@ -163,7 +172,7 @@ public class CommandLineViewTest {
             assertEquals(1, view.getUserSelection(list));
         }
 
-        @DisplayName("Displays error message on invalid input")
+        @DisplayName("Displays error message on invalid user input")
         @ParameterizedTest
         // This test gets its provider from the source below. This allows different arrays to be
         // tested (to check the length in the message) is correct.
