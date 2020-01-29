@@ -33,12 +33,12 @@ public class CliController implements TopTrumpsControllerInterface {
             //Prompt for statistics choice
             int choice = view.displayMenu();
             switch (choice) {
-                case 1:
+                case 0:
                     RetrievedGameStatistics statistics = database.retrieveGameStats();
                     view.displayStatistics(statistics);
                     break;
 
-                case 2:
+                case 1:
                     setUpNewGame();
                     while (true) {
                         playRound();

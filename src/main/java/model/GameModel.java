@@ -212,7 +212,10 @@ public class GameModel {
     /**
      * Transfers communal pile to winner of the round
      */
-    public void transferCommunalPile(Player roundWinner) { this.roundWinner.addToDeck(communalPile); }
+    public void transferCommunalPile(Player roundWinner) {
+        this.roundWinner.addToDeck(communalPile);
+        communalPile = new Pile();
+    }
 
 
     // getters and setters
