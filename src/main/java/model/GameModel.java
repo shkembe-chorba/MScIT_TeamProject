@@ -25,38 +25,45 @@ public class GameModel {
     private Player[] players;
     private List <Player> playersInGame ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
-    private Pile communalPile = null;
-    private Player roundWinner = null;
+    private Pile communalPile;
+    private Player roundWinner;
     private int draws;
-    private Card winningCard = null;
+    private Card winningCard;
     private Pile wholeDeck;
+    private Player humanPlayer;
 
     /**
-     * Initialization of the game - needs the whole deck and number of AI players as a parameter
-     * sets up a players array based on the number of players
-     * and creates and puts players both human and AI into a players array
-     * randomly selects first player
+     * Reads the pile from the reader and initializes it
      */
     public GameModel() {
         wholeDeck = Pile.reader();
     }
 
+    /**
+     * Resets and initializes the game with setting up players
+     * @param numAIPlayers
+     *
+     */
     public void reset(int numAIPlayers) {
+
         players = new Player[numAIPlayers + 1];
         createHumanPlayer();
         createAIPlayers(numAIPlayers);
         wholeDeck.shuffle();
         assignCards(wholeDeck, players);
         activePlayer = randomlySelectFirstPlayer(players);
-        List <Player> playersInGame = Arrays.asList(players);
+        playersInGame = Arrays.asList(players);
+        winningCard = null;
+        roundWinner = null;
 
         int roundNumber = 0;
         int draws = 0;
     }
 
     public void createHumanPlayer() {
-        Player HumanPlayer = new Player("USER");
-        players[0] = HumanPlayer;
+        humanPlayer = new Player("USER");
+        players[0] = humanPlayer;
+
     }
 
     public void createAIPlayers(int numOfPlayers) {
@@ -121,6 +128,10 @@ public class GameModel {
         return winningCard;
     }
 
+    public boolean userSttillInGame() {
+
+    }
+
     public void checktoEliminate() {
         for (int i = 0; i < playersInGame.size(); i++) {
             if (playersInGame.get(i).peekCard() == null){
@@ -142,6 +153,8 @@ public class GameModel {
     public GameState getGameState() {
         return gameState;
     }
+
+    public Player getHumanPlayer() {return humanPlayer; }
 
     public int getRoundNumber() {
         return roundNumber;
