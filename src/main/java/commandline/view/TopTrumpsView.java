@@ -1,7 +1,5 @@
 package commandline.view;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import commandline.controller.TopTrumpsControllerInterface;
 
@@ -58,10 +56,10 @@ public class TopTrumpsView {
      * 
      * @param player
      */
-    public void displayHand(Player player) {
-        Card hand = player.peekCard();
-        cli.displayMessage(String.format("%s drew '%s':", player.toString(), hand.getName()));
-        cli.displayBulletList(hand.getAttributes());
+    public void displayTopCard(Player player) {
+        Card topCard = player.peekCard();
+        cli.displayMessage(String.format("%s drew '%s':", player.toString(), topCard.getName()));
+        cli.displayBulletList(topCard.getAttributes());
     }
 
     /**
@@ -80,7 +78,7 @@ public class TopTrumpsView {
      * @param user a Player which is user controlled
      */
     public void displayUserHand(PlayerInterface user) {
-        displayHand(user);
+        displayTopCard(user);
         displayRemainingCardCount(user);
         cli.displayDivider();
     }
