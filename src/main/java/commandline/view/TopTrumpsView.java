@@ -71,7 +71,7 @@ public class TopTrumpsView {
      */
     public void displayRemainingCardCount(Player player) {
         cli.displayMessage(String.format("%s has %d cards remaining.", player.toString(),
-                player.getCardCount()));
+                player.getDeckSize()));
     }
 
     /**

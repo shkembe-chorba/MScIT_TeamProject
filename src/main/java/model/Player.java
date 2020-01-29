@@ -23,8 +23,10 @@ public class Player {
     public Player(String name) {
         this.name = name;
     }
+
     /**
      * Used in the beginning of a game to assign a pile to a player
+     *
      * @param playerHand pile of cards
      */
     public void addtoDeck(Pile addedPile) {
@@ -33,21 +35,24 @@ public class Player {
 
     /**
      * Method that returns number of rounds that the player won
+     *
      * @return roundsWon
-     * */
+     */
     public int getRoundsWon() {
         return this.roundsWon;
     }
 
     /**
      * Increase counter of rounds for player
-     * Used when player wins a round */
+     * Used when player wins a round
+     */
     public void wonRound() {
         this.roundsWon++;
     }
 
     /**
      * Method that takes the following card in the player's hand
+     *
      * @return nextCard
      */
     public Card peekCard() {
@@ -58,6 +63,7 @@ public class Player {
     /**
      * Method that returns the top card of the player and
      * removes it from their deck.
+     *
      * @return top card of player
      */
     public Card popCard() {
@@ -66,8 +72,15 @@ public class Player {
 
     /**
      * Returns name of a player
+     *
      * @return name of the player
      */
     public String toString() {
-        return name;}
+        return name;
     }
+
+
+    public int getDeckSize() {
+        return playerDeck.size();
+    }
+}
