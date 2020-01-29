@@ -8,8 +8,12 @@ public class Card {
     protected ArrayList<Integer> cardIntegers = new ArrayList<Integer>();
 
     public Card(String n) {
-        this.name = n;
+        if ("".equals(n)||(n==null))
+        {
+            throw new IllegalArgumentException("No empty names allowed");
         }
+        this.name = n;
+    }
 
     public void add(Attribute a){
         this.cardList.add(a);
