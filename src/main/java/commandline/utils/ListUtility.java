@@ -6,7 +6,7 @@ import java.util.function.IntFunction;
 /**
  * A utility for returning formatted string lists from Collections. Created because a lot of array
  * outputs will follow a list format, either with bullet points or enumeration.
- * 
+ *
  * @author Shkembe Chorba
  */
 public class ListUtility {
@@ -19,20 +19,20 @@ public class ListUtility {
 
     /**
      * Takes a list item and creates formatted lists for the .toString() form of its items.
-     * 
+     *
      * @param list the target list item
      */
-    ListUtility(List<?> list) {
+    public ListUtility(List<?> list) {
         this.list = list;
     }
 
     /**
      * Returns an enumerated list in the form: <code> {@code
-     *      1: item1 
-     *      2: item2 
+     *      1: item1
+     *      2: item2
      *      3: item3 <--
      * }<code> Where <-- denotes the item given by the selection index.
-     * 
+     *
      * @param indent    the indentation amount
      * @param selection the index of the selected item
      * @return a string formatted as an enumerated list
@@ -51,11 +51,11 @@ public class ListUtility {
 
     /**
      * Returns an bullet list in the form: <code> {@code
-    *      > item1 
-    *      > item2 
+    *      > item1
+    *      > item2
     *      > item3 <--
     * }<code> Where <-- denotes the item given by the selection index.
-     * 
+     *
      * @param indent    the indentation amount
      * @param selection the index of the selected item
      * @return a string formatted as a bullet list
@@ -74,11 +74,11 @@ public class ListUtility {
 
     /**
      * Returns an indented list in the form: <code> {@code
-    *      item1 
-    *      item2 
+    *      item1
+    *      item2
     *      item3 <--
     * }<code> Where <-- denotes the item given by the selection index.
-     * 
+     *
      * @param indent    the indentation amount
      * @param selection the index of the selected item
      * @return a string formatted as an indented list
@@ -97,18 +97,18 @@ public class ListUtility {
 
     /**
      * Returns a String with a formatted list. in the form: <code> {@code
-     *      item1 
-     *      item2 
+     *      item1
+     *      item2
      *      item3 <--
      * }<code> Where <-- denotes the item given by the selection index.
-     * 
+     *
      * Each item may be preceded with a string which is given from the indexBulletFunction. The
      * function is passed an integer which allows for formatting said string based on index.
-     * 
+     *
      * @param indent              the indentation amount
      * @param indexBulletFunction a function which takes the item integer and returns the desired
      *                            string preceding each list item
-     * @param selectionIndex      the index of the selected item
+     * @param selectionIndex      the index of the selected item, -1 indicates no selection
      * @return a string formatted as a list
      */
     public String getList(int indent, IntFunction<String> indexBulletFunction, int selectionIndex) {
