@@ -11,7 +11,7 @@ import java.util.Collection;
  * This allows certain commands to bypass usual program flow. For example, 'quit' terminating the
  * application.
  */
-public class GlobalCommand implements Comparable<GlobalCommand> {
+public class GlobalCommand {
 
     private Collection<GlobalCommandListener> listeners = new ArrayList<GlobalCommandListener>();
 
@@ -54,6 +54,15 @@ public class GlobalCommand implements Comparable<GlobalCommand> {
         } else {
             return false;
         }
+    }
+
+    /**
+     * The hashcode is determined by the command name (as global commands should not be duplicated
+     * in sets).
+     */
+    @Override
+    public int hashCode() {
+        return command.hashCode();
     }
 
     /**
