@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class Pile {
-    protected LinkedList<Card> c = new LinkedList<Card>();
+
+    public Pile() {
+    LinkedList<Card> c = new LinkedList<Card>();
+    }
 
     public void shuffle() {
         Collections.shuffle(c);
