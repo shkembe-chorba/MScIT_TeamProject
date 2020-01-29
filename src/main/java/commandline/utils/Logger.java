@@ -26,16 +26,13 @@ public class Logger {
          *                       java.util.logging.Logger objects.
          */
         public Logger(String outputFilepath, String loggerName) {
-                if (javaLogger.getName().equals(loggerName)) {
-                        throw new IllegalArgumentException(
-                                        "There is already a logger with this name");
-                }
+                javaLogger = java.util.logging.Logger.getLogger(loggerName);
 
                 this.outputFilepath = outputFilepath;
 
                 // Remove default logging behaviour which outputs to System.err
                 LogManager.getLogManager().reset();
-                javaLogger = java.util.logging.Logger.getLogger(loggerName);
+
         }
 
         /**
