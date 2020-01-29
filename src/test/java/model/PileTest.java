@@ -61,4 +61,44 @@ class PileTest {
         pile.pop();
         assertEquals(3, pile.size());
     }
+
+    @DisplayName("Tests the number of cards for players to get method")
+    @Test
+    public void playerSplitWorking() {
+        Pile pile = new Pile();
+        int expectedInt = 5;
+        int actualInt = pile.playerSplit(52, 5);
+        assertEquals(expectedInt, actualInt);
+    }
+
+    @DisplayName("Tests the cards split method for player 1")
+    @Test
+    public void splitWorking() {
+        Pile pile = new Pile();
+        int expectedInt = 10;
+        int actualInt = pile.split(52,5).get(0).size();
+        assertEquals(expectedInt, actualInt);
+    }
+
+    @DisplayName("Tests the cards split method for equal cards between the players")
+    @Test
+    public void splitWorkingEqualPlayerCards() {
+        Pile pile = new Pile();
+        int expectedInt = 0;
+        int actualInt1 = pile.split(52,5).get(0).size()-pile.split(52,5).get(2).size();
+        int actualInt2 = pile.split(52,5).get(1).size()-pile.split(52,5).get(3).size();
+        int actualInt3 = pile.split(52,5).get(1).size()-pile.split(52,5).get(4).size();
+        assertEquals(expectedInt, actualInt1);
+        assertEquals(expectedInt, actualInt2);
+        assertEquals(expectedInt, actualInt3);
+    }
+
+    @DisplayName("Tests the cards split method for equal cards between the players")
+    @Test
+    public void splitWorkingEqualExtraCards() {
+        Pile pile = new Pile();
+        int expectedInt = 2;
+        int actualInt = pile.split(52,5).get(5).size();
+        assertEquals(expectedInt, actualInt);
+    }
 }
