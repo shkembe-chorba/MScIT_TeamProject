@@ -27,6 +27,9 @@ public class Attribute implements Comparable<Attribute> {
 
     @Override
     public int compareTo(Attribute a) {
+        if (!this.getName().equals(a.getName())){
+            throw new IllegalArgumentException("Cannot compare different attributes");
+        }
         return this.getValue()-a.getValue();
     }
 }
