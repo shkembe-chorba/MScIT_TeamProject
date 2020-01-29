@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CardTest {
 
-    private static final Attribute a0 = new Attribute("Strength", 1);
-    private static final Attribute a1 = new Attribute("Stamina", 11);
-    private static final Attribute a2 = new Attribute("Money", 4);
+    protected static final Attribute a0 = new Attribute("Strength", 1);
+    protected static final Attribute a1 = new Attribute("Stamina", 11);
+    protected static final Attribute a2 = new Attribute("Money", 4);
 
-    private static void addAttributesToCard(Card card) {
+    public static void addAttributesToCard(Card card) {
         card.add(a0);
         card.add(a1);
         card.add(a2);
@@ -34,39 +34,46 @@ public class CardTest {
 
     @Test
     public void canGetName() {
-
+            Card testCard= new Card("Strength");
+            String expectedString = "Strength";
+            String actualString = testCard.getName();
+            assertEquals(expectedString, actualString);
+        }
     }
 
     @Nested
-    private class Add {
+    class AddAndGet {
         @Test
         public void canAddAttribute() {
-
+            Card testCard = new Card("Test");
+            CardTest.addAttributesToCard(testCard);
+            Attribute expectedAttribute = testCard.getAttribute(0);
+            Attribute actualAttribute = CardTest.a0;
+            assertEquals(actualAttribute, expectedAttribute);
         }
     }
 
     @Nested
-    private class GetAttribute {
-
-    }
-
-    @Nested
-    private class GetAttributes {
+    class GetAttributes {
         @DisplayName("Returns an attribute list")
         @Test
-        void getsAttributeList() {
+        public void getsAttributeList() {
+            Card testCard = new Card("Test");
+            CardTest.addAttributesToCard(testCard);
 
+            ArrayList<Attribute> expectedAttributeList = testCard.getAttributes();
+            ArrayList<Attribute> actualAttributeList = new  ArrayList<Attribute>();
+            actualAttributeList.add(CardTest.a0);
+            actualAttributeList.add(CardTest.a1);
+            actualAttributeList.add(CardTest.a2);
+            assertEquals(expectedAttributeList, actualAttributeList);
         }
-    }
-
-
 
     @Test
     public void canGetAttributeByIndex() {
         Card testCard = new Card("Spaceship");
-        addAttributesToCard(testCard);
-        assertEquals(a0, testCard.getAttribute(0));
-        assertEquals(a2, testCard.getAttribute(2));
+        CardTest.addAttributesToCard(testCard);
+        assertEquals(CardTest.a0, testCard.getAttribute(0));
+        assertEquals(CardTest.a2, testCard.getAttribute(2));
     }
-
 }
