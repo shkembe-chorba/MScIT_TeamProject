@@ -7,8 +7,10 @@ import java.util.*;
 
 public class Pile {
 
+    private LinkedList<Card> c;
+
     public Pile() {
-    LinkedList<Card> c = new LinkedList<Card>();
+        c = new LinkedList<Card>();
     }
 
     public void shuffle() {
@@ -19,8 +21,8 @@ public class Pile {
         return c.peek();
     }
 
-    public void remove() {
-        c.remove();
+    public Card pop() {
+        return c.pollFirst();
     }
 
     public void add(LinkedList a) {
