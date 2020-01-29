@@ -59,8 +59,8 @@ public class TopTrumpsView {
      * @param player
      */
     public void displayHand(Player player) {
-        Card hand = player.getHand();
-        cli.displayMessage(String.format("%s drew '%s':", player.getName(), hand.getName()));
+        Card hand = player.peekCard();
+        cli.displayMessage(String.format("%s drew '%s':", player.toString(), hand.getName()));
         cli.displayBulletList(hand.getAttributes());
     }
 
@@ -69,8 +69,8 @@ public class TopTrumpsView {
      * 
      * @param player
      */
-    public void displayRemainingCardCount(PlayerInterface player) {
-        cli.displayMessage(String.format("%s has %d cards remaining.", player.getName(),
+    public void displayRemainingCardCount(Player player) {
+        cli.displayMessage(String.format("%s has %d cards remaining.", player.toString(),
                 player.getCardCount()));
     }
 
