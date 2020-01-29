@@ -41,8 +41,8 @@ public class GameModel {
 
     /**
      * Resets and initializes the game with setting up players
+     * sets the round number, winning card and roundWinner to null
      * @param numAIPlayers
-     *
      */
     public void reset(int numAIPlayers) {
 
@@ -56,18 +56,18 @@ public class GameModel {
         winningCard = null;
         roundWinner = null;
 
-        int roundNumber = 0;
-        int draws = 0;
+        roundNumber = 0;
+        draws = 0;
     }
+
 
     public void createHumanPlayer() {
         humanPlayer = new Player("USER");
         players[0] = humanPlayer;
-
     }
 
-    public void createAIPlayers(int numOfPlayers) {
-        for (int i = 0; i < numOfPlayers-1; i++) {
+    public void createAIPlayers(int numOfAIPlayers) {
+        for (int i = 1; i < numOfAIPlayers; i++) {
             players[i] = new AIPlayer("AI" + i);
         }
     }
@@ -75,7 +75,7 @@ public class GameModel {
     public void assignCards(Pile wholeDeck, Player[] players) {
         ArrayList<Pile> split = wholeDeck.split(players.length, 40);
         for (int i = 0; i < players.length; i++) {
-            players[i].addtoHand(split.get(i));
+            players[i].addtoDeck(split.get(i));
         }
         this.communalPile = split.get(players.length + 1);
     }
@@ -90,17 +90,18 @@ public class GameModel {
 
             if (maxValue < playersAttributeValue) {
                 maxValue = playersAttributeValue;
-                Player roundWinner = playersInGame.get(i);
+                roundWinner = playersInGame.get(i);
 
             } else if (maxValue == playersAttributeValue) {
                 drawValue = maxValue;
             }
             else {}
         }
-        addCardstoCommunalPile();
+
 
         // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
         if (maxValue == drawValue) {
+            addCardstoCommunalPile();
             draws++;
             roundWinner = null;
             return null;
@@ -109,6 +110,7 @@ public class GameModel {
             setActivePlayer(roundWinner);
             roundWinner.wonRound();
             winningCard = roundWinner.peekCard();
+            addCardstoCommunalPile();
             receiveCommunalPile(roundWinner);
             return roundWinner;
         }
@@ -120,6 +122,7 @@ public class GameModel {
         return firstPlayer;
     }
 
+    //removes player from players in game
     public void eliminatePlayer(Player eliminated) {
         playersInGame.remove(eliminated);
     }
@@ -128,8 +131,10 @@ public class GameModel {
         return winningCard;
     }
 
+    // checks whether humanPlayer is still in game
     public boolean userSttillInGame() {
-
+    if (playersInGame.contains(humanPlayer)) { return true; }
+        else { return false; }
     }
 
     public void checktoEliminate() {
