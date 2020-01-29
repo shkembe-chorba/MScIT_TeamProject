@@ -1,12 +1,17 @@
 package commandline.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import commandline.controller.TopTrumpsControllerInterface;
 
 import model.Attribute;
 import model.Player;
 import model.Card;
+import model.RetrievedGameStatistics;
 
 
 /**
@@ -92,13 +97,34 @@ public class TopTrumpsView {
         cli.displayDivider();
     }
 
+    public int displayMenu() {
+        cli.displayMessage("Do you want to see past results or play a game?");
+        List<String> options = Arrays.asList(new String[] {"Print Game Statistics",
+                                                            "Play game"});
+        return cli.getUserSelectionIndex(options);
+    }
+
     /**
      * Displays the active player's name.
      * 
-     * @param playerName
+     * @param player
      */
-    public void displayActivePlayer(String playerName) {
-        cli.displayMessage(playerName + " is the active player!");
+    public void displayActivePlayer(Player player) {
+        cli.displayMessage(player.toString() + " is the active player!");
+    }
+
+    public void displayStatistics(RetrievedGameStatistics stats) {
+
+        List<String> statsList = new LinkedList<>();
+        statsList.add(String.format("Total games played: %d", stats.getTotalGamesPlayed()));
+        statsList.add(String.format("Games won by AI: %d", stats.getGamesWonByAi()));
+        statsList.add(String.format("Games won by user: %d", stats.getGamesWonByUser()));
+        statsList.add(String.format("Average number of draws: %f", stats.getAvgDraws()));
+        statsList.add(String.format("Maximum rounds in a game: %s", stats.getMaxRounds()))
+
+        cli.displayMessage("Here are the current statistics:");
+        cli.displayBulletList(statsList);
+        cli.displayDivider();
     }
 
     /**
@@ -113,6 +139,14 @@ public class TopTrumpsView {
     }
 
     /**
+     * Displays The category chosen is + category attribute name
+     * @param attribute
+     */
+    public void displayChosenCategory(Attribute attribute){
+        cli.displayMessage("The category chosen is: " + attribute.getName());
+    }
+
+    /**
      * Displays the winner of the round.
      * 
      * @param playerName
@@ -120,6 +154,11 @@ public class TopTrumpsView {
      */
     public void displayRoundWinner(String playerName, int roundNumber) {
         cli.displayMessage(String.format("%s won round %d!", playerName, roundNumber));
+    }
+
+    public void displayAiPlayerHand(Player ai){
+        displayTopCard(ai);
+        cli.displayDivider();
     }
 
     /**
@@ -137,13 +176,11 @@ public class TopTrumpsView {
      * Displays the winning card of the round.
      * 
      * @param card             the winning card
-     * @param winningAttribute the winning attribute to highligh
      */
-    public void displayWinningCard(Card card, Attribute winningAttribute) {
+    public void displayWinningCard(Card card) {
         List<Attribute> attributes = card.getAttributes();
-        int winningIndex = attributes.indexOf(winningAttribute);
-        cli.displayBulletSelection(String.format("The winning card was '%s':", card.getName()),
-                winningIndex);
+        cli.displayMessage(String.format("The winning card was '%s':", card.getName());
+        cli.displayBulletList(attributes);
         cli.displayDivider();
     }
 
@@ -160,7 +197,7 @@ public class TopTrumpsView {
     /**
      * Displays the game over
      */
-    public void displayGameOver(String winningPlayerName, List<Player> players) {
+    public void displayGameOver(String winningPlayerName, Player[] players) {
 
         List<String> scores = new ArrayList<>();
         for(Player player: players) {

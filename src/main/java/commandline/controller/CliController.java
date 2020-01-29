@@ -1,13 +1,15 @@
 package commandline.controller;
 
 import commandline.view.TopTrumpsView;
-import model.GameModel;
-import model.Player;
+import model.*;
+
+import java.util.ArrayList;
 
 public class CliController implements TopTrumpsControllerInterface {
 
     private final GameModel model;
     private TopTrumpsView view;
+    private Database database;
 
     public CliController(GameModel model) {
         this.model = model;
@@ -23,69 +25,93 @@ public class CliController implements TopTrumpsControllerInterface {
      * 3. Act based on input;
      */
     @Override
-    public void run(){ }
+    public void run(){
+        database = new Database();
+        database.connect();
+
+        while(true) {
+            //Prompt for statistics choice
+            int choice = view.displayMenu();
+            switch (choice) {
+                case 1:
+                    RetrievedGameStatistics statistics = database.retrieveGameStats();
+                    view.displayStatistics(statistics);
+                    break;
+
+                case 2:
+                    setUpNewGame();
+                    while (true) {
+                        playRound();
+                        Player winner = model.checkForWinner();
+                        if (winner != null) {
+                            //display game end
+                            view.displayGameOver(winner.toString(), model.getPlayers());
+                            //upload statistics to database
+                            database.uploadGameStats(model.getDraws(),model.getRoundNumber(),winner.toString(),model.getPlayers());
+                            break;
+                        }
+                    }
+                    break;
+            }
 
 
 
-
-    /**
-     * 1. Print "Game Started"
-     * 2. Initialise
-     *      2.1 Create players
-     *      2.2 Initialise deck from file
-     *      2.3 Distribute cards evenly
-     *      2.4 Any cards left after 2.3 go at communal pile
-     * 3. Select active player at random
-     * 4. Start round.
-     */
-    private void startNewGame(){
-        view.displayGameStartMessage();
+        }
     }
 
+    private void setUpNewGame(){
+        view.displayGameStartMessage();
+        model.reset(4);
+    }
 
+    private void playRound(){
+        Player activePlayer = model.getActivePlayer();
 
+        view.displayRoundNumber(model.getRoundNumber());
 
+        // Is human player still in game
+        if(userStillInGame()){
+            view.displayUserHand(model.getHumanPlayer());
+        }
 
+        // Player X is the active player!
+        view.displayActivePlayer(activePlayer);
 
-    /**
-     * 1. Display current round number
-     * 2. Display "Players have drawn their cards"
-     * 3. if (human player is active) --> display top card (+ attributes )
-     * 4. Display active player
-     * 5.a) if (human player is active) -->
-     *          Display categories
-     *          Take user input on which category gets played
-     * 5.b) if (ai player is active) -->
-     *          Display "Player X drew ..." and its stats
-     * 6. Display the chosen category
-     * 7.a) (if the round has a winner) -->
-     *          Display who won the round
-     *          Display the winning card
-     *          Player who won takes all cards (including own) + communal cards and places them at the back of the deck
-     * 7.b) (if the round is a draw) -->
-     *          All 5 cards go into communal pile
-     *          startNewRound( currentPlayer ) ( with the same player selected )
-     *
-     * 8. Check if any player has been eliminated. If true: display it
-     * 9. If game finished --> gameEnded(); else -> startNewRound( randomPlayer )
-     */
-    private void startNewRound(Player activePlayer){ }
+        Attribute selectedAttribute = null;
+        // Category choice: AI or human
+        if(isPlayerAI(model.getActivePlayer())) {
+            view.displayAiPlayerHand(activePlayer);
+            // ai needs to select  getAttribute(chooseIndexOfAttribute)
+            selectedAttribute = (AIPlayer) (activePlayer).chooseAttribute();
+        } else {
+            selectedAttribute = view.getUserAttribute(activePlayer.peekCard().getAttributes());
+        }
+        view.displayChosenCategory(selectedAttribute);
 
-    /**
-     * Display winner and game ended stats
-     * Add game data to database
-     */
-    private void gameEnded() { }
+        Player winningPlayer = playRoundWithAttribute(selectedAttribute);
+        if (winningPlayer == null){
+            //Draw case
+            view.displayDrawnRound(model.getRoundNumber(), model.getCommunalPileSize());
+        } else {
+            //Winner case
+            view.displayRoundWinner(winningPlayer.toString(), model.getRoundNumber());
+            view.displayWinningCard(model.getWinningCard());
+        }
 
-    /**
-     * 1. Display Stats
-     * 2. Go back to run.
-     */
-    private void displayStats(){}
+        //Check for eliminations
+        ArrayList<Player> eliminatedPlayers = model.checktoEliminate();
+        for(Player player: eliminatedPlayers) {
+            view.displayEliminatedPlayer(player.toString());
+        }
+    }
 
-    
+    private boolean isPlayerAI(Player player) {
+        return (player instanceof AIPlayer);
+    }
+
     @Override
     public void quit() {
-
+        database.disconnect();
+        System.exit(0);
     }
 }

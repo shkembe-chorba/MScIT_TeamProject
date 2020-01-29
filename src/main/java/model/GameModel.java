@@ -47,7 +47,7 @@ public class GameModel {
         wholeDeck.shuffle();
         assignCards(wholeDeck, players);
         this.activePlayer = randomlySelectFirstPlayer(players);
-        List <Player> playersInGame = Arrays.asList(players);
+        playersInGame = Arrays.asList(players);
         int roundNumber = 0;
     }
 
