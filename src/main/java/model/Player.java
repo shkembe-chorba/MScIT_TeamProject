@@ -18,7 +18,7 @@ package model;
 public class Player {
     private String name;
     private int roundsWon;
-    private Pile playerHand = new Pile();
+    private Pile playerDeck = new Pile();
 
     public Player(String name) {
         this.name = name;
@@ -27,8 +27,8 @@ public class Player {
      * Used in the beginning of a game to assign a pile to a player
      * @param playerHand pile of cards
      */
-    public void addtoHand(Pile addedPile) {
-        playerHand.add(addedPile);
+    public void addtoDeck(Pile addedPile) {
+        playerDeck.add(addedPile);
     }
 
     /**
@@ -51,8 +51,17 @@ public class Player {
      * @return nextCard
      */
     public Card peekCard() {
-        Card nextCard = playerHand.peek();
+        Card nextCard = playerDeck.peek();
         return nextCard;
+    }
+
+    /**
+     * Method that returns the top card of the player and
+     * removes it from their deck.
+     * @return top card of player
+     */
+    public Card popCard() {
+        return playerDeck.pop();
     }
 
     /**
