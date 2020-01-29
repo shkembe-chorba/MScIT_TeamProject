@@ -4,37 +4,37 @@ import java.util.ArrayList;
 
 public class Card {
     protected String name;
-    protected Attribute att[];
-    protected ArrayList<Integer> a = new ArrayList<Integer>();
+    protected ArrayList<Attribute> cardList = new ArrayList<Attribute>();
+    protected ArrayList<Integer> cardIntegers = new ArrayList<Integer>();
 
     public Card(String n) {
+        if ("".equals(n)||(n==null))
+        {
+            throw new IllegalArgumentException("No empty names allowed");
+        }
         this.name = n;
-        this.att = new Attribute[5];
     }
 
-
-    public int getValue(int i){
-        return this.att[i].getValue();
+    public void add(Attribute a){
+        this.cardList.add(a);
+    }
+    public Attribute getAttribute(int i){
+        return this.cardList.get(i);
     }
 
-    public String getAttribute(int i){
-        return this.att[i].getName();
+    public ArrayList<Attribute> getAttributes(){
+        return this.cardList;
     }
 
     public ArrayList<Integer> getCategoryValues(){
-        for (int i=0; i<att.length; i++){
-            a.add(this.att[i].getValue());
+        for (int i=0; i<cardList.size(); i++){
+            cardIntegers.add(this.cardList.get(i).getValue());
         }
-        return a;
+        return cardIntegers;
     }
 
     public String getName(){
         return this.name;
     }
-
-    public void setName(String newName){
-        this.name = newName;
-    }
-
 
 }
