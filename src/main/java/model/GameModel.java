@@ -80,9 +80,11 @@ public class GameModel {
         this.communalPile = split.get(players.length + 1);
     }
 
+    // index of the attribute that the round is going to played with
     public Player playRoundwithAtrributeIndex(int chosenAttribute) {
         int maxValue = 0;
         int drawValue = 0;
+        roundNumber++;
 
         for (int i = 0; i < playersInGame.size(); i++) {
             Card activeCard = playersInGame.get(i).peekCard();
@@ -101,17 +103,25 @@ public class GameModel {
 
         // if maxValue is also the drawValue after going through all the values, it means that there is no higher value
         if (maxValue == drawValue) {
+            // pops the card from all the players and transfers them to communal pile
             addCardstoCommunalPile();
             draws++;
+            // resets the roundWinner
             roundWinner = null;
+            // returns null to controller
             return null;
 
         } else {
             setActivePlayer(roundWinner);
             roundWinner.wonRound();
             winningCard = roundWinner.peekCard();
+
+            // waits for the popping of the card and adds it to the communal pile
             addCardstoCommunalPile();
+            // transfers all cards from communal pile to roundWinner
             receiveCommunalPile(roundWinner);
+
+            // returns winner to the controller
             return roundWinner;
         }
     }
@@ -125,10 +135,6 @@ public class GameModel {
     //removes player from players in game
     public void eliminatePlayer(Player eliminated) {
         playersInGame.remove(eliminated);
-    }
-
-    public Card getWinningCard() {
-        return winningCard;
     }
 
     // checks whether humanPlayer is still in game
@@ -147,33 +153,20 @@ public class GameModel {
 
     public void addCardstoCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
-            Player playing = playersInGame.get(i);
-            communalPile.add(playing.popCard());
+            Player playerToPopCard = playersInGame.get(i);
+            communalPile.add(playerToPopCard.popCard());
         }
     }
-    public void receiveCommunalPile(Player roundWinner) {
-        this.roundWinner.addtoHand(communalPile);
-    }
 
-    public GameState getGameState() {
-        return gameState;
-    }
+    public void receiveCommunalPile(Player roundWinner) { this.roundWinner.addtoDeck(communalPile); }
+
+    public GameState getGameState() { return gameState; }
 
     public Player getHumanPlayer() {return humanPlayer; }
 
-    public int getRoundNumber() {
-        return roundNumber;
+    public int getRoundNumber() { return roundNumber;
     }
-
-    public String displayRoundNumber() {
-        String s = "";
-        s = s+ roundNumber;
-        return s;
-    }
-
-    public void increaseRoundNumber() {
-        roundNumber++;
-    }
+    public void increaseRoundNumber() { roundNumber++; }
 
     public Player getActivePlayer() { return activePlayer; }
 
