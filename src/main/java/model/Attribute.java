@@ -22,4 +22,9 @@ public class Attribute implements Comparable<Attribute> {
     public int compareTo(Attribute a) {
         return this.getValue() - a.getValue();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s: $d", name, value);
+    }
 }
