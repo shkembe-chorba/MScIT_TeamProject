@@ -72,7 +72,7 @@ public class GameModel {
      * Creates expected number of AIPlayers and adds them to players in the game with the correct name
      */
     public void createAIPlayers(int numOfAIPlayers) {
-        for (int i = 1; i < numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index 0
+        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index 0
             players[i] = new AIPlayer("AI" + i);
         }
     }
@@ -83,11 +83,11 @@ public class GameModel {
      */
 
     public void assignCards(Pile wholeDeck, Player[] players) {
-        ArrayList<Pile> split = wholeDeck.split(players.length, 40);
+        ArrayList<Pile> setOfDecks = wholeDeck.split(players.length, 40);
         for (int i = 0; i < players.length; i++) {
-            players[i].addtoDeck(split.get(i));
+            players[i].addToDeck(setOfDecks.get(i));
         }
-        communalPile = split.get(players.length + 1);
+        communalPile = setOfDecks.get(players.length);
     }
 
     /**
@@ -102,7 +102,7 @@ public class GameModel {
 
         for (int i = 0; i < playersInGame.size(); i++) {
             Card activeCard = playersInGame.get(i).peekCard();
-            int playersAttributeValue = activeCard.chosenAttribute.getValue();
+            int playersAttributeValue = activeCard.getValue(chosenAttribute);
 
             if (maxValue < playersAttributeValue) {
                 maxValue = playersAttributeValue;
@@ -150,19 +150,25 @@ public class GameModel {
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
     }
-
-    //removes player from players in game
+    /**
+     * Removes player from players in game
+     */
     public void eliminatePlayer(Player eliminated) {
         playersInGame.remove(eliminated);
     }
 
-    // checks whether humanPlayer is still in game
-    public boolean userSttillInGame() {
+
+    /**
+     * Checks whether human player is still in game
+     */
+    public boolean userStillInGame() {
     if (playersInGame.contains(humanPlayer)) { return true; }
         else { return false; }
     }
 
-    //
+    /**
+     * Checks for the game winner by checking if there is only one player left in the game
+     */
     public Player checkForWinner() {
         if (playersInGame.size() == 1) {
             return playersInGame.get(0);
@@ -170,19 +176,23 @@ public class GameModel {
         else {return null;}
     }
 
-    // checks whether the player has another card and if not eliminates them from playersInGame
+    /**
+     * Checks whether the player has another card and if not eliminates them from players in game
+     */
     public ArrayList <Player> checkToEliminate() {
-        ArrayList <Player> eliminated = new <Player> ;
+        ArrayList<Player> eliminated = new ArrayList<Player>();
         for (int i = 0; i < playersInGame.size(); i++) {
-            if (playersInGame.get(i).peekCard() == null){
+            if (playersInGame.get(i).peekCard() == null) {
                 eliminated.add(playersInGame.get(i));
                 eliminatePlayer(playersInGame.get(i));
             }
-            return eliminated;
         }
+        return eliminated;
     }
 
-    //transfers cards to communal pile from all players
+    /**
+     * Transfers cards to communal pile from all players
+     */
     public void addCardsToCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
             Player playerToPopCard = playersInGame.get(i);
@@ -210,17 +220,6 @@ public class GameModel {
     public void setActivePlayer(Player playerActive) { this.activePlayer = playerActive; }
 
     public Player[] getPlayers() { return players; }
-
-    //array of players that were in the game in the beginning
-    public String toString(Player [] players) {
-        String s = "";
-        for (int i = 0; i < players.length; i++) {
-            s = players[i].toString();
-        }
-        return s;
-    }
-
-
 }
 
 
