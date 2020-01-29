@@ -46,6 +46,13 @@ public class TopTrumpsView {
     }
 
     /**
+     * Displays Game Start
+     */
+    public void displayGameStartMessage(){
+        cli.displayMessage("Game Start");
+    }
+
+    /**
      * Displays the round number
      */
     public void displayRoundNumber(int roundNumber) {

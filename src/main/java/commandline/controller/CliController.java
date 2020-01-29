@@ -1,16 +1,16 @@
 package commandline.controller;
 
 import commandline.view.TopTrumpsView;
+import model.GameModel;
 import model.Player;
 
 public class CliController implements TopTrumpsControllerInterface {
 
-    private final TopTrumpsModel model;
+    private final GameModel model;
     private TopTrumpsView view;
 
-    public CliController(TopTrumpsModel model) {
+    public CliController(GameModel model) {
         this.model = model;
-        this.model.reset();
     }
 
     public void setView(TopTrumpsView view) {
@@ -25,6 +25,9 @@ public class CliController implements TopTrumpsControllerInterface {
     @Override
     public void run(){ }
 
+
+
+
     /**
      * 1. Print "Game Started"
      * 2. Initialise
@@ -35,7 +38,14 @@ public class CliController implements TopTrumpsControllerInterface {
      * 3. Select active player at random
      * 4. Start round.
      */
-    private void startNewGame(){ }
+    private void startNewGame(){
+        view.displayGameStartMessage();
+    }
+
+
+
+
+
 
     /**
      * 1. Display current round number

@@ -1,5 +1,7 @@
 package commandline;
 
+import model.GameModel;
+
 /**
  * Top Trumps command line application
  */
@@ -17,7 +19,7 @@ public class TopTrumpsCLIApplication {
 		if (args[0].equalsIgnoreCase("true"))
 			writeGameLogsToFile = true; // Command line selection
 
-		TopTrumpsModel model = new TopTrumpsModel();
+		GameModel model = new GameModel(Player.reader(),4);
 		TopTrumpsController controller = new TopTrumpsController(model, writeGameLogsToFile);
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.addView(view);
