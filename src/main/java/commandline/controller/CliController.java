@@ -82,13 +82,13 @@ public class CliController implements TopTrumpsControllerInterface {
         if(isPlayerAI(model.getActivePlayer())) {
             view.displayAiPlayerHand(activePlayer);
             // ai needs to select  getAttribute(chooseIndexOfAttribute)
-            selectedAttribute = (AIPlayer) (activePlayer).chooseAttribute();
+            selectedAttribute = ((AIPlayer) (activePlayer)).chooseAttribute();
         } else {
             selectedAttribute = view.getUserAttribute(activePlayer.peekCard().getAttributes());
         }
         view.displayChosenCategory(selectedAttribute);
 
-        Player winningPlayer = playRoundWithAttribute(selectedAttribute);
+        Player winningPlayer = model.playRoundWithAttribute(selectedAttribute);
         if (winningPlayer == null){
             //Draw case
             view.displayDrawnRound(model.getRoundNumber(), model.getCommunalPileSize());
@@ -99,7 +99,7 @@ public class CliController implements TopTrumpsControllerInterface {
         }
 
         //Check for eliminations
-        ArrayList<Player> eliminatedPlayers = model.checktoEliminate();
+        ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
         for(Player player: eliminatedPlayers) {
             view.displayEliminatedPlayer(player.toString());
         }
