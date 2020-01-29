@@ -3,9 +3,9 @@ package commandline.view;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.TreeSet;
 import java.util.function.Predicate;
 import commandline.utils.ListUtility;
 
@@ -15,7 +15,7 @@ public class CommandLineView {
     public static final String DEFAULT_MESSAGE_DIVIDER = "---";
 
     // A tree set which orders commands alphabetically.
-    private Collection<GlobalCommand> globalCommands = new TreeSet<GlobalCommand>();
+    private Collection<GlobalCommand> globalCommands = new HashSet<GlobalCommand>();
 
     private Scanner scanner;
     private PrintStream printStream;
@@ -229,10 +229,13 @@ public class CommandLineView {
      *
      * @param command
      * @param description a description of the command's functionality
-     * @return
+     * @throws IllegalArgumentException if the global command already exists
      */
-    public boolean addGlobalCommand(GlobalCommand gc) {
-        return globalCommands.add(gc);
+    public void addGlobalCommand(GlobalCommand gc) {
+        if (!globalCommands.add(gc)) {
+            throw new IllegalArgumentException(
+                    "Cannot have two equal global commands. Remove the existing command.");
+        }
     }
 
     /**

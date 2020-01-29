@@ -192,16 +192,17 @@ public class CommandLineViewTest {
     @Nested
     public class GlobalCommands {
 
-        @DisplayName("Returns false for repeated global commands, otherwise true")
+        @DisplayName("Throws for repeated global commands")
         @Test
         public void doesNotAcceptRepeatedGlobalCommands() {
 
             GlobalCommand gc1 = new GlobalCommand("quit");
-            GlobalCommand gc2 = new GlobalCommand("quit");
+            GlobalCommand gc2 = new GlobalCommand("quit", "I should throw");
 
             CommandLineView view = new CommandLineView();
-            assertTrue(view.addGlobalCommand(gc1));
-            assertFalse(view.addGlobalCommand(gc2));
+            view.addGlobalCommand(gc1);
+
+            assertThrows(IllegalArgumentException.class, () -> view.addGlobalCommand(gc2));
         }
 
         // Private class for test below
