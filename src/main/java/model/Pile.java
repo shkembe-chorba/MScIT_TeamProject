@@ -32,6 +32,10 @@ public class Pile {
     public void add(Card a) {
         c.add(a);
     }
+    
+    public int size() {
+        return c.size();    
+    }
 
     public int playerSplit(int players, int cards){
         return cards%players;
