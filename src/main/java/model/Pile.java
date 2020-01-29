@@ -32,35 +32,36 @@ public class Pile {
     public void add(Card a) {
         cardList.add(a);
     }
-    
+
     public int size() {
         return cardList.size();
     }
 
-    public int playerSplit(int players, int cards){
-        return cards%players;
+    public int playerSplit(int players, int cards) {
+        return cards % players;
     }
 
-    //returns an Arraylist of all the piles to start the game with split equally to player piles and an extra pile with remained cards
+    // returns an Arraylist of all the piles to start the game with split equally to player piles
+    // and an extra pile with remained cards
     public ArrayList<Pile> split(int players, int cards) {
-        //This is based on the number of players and cards
+        // This is based on the number of players and cards
 
-        int playerCards = cards%players;
-        int otherCards = cards-playerCards*players;
+        int playerCards = cards % players;
+        int otherCards = cards - playerCards * players;
         ArrayList<Pile> p = new ArrayList<Pile>();
-        int j =0;
+        int j = 0;
 
-        while (j<players) {
+        while (j < players) {
             Pile a = new Pile();
-            for (int i = 0; i<playerCards; i++) {
+            for (int i = 0; i < playerCards; i++) {
                 a.add(cardList.peek());
                 cardList.remove();
-                }
+            }
             p.add(a);
             j++;
         }
         Pile b = new Pile();
-        for (int i = 0; i<otherCards; i++) {
+        for (int i = 0; i < otherCards; i++) {
             b.add(cardList.peek());
             cardList.remove();
         }
@@ -68,53 +69,36 @@ public class Pile {
         return p;
     }
 
-    public static String getdeckFile(){
+    public static String getdeckFile() {
         return this.getdeckFile();
     }
 
-    public static Pile reader(){
-        Pile cardPile = new Pile();
+    public static Pile reader() throws IOException {
 
-        //using the JSONReader - not sure if this is what it should look like
-        String fileName = "MScIT_TeamProject\\"+getdeckFile()+".txt";
+        // TODO: Move hard coding of this path up a level
 
-        FileReader fr = null;
-        try {
-            fr = new FileReader(fileName);
-            Scanner s = new Scanner(fr);
-            String line = s.nextLine();
-            String[] categories = line.split(" ", 5);
-            while(s.hasNextLine()) {
-                String lineCard = s.nextLine();
-                String[] card = line.split(" ", 5);
-                Card a = new Card(card[0]);
-                a.att[0].setName(categories[1]);
-                a.att[0].setValue(Integer.parseInt(card[1]));
-                a.att[1].setName(categories[2]);
-                a.att[1].setValue(Integer.parseInt(card[2]));
-                a.att[2].setName(categories[3]);
-                a.att[2].setValue(Integer.parseInt(card[3]));
-                a.att[3].setName(categories[4]);
-                a.att[3].setValue(Integer.parseInt(card[4]));
-                a.att[4].setName(categories[5]);
-                a.att[4].setValue(Integer.parseInt(card[5]));
-                cardPile.add(a);
+        FileReader fileReader = new FileReader("./StarCitizenDeck.txt");
+        Scanner scanner = new Scanner(fileReader);
+        String[] headers = scanner.nextLine().split(" ");
+
+        Pile pile = new Pile();
+
+        while (scanner.hasNextLine()) {
+            String[] values = scanner.nextLine().split(" ");
+            Card card = new Card(values[0]);
+
+            for (int i = 1; i < values.length; i++) {
+                Attribute a = new Attribute(headers[i], Integer.parseInt(values[i]));
+                card.add(a);
             }
-        }catch(FileNotFoundException e) {
-            e.printStackTrace();
-        }finally {
-            if(fr != null) {
-                try {
-                    fr.close();
-                }catch(IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
+            pile.add(card);
         }
-        return cardPile;
+
+        scanner.close();
+        return pile;
     }
+
 }
-
-
 
 
