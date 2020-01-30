@@ -1,16 +1,20 @@
 package commandline;
 
-import java.io.File;
-import commandline.controller.CliController;
-import commandline.view.TopTrumpsView;
-import model.GameModel;
+import java.io.IOException;
+import commandline.utils.Logger;
 
 /**
  * Top Trumps command line application
  */
 public class TopTrumpsCLIApplication {
 
-	private static final String JSON_CONFIG_NAME = "TopTrumps.json";
+	private static final String LOGGER_DIRECTORY = "./";
+	private static final String LOGGER_FILENAME = "TopTrumps.log";
+	private static final String LOGGER_SECURITY_ERROR =
+			"There is a security error with the logger.";
+	private static final int LOGGER_SECURITY_ERROR_CODE = 1;
+	private static final String LOGGER_IO_ERROR = "There is a file system error with the logger.";
+	private static final int LOGGER_IO_ERROR_CODE = 1;
 
 	/**
 	 * This main method is called by TopTrumps.java when the user specifies that they want to run in
@@ -20,33 +24,52 @@ public class TopTrumpsCLIApplication {
 	 */
 	public static void main(String[] args) {
 
-		final File path = new File(System.getProperty("user.dir"), JSON_CONFIG_NAME);
-
-
 		boolean writeGameLogsToFile = false; // Should we write game logs to file?
-		if (args[0].equalsIgnoreCase("true"))
+
+		if (args[0].equalsIgnoreCase("true")) {
 			writeGameLogsToFile = true; // Command line selection
+		}
 
-		GameModel model = new GameModel(path.toString());
-		CliController controller = new CliController(model);
-		TopTrumpsView view = new TopTrumpsView(controller);
-		controller.setView(view);
-		controller.run();
+		// -------------
+		// Logger Setup
+		// -------------
 
-		// THE BELOW LOOP HAS BEEN MOVED TO THE CONTROLLER
+		Logger logger = new Logger(LOGGER_DIRECTORY + LOGGER_FILENAME);
 
-		// // This will be moved to the controller.
-		// // // Loop until the user wants to exit the game
-		// while (true) {
+		if (writeGameLogsToFile) {
+			try {
+				// Creates a file handler and attaches it to the logger
+				logger.enable();
+			} catch (SecurityException e) { // Exit and Handle security errors gracefully
+				displayLoggerError(LOGGER_SECURITY_ERROR);
+				System.exit(LOGGER_SECURITY_ERROR_CODE);
+			} catch (IOException e) { // Exit and Handle io errors gracefully
+				displayLoggerError(LOGGER_IO_ERROR);
+				System.exit(LOGGER_IO_ERROR_CODE);
+			}
+		}
 
-		// // ----------------------------------------------------
-		// // Add your game logic here based on the requirements
-		// // ----------------------------------------------------
+		// End Logger Setup
+		// ----------------
 
-		// }
+		// State
+		boolean userWantsToQuit = false; // flag to check whether the user wants to quit the
+											// application
 
+		// Loop until the user wants to exit the game
+		while (!userWantsToQuit) {
 
+			// ----------------------------------------------------
+			// Add your game logic here based on the requirements
+			// ----------------------------------------------------
+			userWantsToQuit = true; // use this when the user wants to exit the game
 
+		}
+	}
+
+	private static void displayLoggerError(String message) {
+		System.out.println(message);
+		System.out.println("Please try again later or run without logging.");
 	}
 
 }
