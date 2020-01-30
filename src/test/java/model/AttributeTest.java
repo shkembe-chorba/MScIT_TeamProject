@@ -43,15 +43,17 @@ public class AttributeTest {
             assertArrayEquals(orderedArray, unorderedArray);
         }
 
-        @DisplayName("Attributes with different names cannot be compared")
-        @Test
-        public void attributesWithDifferentNamesCannotBeCompared() {
+        // REMOVED, to allow AI class to compare attributes to see which is best
 
-            Attribute a1 = new Attribute("Strength", 10);
-            Attribute a2 = new Attribute("Stamina", 4);
+        // @DisplayName("Attributes with different names cannot be compared")
+        // @Test
+        // public void attributesWithDifferentNamesCannotBeCompared() {
 
-            assertThrows(IllegalArgumentException.class, () -> a1.compareTo(a2));
-        }
+        // Attribute a1 = new Attribute("Strength", 10);
+        // Attribute a2 = new Attribute("Stamina", 4);
+
+        // assertThrows(IllegalArgumentException.class, () -> a1.compareTo(a2));
+        // }
 
     }
 }
