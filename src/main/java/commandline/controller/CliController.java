@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class CliController implements TopTrumpsControllerInterface {
 
+    private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
     private TopTrumpsView view;
     private Database database;
@@ -63,7 +64,7 @@ public class CliController implements TopTrumpsControllerInterface {
 
     private void setUpNewGame(){
         view.displayGameStartMessage();
-        model.reset(4);
+        model.reset(NUM_AI_PLAYERS);
     }
 
     private void playRound(){

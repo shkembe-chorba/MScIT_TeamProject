@@ -7,6 +7,11 @@ import java.sql.*;
  */
 public class Database {
 
+    //Default database Connection parameters.
+    private static final String URL = "jdbc:postgresql://localhost:5432/m_19_2175499m";
+    private static final String USER = "postgres";
+    private static final String PASS = "123456";
+
     private Connection connection = null;
 
     //Database Connection parameters.
@@ -30,7 +35,7 @@ public class Database {
      * Default database constructor for TopTrumps.
      */
     public Database() {
-        this("jdbc:postgresql://localhost:5432/m_19_2175499m","postgres","123456");
+        this(URL,USER,PASS);
     }
 
     /**
