@@ -1,10 +1,12 @@
 package model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlayerTest {
 
+public class PlayerTest {
+    @DisplayName("The name is correctly print")
     @Test
     public void testGetName() {
         Player testPlayer = new Player("USER");
@@ -12,7 +14,7 @@ public class PlayerTest {
         String actualString = testPlayer.toString();
         assertEquals(expectedString, actualString);
     }
-
+    @DisplayName("The won rounds should be incremented when method is called")
      @Test
     public void testIncrementingRounds() {
         Player testPlayer = new Player("USER");
@@ -26,8 +28,8 @@ public class PlayerTest {
     @Test
     void emptyDeckAfterInitialisation() {
         Player player = new Player("Gareth");
-        assertEquals(null, player.peekNextCard());
-        assertEquals(null, player.removeNextCard());
+        assertEquals(null, player.popCard());
+        assertEquals(null, player.peekCard());
     }
 
 }
