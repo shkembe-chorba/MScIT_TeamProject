@@ -43,7 +43,7 @@ public class GameModel {
     /**
      * Resets and initializes the game with setting up players sets the round number, winning card
      * and roundWinner to null
-     * 
+     *
      * @param numAIPlayers
      */
     public void reset(int numAIPlayers) {
@@ -162,13 +162,6 @@ public class GameModel {
     }
 
     /**
-     * Removes player from players in game
-     */
-    public void eliminatePlayer(Player eliminated) {
-        playersInGame.remove(eliminated);
-    }
-
-    /**
      * Checks whether human player is still in game
      */
     public boolean userStillInGame() {
@@ -195,12 +188,19 @@ public class GameModel {
      */
     public ArrayList<Player> checkToEliminate() {
         ArrayList<Player> eliminated = new ArrayList<Player>();
-        for (int i = 0; i < playersInGame.size(); i++) {
-            if (playersInGame.get(i).peekCard() == null) {
-                eliminated.add(playersInGame.get(i));
-                eliminatePlayer(playersInGame.get(i));
+
+        // Check which players are to be eliminated
+        for (Player player : playersInGame) {
+            if (player.peekCard() == null) {
+                eliminated.add(player);
             }
         }
+
+        // Eliminate players from model
+        for (Player eliminatedPlayer : eliminated) {
+            playersInGame.remove(eliminatedPlayer);
+        }
+
         return eliminated;
     }
 
