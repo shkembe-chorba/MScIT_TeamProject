@@ -1,5 +1,8 @@
 package model;
 
+import model.factories.PlayerFactory;
+import sun.security.smartcardio.SunPCSC;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +31,13 @@ public class GameModel {
     private Card winningCard;
     private Pile wholeDeck;
     private Player humanPlayer;
+    private final PlayerFactory playerFactory;
 
     /**
      * Reads the pile from the reader and initializes it
      */
-    public GameModel(String jsonConfigFile) {
+    public GameModel(String jsonConfigFile, PlayerFactory playerFactory) {
+        this.playerFactory = playerFactory;
         try {
             wholeDeck = Pile.reader(jsonConfigFile);
         } catch (IOException e) {
@@ -65,19 +70,20 @@ public class GameModel {
     /**
      * Creates human player always called 'USER'
      */
-    public void createHumanPlayer() {
-        humanPlayer = new Player("USER");
+    private void createHumanPlayer() {
+        humanPlayer = playerFactory.createHumanPlayer();
         players[0] = humanPlayer;
     }
+
+
 
     /**
      * Creates expected number of AIPlayers and adds them to players in the game with the correct
      * name
      */
-    public void createAIPlayers(int numOfAIPlayers) {
-        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index
-                                                    // 0
-            players[i] = new AIPlayer("AI" + i);
+    private void createAIPlayers(int numOfAIPlayers) {
+        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index 0
+            players[i] = playerFactory.createAiPlayer(i);
         }
     }
 
@@ -86,7 +92,7 @@ public class GameModel {
      * to communal pile
      */
 
-    public void assignCards(Pile wholeDeck, Player[] players) {
+    private void assignCards(Pile wholeDeck, Player[] players) {
         ArrayList<Pile> setOfDecks = wholeDeck.split(players.length, 40);
         for (int i = 0; i < players.length; i++) {
             players[i].addToDeck(setOfDecks.get(i));
@@ -155,7 +161,7 @@ public class GameModel {
     /**
      * Randomly selects first player from the players array
      */
-    public Player randomlySelectFirstPlayer(Player[] players) {
+    private Player randomlySelectFirstPlayer(Player[] players) {
         Random rand = new Random();
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
@@ -207,7 +213,7 @@ public class GameModel {
     /**
      * Transfers cards to communal pile from all players
      */
-    public void addCardsToCommunalPile() {
+    private void addCardsToCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
             Player playerToPopCard = playersInGame.get(i);
             communalPile.add(playerToPopCard.popCard());
@@ -217,7 +223,7 @@ public class GameModel {
     /**
      * Transfers communal pile to winner of the round
      */
-    public void transferCommunalPile(Player roundWinner) {
+    private void transferCommunalPile(Player roundWinner) {
         this.roundWinner.addToDeck(communalPile);
         communalPile = new Pile();
     }

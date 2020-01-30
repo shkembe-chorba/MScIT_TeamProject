@@ -4,6 +4,7 @@ import java.io.File;
 import commandline.controller.CliController;
 import commandline.view.TopTrumpsView;
 import model.GameModel;
+import model.factories.PlayerFactory;
 
 /**
  * Top Trumps command line application
@@ -27,7 +28,7 @@ public class TopTrumpsCLIApplication {
 		if (args[0].equalsIgnoreCase("true"))
 			writeGameLogsToFile = true; // Command line selection
 
-		GameModel model = new GameModel(path.toString());
+		GameModel model = new GameModel(path.toString(), new PlayerFactory());
 		CliController controller = new CliController(model);
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.setView(view);
