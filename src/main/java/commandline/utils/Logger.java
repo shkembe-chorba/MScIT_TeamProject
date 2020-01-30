@@ -10,11 +10,16 @@ import java.util.logging.LogRecord;
 /**
  * Sets up a Logger which is enabled as long as the object remains in scope. Usual use will be to
  * call the static method Logger.log(message), which will output to the target destination file.
+ *
+ * This class aims to encapsulate a lot of the java util Logger setup, though it may not be the most
+ * idiomatic of use...
  */
 public class Logger {
 
+        public static final String LOGGER_NAME = "commandline";
         public static final String LOGGER_DIVIDER_STRING = "--------";
-        private static java.util.logging.Logger javaLogger;
+
+        private java.util.logging.Logger javaLogger;
         private String outputFilepath;
 
         /**
@@ -22,27 +27,15 @@ public class Logger {
          * within the main method to ensure it is not garbage collected.
          *
          * @param outputFilepath The target logfile destination path.
-         * @param loggerName     A unique identifier to be used if using other
-         *                       java.util.logging.Logger objects.
          */
-        public Logger(String outputFilepath, String loggerName) {
-                javaLogger = java.util.logging.Logger.getLogger(loggerName);
-
-                this.outputFilepath = outputFilepath;
-
+        public Logger(String outputFilepath) {
                 // Remove default logging behaviour which outputs to System.err
                 LogManager.getLogManager().reset();
 
-        }
+                // Store this, so it is inside the object to prevent it being garbage collected
+                javaLogger = java.util.logging.Logger.getLogger(LOGGER_NAME);
 
-        /**
-         * The same as {@link #Logger(String, String)}, but defaults the logger name to
-         * "commandline".
-         *
-         * @param outputFilepath The target logfile destination path.
-         */
-        public Logger(String outputFilepath) {
-                this(outputFilepath, "commandline");
+                this.outputFilepath = outputFilepath;
         }
 
         /**
@@ -67,30 +60,14 @@ public class Logger {
         }
 
         /**
-         * Disable logging globally for this logger.
-         */
-        public void disable() {
-                javaLogger.setLevel(java.util.logging.Level.OFF);
-        }
-
-        /**
          * A static method which outputs a log to the target log file. This is static so it can be
          * used in many different classes while there is the 'master object' within the application
          * scope.
          *
          * @param logMessage
          */
-        public static void log(String logMessage) throws NullPointerException {
-
-                if (javaLogger != null) {
-                        javaLogger.info(logMessage);
-                } else {
-                        throw new NullPointerException(
-                                        "No Logger object has been created in application scope");
-                }
-
+        public static void log(String logMessage) {
+                java.util.logging.Logger.getLogger(LOGGER_NAME).info(logMessage);
         }
-
-
 
 }

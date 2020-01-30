@@ -39,20 +39,6 @@ public class LoggerTest {
         return fileContent;
     }
 
-    @DisplayName("Static use throws useful message if no master instance created")
-    @Test
-    public void throwsIfNoInstance() {
-        assertThrows(NullPointerException.class, () -> {
-            Logger.log("Test");
-        });
-
-        try {
-            Logger.log("test");
-        } catch (NullPointerException e) {
-            assertEquals("No Logger object has been created in application scope", e.getMessage());
-        }
-    }
-
     @Nested
     class Enabled {
 
