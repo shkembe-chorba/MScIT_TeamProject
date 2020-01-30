@@ -86,7 +86,7 @@ public class Logger {
                         javaLogger.info(logMessage);
                 } else {
                         throw new NullPointerException(
-                                        "No Logger object has been created in global scope");
+                                        "No Logger object has been created in application scope");
                 }
 
         }
