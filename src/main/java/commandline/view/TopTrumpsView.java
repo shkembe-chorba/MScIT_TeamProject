@@ -120,7 +120,7 @@ public class TopTrumpsView {
         statsList.add(String.format("Games won by AI: %d", stats.getGamesWonByAi()));
         statsList.add(String.format("Games won by user: %d", stats.getGamesWonByUser()));
         statsList.add(String.format("Average number of draws: %f", stats.getAvgDraws()));
-        statsList.add(String.format("Maximum rounds in a game: %s", stats.getMaxRounds()))
+        statsList.add(String.format("Maximum rounds in a game: %s", stats.getMaxRounds()));
 
         cli.displayMessage("Here are the current statistics:");
         cli.displayBulletList(statsList);
@@ -179,7 +179,7 @@ public class TopTrumpsView {
      */
     public void displayWinningCard(Card card) {
         List<Attribute> attributes = card.getAttributes();
-        cli.displayMessage(String.format("The winning card was '%s':", card.getName());
+        cli.displayMessage(String.format("The winning card was '%s':", card.getName()));
         cli.displayBulletList(attributes);
         cli.displayDivider();
     }

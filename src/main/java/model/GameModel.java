@@ -25,7 +25,7 @@ public class GameModel {
     private GameState gameState;
     private int roundNumber;
     private Player[] players;
-    private List <Player> playersInGame = null ; // players still left in the game
+    private ArrayList <Player> playersInGame = null ; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
     private Pile communalPile;
     private Player roundWinner;
@@ -58,7 +58,7 @@ public class GameModel {
         wholeDeck.shuffle();
         assignCards(wholeDeck, players);
         activePlayer = randomlySelectFirstPlayer(players);
-        playersInGame = Arrays.asList(players);
+        playersInGame = new ArrayList<>(Arrays.asList(players));
         winningCard = null;
         roundWinner = null;
 
@@ -212,7 +212,10 @@ public class GameModel {
     /**
      * Transfers communal pile to winner of the round
      */
-    public void transferCommunalPile(Player roundWinner) { this.roundWinner.addToDeck(communalPile); }
+    public void transferCommunalPile(Player roundWinner) {
+        this.roundWinner.addToDeck(communalPile);
+        communalPile = new Pile();
+    }
 
 
     // getters and setters
