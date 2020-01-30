@@ -29,6 +29,8 @@ public class CliController implements TopTrumpsControllerInterface {
         database = new Database();
         database.connect();
 
+        view.displayLogo();
+
         while(true) {
             //Prompt for statistics choice
             int choice = view.displayMenu();

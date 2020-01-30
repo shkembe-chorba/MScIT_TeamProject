@@ -113,6 +113,13 @@ public class TopTrumpsView {
         cli.displayMessage(player.toString() + " is the active player!");
     }
 
+    public void displayLogo() {
+        cli.displayMessage("\n\n\n--------------------\n" +
+                "--- Top Trumps   ---\n" +
+                "--------------------\n\n" +
+                "To quit type in \"quit\" at any prompt.\n");
+    }
+
     public void displayStatistics(RetrievedGameStatistics stats) {
 
         List<String> statsList = new LinkedList<>();
