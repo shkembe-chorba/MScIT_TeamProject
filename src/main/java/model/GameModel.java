@@ -87,7 +87,7 @@ public class GameModel {
      */
 
     public void assignCards(Pile wholeDeck, Player[] players) {
-        ArrayList<Pile> setOfDecks = wholeDeck.split(players.length, 40);
+        ArrayList<Pile> setOfDecks = wholeDeck.split(players.length);
         for (int i = 0; i < players.length; i++) {
             players[i].addToDeck(setOfDecks.get(i));
         }

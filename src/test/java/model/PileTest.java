@@ -111,7 +111,7 @@ class PileTest {
         Pile pile = new Pile();
         addCardHelper(pile);
         String toString = pile.toString();
-        assertTrue(toString.contains("START OF PILE" + pile.getCards().get(0)));
+        assertTrue(toString.contains("START OF PILE"));
     }
 
 
