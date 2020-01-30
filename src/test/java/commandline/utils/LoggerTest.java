@@ -1,14 +1,18 @@
 package commandline.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 public class LoggerTest {
 
@@ -20,16 +24,41 @@ public class LoggerTest {
         testFile.delete();
     }
 
+    private String getTestFileContents() {
+        String fileContent = "";
+        try {
+            fileContent = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH_STRING)));
+            System.out.println(fileContent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileContent;
+    }
+
+    @DisplayName("Static use throws useful message if no master instance created")
+    @Test
+    public void throwsIfNoInstance() {
+        assertThrows(NullPointerException.class, () -> {
+            Logger.log("Test");
+        });
+
+        try {
+            Logger.log("test");
+        } catch (NullPointerException e) {
+            assertEquals("No Logger object has been created in application scope", e.getMessage());
+        }
+    }
+
     @Nested
-    public class Enabled {
+    class Enabled {
+
         @DisplayName("Correct new file is created when enabled")
         @Test
         public void newFileWhenEnabled() {
 
             File outputFile = new File(TEST_FILE_PATH_STRING);
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
-
-            assertFalse(outputFile.exists());
 
             try {
                 logger.enable();
@@ -44,7 +73,6 @@ public class LoggerTest {
         @Test
         void canBeUsedStatically() {
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
-
             Logger.log("Test");
         }
 
@@ -52,6 +80,8 @@ public class LoggerTest {
         @DisplayName("Each entry creates the message with a divider after it")
         @Test
         void logEntryCorrectFormat() {
+            String expectedOutput = "Test\n" + Logger.LOGGER_DIVIDER_STRING + "\n";
+
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
 
             try {
@@ -60,32 +90,52 @@ public class LoggerTest {
                 fail("I/O error during test");
             }
 
-            String expectedOutput = "Test\n" + Logger.LOGGER_DIVIDER_STRING + "\n";
-
-            String fileContent = "";
-            try {
-                fileContent = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH_STRING)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
             Logger.log("Test");
 
-            assertEquals(expectedOutput, fileContent);
+            assertEquals(expectedOutput, getTestFileContents());
         }
 
     }
 
 
-    // @Nested
-    // private class Disabled {
-    // @DisplayName("No file is made when logger is disabled")
-    // @Test
+    @Nested
+    class NotEnabled {
+        private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        private final PrintStream originalErr = System.err;
 
-    // @DisplayName("Logger is silent when used statically but disabled")
-    // @Test
-    // }
+        @BeforeEach
+        public void setUpStreams() {
+            System.setErr(new PrintStream(errContent));
+        }
 
+        @AfterEach
+        public void restoreStreams() {
+            System.setErr(originalErr);
+        }
 
+        @DisplayName("Logger does not throw when used statically but disabled")
+        @Test
+        void loggerIsSilentWhenNotEnabled() {
+            Logger logger = new Logger(TEST_FILE_PATH_STRING);
+            Logger.log("This should not throw");
+        }
 
+        @DisplayName("No default behaviour to System.err")
+        @Test
+        void noOutputToSystemDotOut() {
+            Logger logger = new Logger(TEST_FILE_PATH_STRING);
+            Logger.log("Test");
+            assertEquals("", errContent.toString());
+        }
+
+        @DisplayName("No file is made when logger is not enabled")
+        @Test
+        void noFileUntilEnabled() {
+
+            Logger logger = new Logger(TEST_FILE_PATH_STRING);
+            File outputFile = new File(TEST_FILE_PATH_STRING);
+
+            assertFalse(outputFile.exists());
+        }
+    }
 }
