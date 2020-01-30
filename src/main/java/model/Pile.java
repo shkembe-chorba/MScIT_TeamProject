@@ -11,24 +11,6 @@ import commandline.utils.JsonUtility;
 
 public class Pile {
 
-    static void addCardHelper(Pile pile) {
-        for (int i = 0; i < 50; i++) {
-            pile.add(new Card("" + i));
-        }
-    }
-
-    public static void main(String[] args) {
-        Pile pile = new Pile();
-        addCardHelper(pile);
-        // System.out.println(pile);
-        ArrayList<Pile> list = pile.split(4, 50);
-        System.out.println(list.size() + "/5");
-        for (int i = 0; i < 4; i++) {
-            System.out.println(list.get(i).size() + "/12");
-        }
-        System.out.println(list.get(4).size() + "/2");
-    }
-
     private LinkedList<Card> cardList = new LinkedList<Card>();
 
     public Pile() {
@@ -62,14 +44,12 @@ public class Pile {
         return cardList.size();
     }
 
-    public int playerSplit(int players, int cards) {
-        return cards % players;
-    }
-
     // returns an Arraylist of all the piles to start the game with split equally to player piles
     // and an extra pile with remained cards
-    public ArrayList<Pile> split(int numberOfPlayers, int cards) {
+    public ArrayList<Pile> split(int numberOfPlayers) {
         // This is based on the number of players and cards
+
+        int cards = cardList.size();
 
         int cardsPerPlayer = cards / numberOfPlayers;
 

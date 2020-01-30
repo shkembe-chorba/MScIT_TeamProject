@@ -63,21 +63,14 @@ class PileTest {
         assertEquals(3, pile.size());
     }
 
-    @DisplayName("Tests the number of cards for players to get method")
-    @Test
-    public void playerSplitWorking() {
-        Pile pile = new Pile();
-        int expectedInt = 5;
-        int actualInt = pile.playerSplit(52, 4);
-        assertEquals(expectedInt, actualInt);
-    }
+
 
     @DisplayName("Tests the cards split method for player 1")
     @Test
     public void splitWorking() {
         Pile pile = new Pile();
         int expectedInt = 10;
-        int actualInt = pile.split(4,50).get(0).size();
+        int actualInt = pile.split(4).get(0).size();
         assertEquals(expectedInt, actualInt);
     }
 
@@ -86,7 +79,7 @@ class PileTest {
     public void splitWorkingEqualPlayerCards() {
         Pile pile = new Pile();
         addCardHelper(pile);
-        ArrayList<Pile> list = pile.split(4, 40);
+        ArrayList<Pile> list = pile.split(4);
         assertEquals(5, list.size());
         for(int i = 0; i < 4; i++) {
             assertEquals(10, list.get(i).size());
@@ -99,7 +92,7 @@ class PileTest {
     public void splitWorkingEqualExtraCards() {
         Pile pile = new Pile();
         int expectedInt = 2;
-        int actualInt = pile.split(52,5).get(5).size();
+        int actualInt = pile.split(5).get(5).size();
         assertEquals(expectedInt, actualInt);
     }
 }

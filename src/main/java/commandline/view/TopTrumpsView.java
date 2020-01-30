@@ -119,7 +119,7 @@ public class TopTrumpsView {
         statsList.add(String.format("Total games played: %d", stats.getTotalGamesPlayed()));
         statsList.add(String.format("Games won by AI: %d", stats.getGamesWonByAi()));
         statsList.add(String.format("Games won by user: %d", stats.getGamesWonByUser()));
-        statsList.add(String.format("Average number of draws: %f", stats.getAvgDraws()));
+        statsList.add(String.format("Average number of draws: %.2f", stats.getAvgDraws()));
         statsList.add(String.format("Maximum rounds in a game: %s", stats.getMaxRounds()));
 
         cli.displayMessage("Here are the current statistics:");
