@@ -12,18 +12,19 @@ import commandline.utils.JsonUtility;
 public class Pile {
 
     static void addCardHelper(Pile pile) {
-        for(int i = 0; i < 50; i++) {
-            pile.add(new Card(""+i));
+        for (int i = 0; i < 50; i++) {
+            pile.add(new Card("" + i));
         }
     }
+
     public static void main(String[] args) {
         Pile pile = new Pile();
         addCardHelper(pile);
-//        System.out.println(pile);
+        // System.out.println(pile);
         ArrayList<Pile> list = pile.split(4, 50);
         System.out.println(list.size() + "/5");
-        for(int i = 0; i < 4; i++) {
-            System.out.println(list.get(i).size() +"/12");
+        for (int i = 0; i < 4; i++) {
+            System.out.println(list.get(i).size() + "/12");
         }
         System.out.println(list.get(4).size() + "/2");
     }
@@ -77,25 +78,26 @@ public class Pile {
         Pile[] decks = new Pile[numberOfPlayers];
         Pile communalPile = new Pile();
         int startingIndex = 0;
-        for(int i = 0; i < decks.length; i++) {
+        for (int i = 0; i < decks.length; i++) {
             decks[i] = new Pile();
-            decks[i].cardList = new LinkedList<Card>(cardListCopy.subList(startingIndex, startingIndex + cardsPerPlayer));
+            decks[i].cardList = new LinkedList<Card>(
+                    cardListCopy.subList(startingIndex, startingIndex + cardsPerPlayer));
             startingIndex += cardsPerPlayer;
         }
-        communalPile.cardList = new LinkedList<Card>(cardListCopy.subList(startingIndex, cardListCopy.size()));
+        communalPile.cardList =
+                new LinkedList<Card>(cardListCopy.subList(startingIndex, cardListCopy.size()));
         ArrayList<Pile> setOfDecks = new ArrayList<Pile>(Arrays.asList(decks));
         setOfDecks.add(communalPile);
         return setOfDecks;
     }
 
-    public static Pile reader() throws IOException {
+    public static Pile reader(String jsonPath) throws IOException {
 
         // This should probably be dealt with outside of this class, not with hard coded
         // inline paths...
 
         // Load the config .json
-        final String ROOT_DIR = System.getProperty("user.dir");
-        JsonObject config = JsonUtility.getJsonObjectFromFile(new File(ROOT_DIR, "TopTrumps.json"));
+        JsonObject config = JsonUtility.getJsonObjectFromFile(new File(jsonPath));
 
         // Load the deck.txt
         final String DECK_PATH = config.get("deckFile").getAsString();

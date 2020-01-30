@@ -9,23 +9,18 @@ import java.util.List;
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
  *
- * Contributors:
- * 2175499m: Filip Marinov
- * 2504299a:Ventsislav Antov
- * 2172605d:Nadezhda Dimitrova
- * 2200528b: Tereza Buckova
- * 2493194s:Gareth Sears
+ * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
+ * 2200528b: Tereza Buckova 2493194s:Gareth Sears
  *
- * Class that represents the game model,
- * initiliazes the game with players
- * and distributing the deck between players and communal pile.
+ * Class that represents the game model, initiliazes the game with players and distributing the deck
+ * between players and communal pile.
  */
 
 public class GameModel {
     private GameState gameState;
     private int roundNumber;
     private Player[] players;
-    private ArrayList <Player> playersInGame = null ; // players still left in the game
+    private ArrayList<Player> playersInGame = null; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
     private Pile communalPile;
     private Player roundWinner;
@@ -37,17 +32,18 @@ public class GameModel {
     /**
      * Reads the pile from the reader and initializes it
      */
-    public GameModel() {
+    public GameModel(String jsonConfigFile) {
         try {
-            wholeDeck = Pile.reader();
-        }catch (IOException e) {
+            wholeDeck = Pile.reader(jsonConfigFile);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Resets and initializes the game with setting up players
-     * sets the round number, winning card and roundWinner to null
+     * Resets and initializes the game with setting up players sets the round number, winning card
+     * and roundWinner to null
+     * 
      * @param numAIPlayers
      */
     public void reset(int numAIPlayers) {
@@ -73,18 +69,21 @@ public class GameModel {
         humanPlayer = new Player("USER");
         players[0] = humanPlayer;
     }
+
     /**
-     * Creates expected number of AIPlayers and adds them to players in the game with the correct name
+     * Creates expected number of AIPlayers and adds them to players in the game with the correct
+     * name
      */
     public void createAIPlayers(int numOfAIPlayers) {
-        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index 0
+        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index
+                                                    // 0
             players[i] = new AIPlayer("AI" + i);
         }
     }
 
     /**
-     * Splits the whole deck of 40 cards and assigns it to players
-     * it assigns the reminder of cards to communal pile
+     * Splits the whole deck of 40 cards and assigns it to players it assigns the reminder of cards
+     * to communal pile
      */
 
     public void assignCards(Pile wholeDeck, Player[] players) {
@@ -96,8 +95,8 @@ public class GameModel {
     }
 
     /**
-     * Takes in attribute and compares values of the peek card from all players
-     * on the chosen attribute
+     * Takes in attribute and compares values of the peek card from all players on the chosen
+     * attribute
      */
 
     public Player playRoundWithAttribute(Attribute chosenAttribute) {
@@ -121,7 +120,8 @@ public class GameModel {
             }
         }
 
-        // if maxValue is also the drawMaxValue after going through all the values, it means that there is no higher value
+        // if maxValue is also the drawMaxValue after going through all the values, it means that
+        // there is no higher value
         if (maxValue == drawMaxValue) {
 
             // pops the card from all the players and transfers them to communal pile
@@ -155,7 +155,7 @@ public class GameModel {
     /**
      * Randomly selects first player from the players array
      */
-    public Player randomlySelectFirstPlayer(Player [] players) {
+    public Player randomlySelectFirstPlayer(Player[] players) {
         Random rand = new Random();
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
@@ -172,8 +172,11 @@ public class GameModel {
      * Checks whether human player is still in game
      */
     public boolean userStillInGame() {
-        if (playersInGame.contains(humanPlayer)) { return true; }
-        else { return false; }
+        if (playersInGame.contains(humanPlayer)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -182,14 +185,15 @@ public class GameModel {
     public Player checkForWinner() {
         if (playersInGame.size() == 1) {
             return playersInGame.get(0);
+        } else {
+            return null;
         }
-        else {return null;}
     }
 
     /**
      * Checks whether the player has another card and if not eliminates them from players in game
      */
-    public ArrayList <Player> checkToEliminate() {
+    public ArrayList<Player> checkToEliminate() {
         ArrayList<Player> eliminated = new ArrayList<Player>();
         for (int i = 0; i < playersInGame.size(); i++) {
             if (playersInGame.get(i).peekCard() == null) {
@@ -209,6 +213,7 @@ public class GameModel {
             communalPile.add(playerToPopCard.popCard());
         }
     }
+
     /**
      * Transfers communal pile to winner of the round
      */
@@ -219,25 +224,47 @@ public class GameModel {
 
 
     // getters and setters
-    public GameState getGameState() { return gameState; }
+    public GameState getGameState() {
+        return gameState;
+    }
 
-    public Player getHumanPlayer() {return humanPlayer; }
+    public Player getHumanPlayer() {
+        return humanPlayer;
+    }
 
-    public int getRoundNumber() { return roundNumber; }
+    public int getRoundNumber() {
+        return roundNumber;
+    }
 
-    public int getDraws() { return drawRound; }
+    public int getDraws() {
+        return drawRound;
+    }
 
-    public void increaseRoundNumber() { roundNumber++; }
+    public void increaseRoundNumber() {
+        roundNumber++;
+    }
 
-    public int getCommunalPileSize() { return communalPile.size(); }
+    public int getCommunalPileSize() {
+        return communalPile.size();
+    }
 
-    public Player getActivePlayer() { return activePlayer; }
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
 
-    public Player getRoundWinner() { return roundWinner; }
+    public Player getRoundWinner() {
+        return roundWinner;
+    }
 
-    public Card getWinningCard() { return winningCard; }
+    public Card getWinningCard() {
+        return winningCard;
+    }
 
-    public void setActivePlayer(Player playerActive) { this.activePlayer = playerActive; }
+    public void setActivePlayer(Player playerActive) {
+        this.activePlayer = playerActive;
+    }
 
-    public Player[] getPlayers() { return players; }
+    public Player[] getPlayers() {
+        return players;
+    }
 }
