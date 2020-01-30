@@ -47,9 +47,6 @@ public class TopTrumpsCLIApplication {
 				displayLoggerError(LOGGER_IO_ERROR);
 				System.exit(LOGGER_IO_ERROR_CODE);
 			}
-		} else {
-			// Resets all loggers as a precaution
-			logger.disable();
 		}
 
 		// End Logger Setup
