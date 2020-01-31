@@ -20,6 +20,26 @@
 
 	<!-- These are the other software libruaries developed by third parties that we need -->
 	<dependencies>
+		<!-- for JSON Parsing -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
+		</dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.7.22</version>
+		</dependency>
+
+		<!-- PostreSQL Driver -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.9</version>
+		</dependency>
 
 		<!-- Dropwizard is a bundle of REST API hosting tools -->
 		<dependency>
@@ -106,7 +126,7 @@
 					</executions>
 				</plugin>
 
-				<!-- Allows a site to be built with reports etc. 
+				<!-- Allows a site to be built with reports etc.
 				Found in target/site -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
