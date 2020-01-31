@@ -13,9 +13,6 @@ public class Pile {
 
     private LinkedList<Card> cardList = new LinkedList<Card>();
 
-    public Pile() {
-    }
-
     public LinkedList<Card> getCards() {
         return cardList;
     }
