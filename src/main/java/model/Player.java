@@ -1,4 +1,5 @@
 package model;
+
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
  *
@@ -84,3 +85,4 @@ public class Player {
         return playerDeck.size();
     }
 }
+
