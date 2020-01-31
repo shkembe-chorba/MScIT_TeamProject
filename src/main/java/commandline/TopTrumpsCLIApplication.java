@@ -1,5 +1,6 @@
 package commandline;
 
+import java.io.File;
 import java.io.IOException;
 import commandline.utils.Logger;
 
@@ -7,6 +8,8 @@ import commandline.utils.Logger;
  * Top Trumps command line application
  */
 public class TopTrumpsCLIApplication {
+
+	private static final String JSON_CONFIG_NAME = "TopTrumps.json";
 
 	private static final String LOGGER_DIRECTORY = "./";
 	private static final String LOGGER_FILENAME = "TopTrumps.log";
@@ -29,6 +32,10 @@ public class TopTrumpsCLIApplication {
 		if (args[0].equalsIgnoreCase("true")) {
 			writeGameLogsToFile = true; // Command line selection
 		}
+
+		// Config Import Setup
+		final File path = new File(System.getProperty("user.dir"), JSON_CONFIG_NAME);
+
 
 		// -------------
 		// Logger Setup
