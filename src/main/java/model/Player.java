@@ -1,4 +1,5 @@
 package model;
+
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
  *
@@ -26,8 +27,8 @@ public class Player {
 
     /**
      * Used in the beginning of a game to assign a pile to a player
-     *
-     * @param playerHand pile of cards
+     * in the game used to transfer cards from community pile to Player
+     * @param addedPile pile of cards
      */
     public void addToDeck(Pile addedPile) {
         playerDeck.add(addedPile);
@@ -84,3 +85,4 @@ public class Player {
         return playerDeck.size();
     }
 }
+

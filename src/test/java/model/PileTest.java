@@ -14,8 +14,8 @@ class PileTest {
     static Card c3 = new Card("4");
 
     static void addCardHelper(Pile pile) {
-        for(int i = 0; i < 40; i++) {
-            pile.add(new Card(""+i));
+        for (int i = 0; i < 40; i++) {
+            pile.add(new Card("" + i));
         }
     }
 
@@ -28,19 +28,19 @@ class PileTest {
 
     @DisplayName("Shows correct size and tests the add method")
     @Test
-    void sizeAndAdd(){
+    void sizeAndAdd() {
         Pile pile = new Pile();
         addCardHelper(pile);
-        assertEquals(4, pile.size());
+        assertEquals(40, pile.size());
     }
 
-    //No need to test shuffle method as this is built in
+    // No need to test shuffle method as this is built in
 
     @DisplayName("Shows correct card when peeked")
     @Test
-    void peek(){
+    void peek() {
         Pile pile = new Pile();
-        PileTest.addCardHelper(pile);
+        pile.add(c0);
         assertEquals(c0, pile.peek());
     }
 
@@ -50,7 +50,7 @@ class PileTest {
         Pile pile = new Pile();
         addCardHelper(pile);
         pile.peek();
-        assertEquals(4, pile.size());
+        assertEquals(40, pile.size());
 
     }
 
@@ -60,18 +60,34 @@ class PileTest {
         Pile pile = new Pile();
         addCardHelper(pile);
         pile.pop();
-        assertEquals(3, pile.size());
+        assertEquals(39, pile.size());
+    }
+
+    @DisplayName("Tests pile add method")
+    @Test
+    void popAddPile() {
+        Pile pile = new Pile();
+        Pile pile2 = new Pile();
+        addCardHelper(pile);
+        addCardHelper(pile2);
+        pile.add(pile2);
+        assertEquals(80, pile.size());
     }
 
 
-
-    @DisplayName("Tests the cards split method for player 1")
+    @DisplayName("Tests the cards split method for non equal cards between players")
     @Test
-    public void splitWorking() {
+    public void splitWorkingNonEqualPlayerCards() {
         Pile pile = new Pile();
-        int expectedInt = 10;
-        int actualInt = pile.split(4).get(0).size();
-        assertEquals(expectedInt, actualInt);
+        addCardHelper(pile);
+        pile.add(c0);
+        pile.add(c1);
+        ArrayList<Pile> list = pile.split(4);
+        assertEquals(5, list.size());
+        for (int i = 0; i < 4; i++) {
+            assertEquals(10, list.get(i).size());
+        }
+        assertEquals(2, list.get(4).size());
     }
 
     @DisplayName("Tests the cards split method for equal cards between the players")
@@ -81,18 +97,23 @@ class PileTest {
         addCardHelper(pile);
         ArrayList<Pile> list = pile.split(4);
         assertEquals(5, list.size());
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             assertEquals(10, list.get(i).size());
         }
         assertEquals(0, list.get(4).size());
     }
 
-    @DisplayName("Tests the cards split method for equal cards between the players")
+
+
+    @DisplayName("Tests the toString")
     @Test
-    public void splitWorkingEqualExtraCards() {
+    public void toStringWorking() {
         Pile pile = new Pile();
-        int expectedInt = 2;
-        int actualInt = pile.split(5).get(5).size();
-        assertEquals(expectedInt, actualInt);
+        addCardHelper(pile);
+        String toString = pile.toString();
+        assertTrue(toString.startsWith("-------- START OF PILE -------- \n")
+                && toString.endsWith("-------- END OF PILE -------- \n"));
     }
 }
+
+

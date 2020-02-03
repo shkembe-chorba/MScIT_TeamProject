@@ -1,12 +1,12 @@
 package model;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-
-import com.google.gson.JsonObject;
-import commandline.utils.JsonUtility;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 
 public class Pile {
@@ -44,17 +44,15 @@ public class Pile {
         return cardList.size();
     }
 
+
+
     // returns an Arraylist of all the piles to start the game with split equally to player piles
     // and an extra pile with remained cards
     public ArrayList<Pile> split(int numberOfPlayers) {
         // This is based on the number of players and cards
-
         int cards = cardList.size();
-
         int cardsPerPlayer = cards / numberOfPlayers;
-
         LinkedList<Card> cardListCopy = (LinkedList<Card>) cardList.clone();
-
         Pile[] decks = new Pile[numberOfPlayers];
         Pile communalPile = new Pile();
         int startingIndex = 0;
@@ -71,20 +69,10 @@ public class Pile {
         return setOfDecks;
     }
 
-    public static Pile reader(String jsonPath) throws IOException {
+    public static Pile reader(String deckPath) throws IOException {
 
-        // This should probably be dealt with outside of this class, not with hard coded
-        // inline paths...
-
-        // Load the config .json
-        JsonObject config = JsonUtility.getJsonObjectFromFile(new File(jsonPath));
-
-        // Load the deck.txt
-        final String DECK_PATH = config.get("deckFile").getAsString();
-        Scanner scanner = new Scanner(new FileReader(DECK_PATH));
-
+        Scanner scanner = new Scanner(new FileReader(deckPath));
         String[] headers = scanner.nextLine().split(" ");
-
         Pile pile = new Pile();
 
         while (scanner.hasNextLine()) {
