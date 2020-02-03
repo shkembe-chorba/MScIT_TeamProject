@@ -1,5 +1,7 @@
 package commandline.view;
 
+import commandline.utils.ListUtility;
+
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -7,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
-import commandline.utils.ListUtility;
 
 public class CommandLineView {
 

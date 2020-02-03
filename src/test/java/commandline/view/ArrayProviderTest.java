@@ -1,7 +1,8 @@
 package commandline.view;
 
-import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.stream.Stream;
 
 /**
  * A helper class to provide arrays to ParameterizedTests (which cannot otherwise be done) Used in

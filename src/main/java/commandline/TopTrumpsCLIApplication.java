@@ -1,8 +1,15 @@
 package commandline;
 
+import com.google.gson.JsonObject;
+import commandline.controller.CliController;
+import commandline.utils.JsonUtility;
+import commandline.utils.Logger;
+import commandline.view.TopTrumpsView;
+import model.GameModel;
+
 import java.io.File;
 import java.io.IOException;
-import commandline.utils.Logger;
+import java.sql.SQLException;
 
 /**
  * Top Trumps command line application
@@ -10,6 +17,9 @@ import commandline.utils.Logger;
 public class TopTrumpsCLIApplication {
 
 	private static final String JSON_CONFIG_NAME = "TopTrumps.json";
+	private static final String DECK_READ_ERROR = "Could not load deck from file, please place in working directory.";
+	private static final int DECK_READ_ERROR_CODE = 2;
+	private static final int DATABASE_CONNECTION_ERROR_CODE = 3;
 
 	private static final String LOGGER_DIRECTORY = "./";
 	private static final String LOGGER_FILENAME = "TopTrumps.log";
@@ -29,17 +39,13 @@ public class TopTrumpsCLIApplication {
 
 		boolean writeGameLogsToFile = false; // Should we write game logs to file?
 
-		if (args[0].equalsIgnoreCase("true")) {
-			writeGameLogsToFile = true; // Command line selection
-		}
-
-		// Config Import Setup
-		final File path = new File(System.getProperty("user.dir"), JSON_CONFIG_NAME);
-
-
 		// -------------
 		// Logger Setup
 		// -------------
+
+		if (args[0].equalsIgnoreCase("true")) {
+			writeGameLogsToFile = true; // Command line selection
+		}
 
 		Logger logger = new Logger(LOGGER_DIRECTORY + LOGGER_FILENAME);
 
@@ -59,19 +65,34 @@ public class TopTrumpsCLIApplication {
 		// End Logger Setup
 		// ----------------
 
-		// State
-		boolean userWantsToQuit = false; // flag to check whether the user wants to quit the
-											// application
+		// ----------
+		// Get deck file from json config
+		// ----------
 
-		// Loop until the user wants to exit the game
-		while (!userWantsToQuit) {
-
-			// ----------------------------------------------------
-			// Add your game logic here based on the requirements
-			// ----------------------------------------------------
-			userWantsToQuit = true; // use this when the user wants to exit the game
-
+		final String CWD = System.getProperty("user.dir");
+		final File configPath = new File(CWD, JSON_CONFIG_NAME);
+		File deckFile = null;
+		try {
+			JsonObject jsonConfig = JsonUtility.getJsonObjectFromFile(configPath);
+			String deckFileName = jsonConfig.get("deckFile").getAsString();
+			deckFile = new File(CWD, deckFileName);
+		} catch (IOException e) {
+			System.err.println(DECK_READ_ERROR);
+			System.exit(DECK_READ_ERROR_CODE);
 		}
+
+		GameModel model = new GameModel(deckFile.toString());
+		CliController controller = new CliController(model);
+		TopTrumpsView view = new TopTrumpsView(controller);
+		controller.setView(view);
+		try {
+			controller.run();
+		}catch (SQLException e) {
+			System.err.println("Database connection failure.");
+			e.printStackTrace();
+			System.exit(DATABASE_CONNECTION_ERROR_CODE);
+		}
+
 	}
 
 	private static void displayLoggerError(String message) {

@@ -25,6 +25,6 @@ public class Attribute implements Comparable<Attribute> {
 
     @Override
     public String toString() {
-        return String.format("%s: $d", name, value);
+        return String.format("%s: %d", name, value);
     }
 }

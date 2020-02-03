@@ -1,13 +1,13 @@
 package online.dwResources;
 
+import online.dwViews.GameScreenView;
+import online.dwViews.SelectionScreenView;
+import online.dwViews.StatisticsView;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import online.dwViews.GameScreenView;
-import online.dwViews.SelectionScreenView;
-import online.dwViews.StatisticsView;
 
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
 @Produces(MediaType.TEXT_HTML) // This resource returns HTML content

@@ -1,11 +1,7 @@
 package commandline.utils;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
+import java.util.logging.*;
 
 /**
  * Sets up a Logger which is enabled as long as the object remains in scope. Usual use will be to

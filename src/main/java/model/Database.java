@@ -7,6 +7,11 @@ import java.sql.*;
  */
 public class Database {
 
+    //Default database Connection parameters.
+    private static final String URL = "jdbc:postgresql://localhost:5432/m_19_2175499m";
+    private static final String USER = "postgres";
+    private static final String PASS = "123456";
+
     private Connection connection = null;
 
     //Database Connection parameters.
@@ -30,7 +35,7 @@ public class Database {
      * Default database constructor for TopTrumps.
      */
     public Database() {
-        this("jdbc:postgresql://localhost:5432/m_19_2175499m","postgres","123456");
+        this(URL,USER,PASS);
     }
 
     /**
@@ -45,17 +50,12 @@ public class Database {
      * This methods sets up a connection to the PostgreSQL database.
      * It needs to be run prior to any other methods.
      */
-    public void connect() {
-        try {
+    public void connect() throws SQLException{
 
-            //Get connection.
-            connection = DriverManager.getConnection(url, user, pass);
-            System.out.println("Connected to database.");
+        //Get connection.
+        connection = DriverManager.getConnection(url, user, pass);
+//      System.out.println("Connected to database.");
 
-        } catch (SQLException e) {
-            System.out.println("Database connection failure.");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -63,11 +63,9 @@ public class Database {
      * It needs to be run after a code-user has finished with the Database class.
      */
     public void disconnect() {
-        try {
+        try{
             connection.close();
-            System.out.println("Disconnected from database.");
-        } catch (SQLException e) {
-            System.out.println("Database disconnect failure.");
+        } catch(SQLException e) {
             e.printStackTrace();
         }
     }

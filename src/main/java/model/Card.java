@@ -1,5 +1,7 @@
 package model;
 
+import commandline.utils.ListUtility;
+
 import java.util.ArrayList;
 
 public class Card {
@@ -13,6 +15,21 @@ public class Card {
             throw new IllegalArgumentException("No empty names allowed");
         }
         this.name = n;
+    }
+
+    public String toString() {
+        String attributeString = new ListUtility(cardList).getBulletList();
+        return String.format("Card name: %s\n%s", name, attributeString);
+    }
+
+    public int getValue(Attribute givenAttribute) {
+        String givenAttributeName = givenAttribute.getName();
+        for(Attribute attribute: cardList) {
+            if(attribute.getName().equals(givenAttributeName)) {
+                return attribute.getValue();
+            }
+        }
+        return 0;
     }
 
     public void add(Attribute a){

@@ -1,11 +1,12 @@
 package commandline.utils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * A utility for reading JSON files into managable POJOs.

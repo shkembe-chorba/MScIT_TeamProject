@@ -1,21 +1,18 @@
 package online;
 
 
-import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-
-import online.configuration.TopTrumpsJSONConfiguration;
-import online.dwResources.GameWebPagesResource;
-import online.dwResources.TopTrumpsRESTAPI;
-
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
+import online.configuration.TopTrumpsJSONConfiguration;
+import online.dwResources.GameWebPagesResource;
+import online.dwResources.TopTrumpsRESTAPI;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import java.util.EnumSet;
 
 /**
  * Top Trumps Web Application. This class is complete, you do not need to edit it, you
