@@ -3,9 +3,10 @@ package commandline.controller;
 import commandline.view.TopTrumpsView;
 import model.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CliController implements TopTrumpsControllerInterface {
+public class CliController {
 
     private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
@@ -25,8 +26,8 @@ public class CliController implements TopTrumpsControllerInterface {
      * 2. Take user input
      * 3. Act based on input;
      */
-    @Override
-    public void run(){
+
+    public void run() throws SQLException {
         database = new Database();
         database.connect();
 
@@ -112,8 +113,8 @@ public class CliController implements TopTrumpsControllerInterface {
         return (player instanceof AIPlayer);
     }
 
-    @Override
-    public void quit() {
+
+    public void quit(){
         database.disconnect();
         System.exit(0);
     }

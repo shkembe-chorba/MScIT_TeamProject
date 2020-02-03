@@ -6,7 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import commandline.controller.TopTrumpsControllerInterface;
+import commandline.controller.CliController;
+
 
 import model.Attribute;
 import model.Player;
@@ -23,7 +24,7 @@ public class TopTrumpsView {
     public static final String QUIT_COMMAND = "quit";
     public static final String QUIT_COMMAND_DESCRIPTION = "quits the program";
 
-    TopTrumpsControllerInterface controller;
+    CliController controller;
     CommandLineView cli = new CommandLineView();
 
     /**
@@ -31,7 +32,7 @@ public class TopTrumpsView {
      * 
      * @param controller A controller which implements the TopTrumpsControllerInterface interface.
      */
-    public TopTrumpsView(TopTrumpsControllerInterface controller) {
+    public TopTrumpsView(CliController controller) {
         this.controller = controller;
         setupQuitCommand();
     }

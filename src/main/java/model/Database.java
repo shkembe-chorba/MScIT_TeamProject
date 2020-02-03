@@ -50,17 +50,12 @@ public class Database {
      * This methods sets up a connection to the PostgreSQL database.
      * It needs to be run prior to any other methods.
      */
-    public void connect() {
-        try {
+    public void connect() throws SQLException{
 
-            //Get connection.
-            connection = DriverManager.getConnection(url, user, pass);
-            System.out.println("Connected to database.");
+        //Get connection.
+        connection = DriverManager.getConnection(url, user, pass);
+//      System.out.println("Connected to database.");
 
-        } catch (SQLException e) {
-            System.out.println("Database connection failure.");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -68,11 +63,9 @@ public class Database {
      * It needs to be run after a code-user has finished with the Database class.
      */
     public void disconnect() {
-        try {
+        try{
             connection.close();
-            System.out.println("Disconnected from database.");
-        } catch (SQLException e) {
-            System.out.println("Database disconnect failure.");
+        } catch(SQLException e) {
             e.printStackTrace();
         }
     }
