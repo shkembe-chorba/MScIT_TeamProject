@@ -56,6 +56,9 @@ public class CliController {
                         }
                     }
                     break;
+
+                default:
+                    continue;
             }
 
 

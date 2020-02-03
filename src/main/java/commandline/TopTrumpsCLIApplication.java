@@ -1,15 +1,15 @@
 package commandline;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-
 import com.google.gson.JsonObject;
 import commandline.controller.CliController;
 import commandline.utils.JsonUtility;
 import commandline.utils.Logger;
 import commandline.view.TopTrumpsView;
 import model.GameModel;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Top Trumps command line application

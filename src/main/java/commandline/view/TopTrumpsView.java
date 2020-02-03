@@ -1,18 +1,15 @@
 package commandline.view;
 
+import commandline.controller.CliController;
+import model.Attribute;
+import model.Card;
+import model.Player;
+import model.RetrievedGameStatistics;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import commandline.controller.CliController;
-
-
-import model.Attribute;
-import model.Player;
-import model.Card;
-import model.RetrievedGameStatistics;
 
 
 /**
@@ -24,8 +21,8 @@ public class TopTrumpsView {
     public static final String QUIT_COMMAND = "quit";
     public static final String QUIT_COMMAND_DESCRIPTION = "quits the program";
 
-    CliController controller;
-    CommandLineView cli = new CommandLineView();
+    private CliController controller;
+    private CommandLineView cli = new CommandLineView();
 
     /**
      * Creates the application view component.

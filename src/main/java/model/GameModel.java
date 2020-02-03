@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.List;
 
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
@@ -165,11 +164,7 @@ public class GameModel {
      * Checks whether human player is still in game
      */
     public boolean userStillInGame() {
-        if (playersInGame.contains(humanPlayer)) {
-            return true;
-        } else {
-            return false;
-        }
+        return playersInGame.contains(humanPlayer);
     }
 
     /**
