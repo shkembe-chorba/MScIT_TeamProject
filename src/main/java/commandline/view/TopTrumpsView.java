@@ -1,6 +1,7 @@
 package commandline.view;
 
 import commandline.controller.CliController;
+import commandline.controller.TopTrumpsControllerInterface;
 import model.Attribute;
 import model.Card;
 import model.Player;
@@ -21,15 +22,15 @@ public class TopTrumpsView {
     public static final String QUIT_COMMAND = "quit";
     public static final String QUIT_COMMAND_DESCRIPTION = "quits the program";
 
-    private CliController controller;
+    private TopTrumpsControllerInterface controller;
     private CommandLineView cli = new CommandLineView();
 
     /**
      * Creates the application view component.
-     * 
+     *
      * @param controller A controller which implements the TopTrumpsControllerInterface interface.
      */
-    public TopTrumpsView(CliController controller) {
+    public TopTrumpsView(TopTrumpsControllerInterface controller) {
         this.controller = controller;
         setupQuitCommand();
     }
@@ -51,7 +52,7 @@ public class TopTrumpsView {
     /**
      * Displays Game Start
      */
-    public void displayGameStartMessage(){
+    public void displayGameStartMessage() {
         cli.displayMessage("Game Start");
     }
 
@@ -65,7 +66,7 @@ public class TopTrumpsView {
 
     /**
      * Displays the player's name and their current card.
-     * 
+     *
      * @param player
      */
     public void displayTopCard(Player player) {
@@ -76,7 +77,7 @@ public class TopTrumpsView {
 
     /**
      * Displays the player's name and their remaining cards.
-     * 
+     *
      * @param player
      */
     public void displayRemainingCardCount(Player player) {
@@ -86,7 +87,7 @@ public class TopTrumpsView {
 
     /**
      * Displays the users current hand and their remaining cards.
-     * 
+     *
      * @param user a Player which is user controlled
      */
     public void displayUserHand(Player user) {
@@ -97,14 +98,13 @@ public class TopTrumpsView {
 
     public int displayMenu() {
         cli.displayMessage("Do you want to see past results or play a game?");
-        List<String> options = Arrays.asList(new String[] {"Print Game Statistics",
-                                                            "Play game"});
+        List<String> options = Arrays.asList(new String[] {"Print Game Statistics", "Play game"});
         return cli.getUserSelectionIndex(options);
     }
 
     /**
      * Displays the active player's name.
-     * 
+     *
      * @param player
      */
     public void displayActivePlayer(Player player) {
@@ -112,10 +112,8 @@ public class TopTrumpsView {
     }
 
     public void displayLogo() {
-        cli.displayMessage("\n\n\n--------------------\n" +
-                "--- Top Trumps   ---\n" +
-                "--------------------\n\n" +
-                "To quit type in \"quit\" at any prompt.\n");
+        cli.displayMessage("\n\n\n--------------------\n" + "--- Top Trumps   ---\n"
+                + "--------------------\n\n" + "To quit type in \"quit\" at any prompt.\n");
     }
 
     public void displayStatistics(RetrievedGameStatistics stats) {
@@ -134,7 +132,7 @@ public class TopTrumpsView {
 
     /**
      * Prompts the player for their attribute selection.
-     * 
+     *
      * @param attributes
      * @return The selected attribute object
      */
@@ -145,15 +143,16 @@ public class TopTrumpsView {
 
     /**
      * Displays The category chosen is + category attribute name
+     * 
      * @param attribute
      */
-    public void displayChosenCategory(Attribute attribute){
+    public void displayChosenCategory(Attribute attribute) {
         cli.displayMessage("The category chosen is: " + attribute.getName());
     }
 
     /**
      * Displays the winner of the round.
-     * 
+     *
      * @param playerName
      * @param roundNumber
      */
@@ -161,14 +160,14 @@ public class TopTrumpsView {
         cli.displayMessage(String.format("%s won round %d!", playerName, roundNumber));
     }
 
-    public void displayAiPlayerHand(Player ai){
+    public void displayAiPlayerHand(Player ai) {
         displayTopCard(ai);
         cli.displayDivider();
     }
 
     /**
      * Displays that the round was a draw and the communal pile count.
-     * 
+     *
      * @param roundNumber
      * @param communalPileCount
      */
@@ -179,8 +178,8 @@ public class TopTrumpsView {
 
     /**
      * Displays the winning card of the round.
-     * 
-     * @param card             the winning card
+     *
+     * @param card the winning card
      */
     public void displayWinningCard(Card card) {
         List<Attribute> attributes = card.getAttributes();
@@ -191,7 +190,7 @@ public class TopTrumpsView {
 
     /**
      * Displays the eliminated player.
-     * 
+     *
      * @param playerName
      */
     public void displayEliminatedPlayer(String playerName) {
@@ -205,7 +204,7 @@ public class TopTrumpsView {
     public void displayGameOver(String winningPlayerName, Player[] players) {
 
         List<String> scores = new ArrayList<>();
-        for(Player player: players) {
+        for (Player player : players) {
             scores.add(player.toString() + ": " + player.getRoundsWon());
         }
 
