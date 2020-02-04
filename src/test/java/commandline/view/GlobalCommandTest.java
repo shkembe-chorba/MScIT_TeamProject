@@ -1,12 +1,13 @@
 package commandline.view;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GlobalCommandTest {
 
@@ -46,6 +47,28 @@ public class GlobalCommandTest {
             gc.notifyCommandListeners();
 
             assertTrue(gcl.triggered);
+        }
+    }
+
+    @DisplayName("equals()")
+    @Nested
+    public class Equals {
+        @DisplayName("Equals is true for same command")
+        @Test
+        public void equalsWhenCommandIsSame() {
+            GlobalCommand gc1 = new GlobalCommand("Test");
+            GlobalCommand gc2 = new GlobalCommand("Test", "But with a description");
+
+            assertTrue(gc1.equals(gc2));
+        }
+
+        @DisplayName("Equals is false for different commands")
+        @Test
+        public void notEqualsWhenCommandIsDifferent() {
+            GlobalCommand gc1 = new GlobalCommand("Test", "description equal");
+            GlobalCommand gc2 = new GlobalCommand("Test2", "description equal");
+
+            assertFalse(gc1.equals(gc2));
         }
     }
 }
