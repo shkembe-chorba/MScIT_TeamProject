@@ -1,7 +1,11 @@
 package commandline.utils;
 
 import java.io.IOException;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 
 /**
  * Sets up a Logger which is enabled as long as the object remains in scope. Usual use will be to
@@ -64,6 +68,10 @@ public class Logger {
          */
         public static void log(String logMessage) {
                 java.util.logging.Logger.getLogger(LOGGER_NAME).info(logMessage);
+        }
+
+        public static void log(String headerMessage, String logMessage) {
+                log(String.format("%s\n\n%s", headerMessage, logMessage));
         }
 
 }
