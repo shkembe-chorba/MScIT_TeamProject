@@ -39,7 +39,7 @@
 				
 				// For example, lets call our sample methods
 				helloJSONList();
-				helloWord("Student");
+
 				
 			}
 			
@@ -81,7 +81,7 @@
 			function helloJSONList() {
 			
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloJSONList"); // Request type and URL
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloJSONLists"); // Request type and URL
 				
 				// Message is not sent yet, but we can check that the browser supports CORS
 				if (!xhr) {
@@ -92,7 +92,26 @@
 				// to do when the response arrives 
 				xhr.onload = function(e) {
  					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
+					var obj = JSON.parse(responseText);
+					document.write("Games won by AI: ");
+					document.write(obj.ai_won);
+					document.write("<br/>");
+
+					document.write("Games won by USER: ");
+					document.write(obj.user_won);
+					document.write("<br/>");
+
+					document.write("Average draws: ");
+					document.write(obj.avg_draws);
+					document.write("<br/>");
+
+					document.write("Total games played: ");
+					document.write(obj.total_games_played);
+					document.write("<br/>");
+
+					document.write("Max rounds: ");
+					document.write(obj.max_rounds);
+					document.write("<br/>");
 				};
 				
 				// We have done everything we need to prepare the CORS request, so send it

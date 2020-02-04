@@ -39,7 +39,7 @@
 				
 				// For example, lets call our sample methods
 				helloJSONList();
-				helloWord("Student");
+
 				
 			}
 			
@@ -91,8 +91,27 @@
 				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
 				// to do when the response arrives 
 				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
+					var responseText = xhr.response; // the text of the response
+					var obj = JSON.parse(responseText);
+					document.write("Games won by AI: ");
+					document.write(obj.ai_won);
+					document.write("<br/>");
+
+					document.write("Games won by USER: ");
+					document.write(obj.user_won);
+					document.write("<br/>");
+
+					document.write("Average draws: ");
+					document.write(obj.avg_draws);
+					document.write("<br/>");
+
+					document.write("Total games played: ");
+					document.write(obj.total_games_played);
+					document.write("<br/>");
+
+					document.write("Max rounds: ");
+					document.write(obj.max_rounds);
+					document.write("<br/>");
 				};
 				
 				// We have done everything we need to prepare the CORS request, so send it

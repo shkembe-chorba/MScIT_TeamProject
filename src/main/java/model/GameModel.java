@@ -16,7 +16,7 @@ import java.util.Random;
  */
 
 public class GameModel {
-    private GameState gameState;
+    private AppMode gameState;
     private int roundNumber;
     private Player[] players;
     private ArrayList<Player> playersInGame = null; // players still left in the game
@@ -219,10 +219,6 @@ public class GameModel {
 
 
     // getters and setters
-    public GameState getGameState() {
-        return gameState;
-    }
-
     public Player getHumanPlayer() {
         return humanPlayer;
     }

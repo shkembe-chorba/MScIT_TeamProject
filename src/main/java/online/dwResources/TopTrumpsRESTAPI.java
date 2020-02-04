@@ -1,7 +1,9 @@
 package online.dwResources;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -11,6 +13,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import model.Database;
+import model.RetrievedGameStatistics;
 import online.configuration.TopTrumpsJSONConfiguration;
 
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
@@ -32,6 +36,8 @@ public class TopTrumpsRESTAPI {
 	 */
 	ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
+	Database database = new Database();
+
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
 	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
@@ -50,7 +56,7 @@ public class TopTrumpsRESTAPI {
 	// ----------------------------------------------------
 
 	@GET
-	@Path("/helloJSONList")
+	@Path("/helloJSONLists")
 	/**
 	 * Here is an example of a simple REST get request that returns a String. We also illustrate
 	 * here how we can convert Java objects to JSON strings.
@@ -59,14 +65,22 @@ public class TopTrumpsRESTAPI {
 	 * @throws IOException
 	 */
 	public String helloJSONList() throws IOException {
+		try {
+			database.connect();
+		} catch(SQLException e) {
 
-		List<String> listOfWords = new ArrayList<String>();
-		listOfWords.add("Hello");
-		listOfWords.add("World!");
+		}
+		RetrievedGameStatistics stats = database.retrieveGameStats();
+		HashMap<String,Object> map = new HashMap<>();
+		map.put("ai_won",stats.getGamesWonByAi());
+		map.put("user_won",stats.getGamesWonByUser());
+		map.put("avg_draws",stats.getAvgDraws());
+		map.put("total_games_played", stats.getTotalGamesPlayed());
+		map.put("max_rounds", stats.getMaxRounds());
 
 		// We can turn arbatory Java objects directly into JSON strings using
 		// Jackson seralization, assuming that the Java objects are not too complex.
-		String listAsJSONString = oWriter.writeValueAsString(listOfWords);
+		String listAsJSONString = oWriter.writeValueAsString(map);
 
 		return listAsJSONString;
 	}
