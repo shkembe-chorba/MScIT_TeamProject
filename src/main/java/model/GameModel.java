@@ -166,7 +166,7 @@ public class GameModel {
 
             // --- DEBUG LOG ---
             // The contents of the communal pile when cards are added or removed from it
-            Logger.log("DRAW - COMMUNAL PILE CONTENTS:", communalPile.toString());
+            Logger.log("ROUND WAS DRAWN - COMMUNAL PILE CONTENTS:", communalPile.toString());
 
             drawRound++;
             // resets the roundWinner
@@ -182,13 +182,18 @@ public class GameModel {
             addCardsToCommunalPile();
 
             // --- DEBUG LOG ---
-            // The contents of the communal pile when cards are added or removed from it
-            Logger.log("WIN - COMMUNAL PILE CONTENTS:", communalPile.toString());
+            // The contents of the communal pile when cards are added to it
+            Logger.log("ROUND WAS WON - COMMUNAL PILE CONTENTS TO BE TRANSFERED:",
+                    communalPile.toString());
 
             // shuffles the communalPile
             communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
             transferCommunalPile(roundWinner);
+
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are removed from it
+            Logger.log("COMMUNAL PILE AFTER TRANSFER:", communalPile.toString());
 
             setActivePlayer(roundWinner);
 
