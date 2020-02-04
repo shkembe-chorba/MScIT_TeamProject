@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Collectors;
+import commandline.utils.Logger;
 
 /**
  * Top Trumps game - MSc IT+ Masters Team Project
@@ -37,6 +39,10 @@ public class GameModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // --- DEBUG LOG ---
+        // The contents of the complete deck once it has been read in and constructed
+        Logger.log("COMPLETE GAME DECK AFTER LOAD:", wholeDeck.toString());
     }
 
     /**
@@ -51,6 +57,11 @@ public class GameModel {
         createHumanPlayer();
         createAIPlayers(numAIPlayers);
         wholeDeck.shuffle();
+
+        // --- DEBUG LOG ---
+        // The contents of the complete deck after it has been shuffled
+        Logger.log("COMPLETE GAME DECK AFTER SHUFFLE:", wholeDeck.toString());
+
         assignCards(wholeDeck, players);
         activePlayer = randomlySelectFirstPlayer(players);
         playersInGame = new ArrayList<>(Arrays.asList(players));
@@ -74,8 +85,8 @@ public class GameModel {
      * name
      */
     public void createAIPlayers(int numOfAIPlayers) {
-        for (int i = 1; i <= numOfAIPlayers; i++) { // starts with 1 because HumanPlayer is in index
-                                                    // 0
+        // starts with 1 because HumanPlayer is in index 0
+        for (int i = 1; i <= numOfAIPlayers; i++) {
             players[i] = new AIPlayer("AI" + i);
         }
     }
@@ -88,9 +99,23 @@ public class GameModel {
     public void assignCards(Pile wholeDeck, Player[] players) {
         ArrayList<Pile> setOfDecks = wholeDeck.split(players.length);
         for (int i = 0; i < players.length; i++) {
-            players[i].addToDeck(setOfDecks.get(i));
+            Player player = players[i];
+            Pile playerDeck = setOfDecks.get(i);
+            player.addToDeck(playerDeck);
+
+            // --- DEBUG LOG ---
+            // The contents of the user’s deck and the computer’s deck(s) once they have been
+            // allocated.
+            String isAILabel = player instanceof AIPlayer ? "AI" : "USER";
+            Logger.log(String.format("(%s) %s's DECK AFTER ALLOCATION:", isAILabel, player),
+                    playerDeck.toString());
+
         }
         communalPile = setOfDecks.get(players.length);
+
+        // --- DEBUG LOG ---
+        // Initial communal deck contents.
+        Logger.log("INITIAL COMMUNAL DECK CONTENTS", communalPile.toString());
     }
 
     /**
@@ -99,20 +124,33 @@ public class GameModel {
      */
 
     public Player playRoundWithAttribute(Attribute chosenAttribute) {
-        int maxValue = 0;
-        int drawMaxValue = 0;
+
         // increases round number
         roundNumber++;
 
-        for (int i = 0; i < playersInGame.size(); i++) {
+        // --- DEBUG LOG ---
+        // The contents of the current cards in play
+        String playerCardStrings = playersInGame.stream()
+                .map(p -> String.format("%s's CARD:\n\n%s\n\n", p, p.peekCard()))
+                .collect(Collectors.joining());
+        Logger.log("CARDS IN PLAY AT ROUND " + roundNumber + " START", playerCardStrings);
+
+        // --- DEBUG LOG ---
+        // The category selected and corresponding values when a user or computer selects a category
+        Logger.log(String.format("%s's ATTRIBUTE FOR THE ROUND:", activePlayer),
+                chosenAttribute.toString());
+
+        int maxValue = 0;
+        int drawMaxValue = 0;
+
+        for (Player player : playersInGame) {
             // assigns top card for a player that is still in game as activeCard
-            Card activeCard = playersInGame.get(i).peekCard();
+            Card activeCard = player.peekCard();
             int playersAttributeValue = activeCard.getValue(chosenAttribute);
 
             if (maxValue < playersAttributeValue) {
                 maxValue = playersAttributeValue;
-                roundWinner = playersInGame.get(i);
-
+                roundWinner = player;
                 // if there is a draw, it stores it in the temporary draw value
             } else if (maxValue == playersAttributeValue) {
                 drawMaxValue = maxValue;
@@ -126,11 +164,14 @@ public class GameModel {
             // pops the card from all the players and transfers them to communal pile
             addCardsToCommunalPile();
 
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are added or removed from it
+            Logger.log("DRAW - COMMUNAL PILE CONTENTS:", communalPile.toString());
+
             drawRound++;
             // resets the roundWinner
             roundWinner = null;
             // returns null to controller
-            return null;
 
         } else {
             // increases the won round
@@ -139,6 +180,11 @@ public class GameModel {
 
             // waits for the popping of the card and adds it to the communal pile
             addCardsToCommunalPile();
+
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are added or removed from it
+            Logger.log("WIN - COMMUNAL PILE CONTENTS:", communalPile.toString());
+
             // shuffles the communalPile
             communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
@@ -147,8 +193,17 @@ public class GameModel {
             setActivePlayer(roundWinner);
 
             // returns winner to the controller
-            return roundWinner;
+
         }
+
+        // --- DEBUG LOG ---
+        // The contents of each deck after a round
+        String playerDeckStrings = playersInGame.stream()
+                .map(p -> String.format("%s's DECK:\n\n%s\n\n", p, p.getDeck()))
+                .collect(Collectors.joining());
+        Logger.log("PLAYERS DECKS AT END OF THE ROUND: ", playerDeckStrings);
+
+        return roundWinner;
     }
 
     /**
@@ -172,7 +227,13 @@ public class GameModel {
      */
     public Player checkForWinner() {
         if (playersInGame.size() == 1) {
-            return playersInGame.get(0);
+            Player winner = playersInGame.get(0);
+
+            // --- DEBUG LOG ---
+            // The winner of the game
+            Logger.log("WINNING PLAYER:", winner.toString());
+
+            return winner;
         } else {
             return null;
         }
@@ -262,4 +323,5 @@ public class GameModel {
     public Player[] getPlayers() {
         return players;
     }
+
 }
