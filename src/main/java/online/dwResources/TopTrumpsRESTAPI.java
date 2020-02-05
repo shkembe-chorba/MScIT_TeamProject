@@ -1,5 +1,6 @@
 package online.dwResources;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,9 +12,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.JsonObject;
+import commandline.utils.JsonUtility;
 import model.Database;
+import model.GameModel;
 import model.RetrievedGameStatistics;
 import online.configuration.TopTrumpsJSONConfiguration;
 
@@ -36,7 +42,16 @@ public class TopTrumpsRESTAPI {
 	 */
 	ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-	Database database = new Database();
+
+	private static final String DECK_READ_ERROR = "Could not load deck from file, please place in working directory.";
+	private static final int DECK_READ_ERROR_CODE = 2;
+	private static final int DATABASE_CONNECTION_ERROR_CODE = 3;
+	private static final String CWD = System.getProperty("user.dir");
+	private Database database = new Database();
+	private GameModel model;
+	private String deckFile;
+
+
 
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
@@ -49,12 +64,15 @@ public class TopTrumpsRESTAPI {
 		// ----------------------------------------------------
 		// Add relevant initalization here
 		// ----------------------------------------------------
+		String deckFileName = conf.getDeckFile();
+		File deckFile = new File(CWD, deckFileName);
+		model = new GameModel(deckFile.toString());
+		model.reset(conf.getNumAIPlayers());
 	}
 
 	// ----------------------------------------------------
 	// Add relevant API methods here
 	// ----------------------------------------------------
-
 	@GET
 	@Path("/helloJSONLists")
 	/**
@@ -94,8 +112,8 @@ public class TopTrumpsRESTAPI {
 	 * @return - A String
 	 * @throws IOException
 	 */
-	public String helloWord(@QueryParam("Word") String Word) throws IOException {
-		return "Hello " + Word;
+	public String helloWord(@QueryParam("test") String test) throws IOException {
+		return "Hello " + test;
 	}
 
 }

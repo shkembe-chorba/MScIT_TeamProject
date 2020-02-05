@@ -38,7 +38,7 @@
 				// --------------------------------------------------------------------------
 				
 				// For example, lets call our sample methods
-				helloJSONList();
+				// helloJSONList();
 				helloWord("Student");
 				
 			}
@@ -100,10 +100,10 @@
 			}
 			
 			// This calls the helloJSONList REST method from TopTrumpsRESTAPI
-			function helloWord(word) {
+			function helloWord(test) {
 			
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?Word="+word); // Request type and URL+parameters
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?test="+test); // Request type and URL+parameters
 				
 				// Message is not sent yet, but we can check that the browser supports CORS
 				if (!xhr) {
