@@ -103,7 +103,7 @@
 			function helloWord(word) {
 			
 				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?Word="+word); // Request type and URL+parameters
+				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?Work="+word); // Request type and URL+parameters
 				
 				// Message is not sent yet, but we can check that the browser supports CORS
 				if (!xhr) {
