@@ -21,62 +21,57 @@
 
 <body onload="initalize()">
 <!-- Call the initalize method when the page loads -->
-<div class="jumbotron">
-    <header>
-        <h1 style="text-align:center; padding:20px">Top Trumps</h1>
-    </header>
-</div>
+
 
 <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="location.href='http://localhost:7777/toptrumps/">Home</a>
-    </nav>
+    <div class="pb-2 mt-4 mb-10 border-bottom">
+        <a class="btn btn-outline-primary btn-lg" href="/toptrumps/" role="button">Home</a>
+    </div>
 </div>
+
 <div container pt-6>
+    <!-- Demonstration of how the modal works - once it is triggered with window open the button will not be there -->
 <div class="row justify-content-md-center">
-<button type="button" class="btn btn-lg" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-lg" data-toggle="modal" data-target="#startGameModal">
     Start a new game
 </button>
 </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal to start game -->
+<div class="modal fade" id="startGameModal" tabindex="-1" role="dialog" aria-labelledby="startGameModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="">Choose the number of opponents you want to play with</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <a href="/toptrumps/"></a>
-                    <span aria-hidden="true">&times;</span>
+
                 </button>
             </div>
             <div class="modal-body modal-lg">
                 <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="1" name="defaultExampleRadios">
-                    <label class="custom-control-label" for="1">1</label>
-                </div>
-
-                <!-- Default checked -->
-                <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="2" name="defaultExampleRadios" checked>
-                    <label class="custom-control-label" for="2">2</label>
+                    <input type="radio" class="custom-control-input" id="select1" name="choiceOfNumber">
+                    <label class="custom-control-label" for="select1">1</label>
                 </div>
                 <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="3" name="defaultExampleRadios" checked>
-                    <label class="custom-control-label" for="3">3</label>
+                    <input type="radio" class="custom-control-input" id="select2" name="choiceOfNumber">
+                    <label class="custom-control-label" for="select2">2</label>
                 </div>
                 <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="4" name="defaultExampleRadios" checked>
-                    <label class="custom-control-label" for="4">4</label>
+                    <input type="radio" class="custom-control-input" id="select3" name="choiceOfNumber">
+                    <label class="custom-control-label" for="select3">3</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="select4" name="choiceOfNumber">
+                    <label class="custom-control-label" for="select4">4</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Start game</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <div class="container pt-3">
     <div class="row">
         <div class="col">
