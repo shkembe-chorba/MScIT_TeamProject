@@ -65,10 +65,11 @@ public class TopTrumpsRESTAPI {
 	 *
 	 * @param attributeName
 	 * @return
+	 * @throws JsonProcessingException
 	 */
 	@GET
 	@Path("/playRoundWithAttribute")
-	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) {
+	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) throws JsonProcessingException {
 
 		Attribute selectedAttribute = new Attribute(attributeName, 0);
 		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
@@ -87,9 +88,9 @@ public class TopTrumpsRESTAPI {
 		//Initialize map that will be returned as a JSON file.
 		HashMap<String, Object> map = new HashMap<>();
 
+		boolean userInGame = model.userStillInGame();
 		if(gameWinner == null) {
 			//There is no game winner
-			boolean userInGame = model.userStillInGame();
 
 			if(userInGame) {
 				//There is no game winner
@@ -101,8 +102,8 @@ public class TopTrumpsRESTAPI {
 					map.put("roundWinnerName", "NA");
 					map.put("hasDraw", true);
 				}
-
-				map.put("userInGame",true);
+				map.put("hasGameWinner", false);
+				map.put("gameWinnerName", "NA");
 
 				//Add relevant stuff for game over as NA
 			} else {
@@ -121,22 +122,49 @@ public class TopTrumpsRESTAPI {
 				//There is a game winner
 				map.put("roundWinnerName", "NA");
 				map.put("hasDraw", "NA");
-				map.put("userInGame", false);
-				//Add relevant stuff for game over
+				map.put("hasGameWinner", true);
+				map.put("gameWinnerName", gameWinner.toString());
 			}
 		} else {
 			//There is a game winner
-
-			//copy is a game winner from above(refactor into method)
+			map.put("roundWinnerName", "NA");
+			map.put("hasDraw", "NA");
+			map.put("hasGameWinner", true);
+			map.put("gameWinnerName", gameWinner.toString());
 		}
 
+		String mapAsJSONString = oWriter.writeValueAsString(map);
+		return mapAsJSONString;
 	}
 
-	@GET
-	@Path("/initRound")
 	/**
 	 *
+	 * @return
+	 * @throws JsonProcessingException
 	 */
+	@GET
+	@Path("/getGameOverScores")
+	public String getGameOverScores() throws JsonProcessingException {
+		Player[] players = model.getPlayers();
+		ArrayList<HashMap<String, Object>> playerList = new ArrayList<>();
+		for(Player player: players) {
+			HashMap<String, Object> playerMap = new HashMap<>();
+			playerMap.put("name", player.toString());
+			playerMap.put("score", player.getRoundsWon());
+			playerList.add(playerMap);
+		}
+
+		String listAsJSONString = oWriter.writeValueAsString(playerList);
+		return listAsJSONString;
+	}
+
+	/**
+	 *
+	 * @return
+	 * @throws JsonProcessingException
+	 */
+	@GET
+	@Path("/initRound")
 	public String initRound() throws JsonProcessingException {
 
 		int roundNumber = model.getRoundNumber();
@@ -203,19 +231,19 @@ public class TopTrumpsRESTAPI {
 		return listAsJSONString;
 	}
 
-	@GET
-	@Path("/initGame")
 	/**
 	 * This method resets the game model with the given number of AI players.
 	 * It returns the string "OK".
+	 * @param numAiPlayers
+	 * @return
 	 */
+	@GET
+	@Path("/initGame")
 	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
 		model.reset(Integer.parseInt(numAiPlayers));
 		return "OK";
 	}
 
-	@GET
-	@Path("/retrieveStats")
 	/**
 	 * This method returns the game statistics as a JSON string.
 	 * Format :
@@ -226,7 +254,11 @@ public class TopTrumpsRESTAPI {
 	 * "tot_games_played": 7,
 	 * "max_rounds": 8
 	 * }
+	 * @return
+	 * @throws IOException
 	 */
+	@GET
+	@Path("/retrieveStats")
 	public String retrieveStats() throws IOException {
 
 		try {
