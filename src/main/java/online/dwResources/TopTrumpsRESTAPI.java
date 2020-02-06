@@ -71,39 +71,36 @@ public class TopTrumpsRESTAPI {
 	@Path("/playRoundWithAttribute")
 	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) throws JsonProcessingException {
 
-		Attribute selectedAttribute = new Attribute(attributeName, 0);
-		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
-		boolean hasRoundWinner;
-		if (roundWinner == null){
-			//Draw case
-			hasRoundWinner = false;
-		} else {
-			hasRoundWinner = true;
-		}
-
-		//Check for eliminations
-		model.checkToEliminate();
-		//Check for game winner
-		Player gameWinner = model.checkForWinner();
 		//Initialize map that will be returned as a JSON file.
 		HashMap<String, Object> map = new HashMap<>();
 
+		Attribute selectedAttribute = new Attribute(attributeName, 0);
+		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
+		if(roundWinner != null) {
+			map.put("roundWinnerName", roundWinner.toString());
+			map.put("hasDraw", false);
+		} else {
+			map.put("roundWinnerName", "NA");
+			map.put("hasDraw", true);
+		}
+
+		//Do eliminations
+		model.checkToEliminate();
 		boolean userInGame = model.userStillInGame();
+		map.put("userEliminated", !userInGame);
+
+		//Check for game winner
+		Player gameWinner = model.checkForWinner();
 		if(gameWinner == null) {
 			//There is no game winner
 
 			if(userInGame) {
 				//There is no game winner
 				//and the user is still in game
-				if(hasRoundWinner) {
-					map.put("roundWinnerName", roundWinner.toString());
-					map.put("hasDraw", false);
-				} else {
-					map.put("roundWinnerName", "NA");
-					map.put("hasDraw", true);
-				}
+
 				map.put("hasGameWinner", false);
 				map.put("gameWinnerName", "NA");
+				map.put("gameAutoCompleted", false);
 
 				//Add relevant stuff for game over as NA
 			} else {
@@ -118,19 +115,14 @@ public class TopTrumpsRESTAPI {
 					model.checkToEliminate();
 					gameWinner = model.checkForWinner();
 				}
-
 				//There is a game winner
-				map.put("roundWinnerName", "NA");
-				map.put("hasDraw", "NA");
-				map.put("hasGameWinner", true);
-				map.put("gameWinnerName", gameWinner.toString());
+				gameOver(map, gameWinner);
+				map.put("gameAutoCompleted", true);
 			}
 		} else {
 			//There is a game winner
-			map.put("roundWinnerName", "NA");
-			map.put("hasDraw", "NA");
-			map.put("hasGameWinner", true);
-			map.put("gameWinnerName", gameWinner.toString());
+			gameOver(map, gameWinner);
+			map.put("gameAutoCompleted", false);
 		}
 
 		String mapAsJSONString = oWriter.writeValueAsString(map);
@@ -281,5 +273,19 @@ public class TopTrumpsRESTAPI {
 		database.disconnect();
 
 		return listAsJSONString;
+	}
+
+	private void gameOver(HashMap<String, Object> map, Player gameWinner) {
+
+		map.put("hasGameWinner", true);
+		map.put("gameWinnerName", gameWinner.toString());
+
+		try {
+			database.connect();
+		} catch(SQLException e) {
+
+		}
+		database.uploadGameStats(model.getDraws(),model.getRoundNumber(),gameWinner.toString(),model.getPlayers());
+		database.disconnect();
 	}
 }
