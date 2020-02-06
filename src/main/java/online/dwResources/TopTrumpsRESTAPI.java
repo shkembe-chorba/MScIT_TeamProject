@@ -74,34 +74,6 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Information needed to initialise a round.
-	 * EXAMPLE:
-	 * 	{
-	 * 		"round": 1,
-	 *		"communalPileSize": 4,
-	 *		"chosenAttributeName": "strength"/"NA" , for an AI/USER
-	 *		"playersInGame" : [
-	 *			{
-	 *				"name": "USER",
-	 *				"isAI": false,
-	 *				"isActive": true,
-	 *				"deckSize": 10,
-	 *				"topCard": {
-	 *					"name": "TRex",
-	 *					"attributes": [
-	 *						{
-	 *							"name": "strength",
-	 *							"value": 5
-	 *						}
-	 *					]
-	 *				}
-	 *     		}
-	 * 		]
-	 * 	}
-	 * @return JSON string, containing all info needed to initialise a round.
-	 * @throws JsonProcessingException
-	 */
-	/**
 	 *
 	 * @param attributeName
 	 * @return
@@ -190,11 +162,34 @@ public class TopTrumpsRESTAPI {
 		return listAsJSONString;
 	}
 
-	/**
-	 *
-	 * @return
-	 * @throws JsonProcessingException
-	 */
+    /**
+     * Information needed to initialise a round.
+     * EXAMPLE:
+     * 	{
+     * 		"round": 1,
+     *		"communalPileSize": 4,
+     *		"chosenAttributeName": "strength"/"NA" , for an AI/USER
+     *		"playersInGame" : [
+     *			{
+     *				"name": "USER",
+     *				"isAI": false,
+     *				"isActive": true,
+     *				"deckSize": 10,
+     *				"topCard": {
+     *					"name": "TRex",
+     *					"attributes": [
+     *						{
+     *							"name": "strength",
+     *							"value": 5
+     *						}
+     *					]
+     *				}
+     *     		}
+     * 		]
+     * 	}
+     * @return JSON string, containing all info needed to initialise a round.
+     * @throws JsonProcessingException
+     */
 	@GET
 	@Path("/initRound")
 	public String initRound() throws JsonProcessingException {
@@ -288,29 +283,36 @@ public class TopTrumpsRESTAPI {
 	 * @param activePlayer player who will be playing in this round.
 	 * @return a list of maps. Each map contains info about 1 player.
 	 */
-	private ArrayList<HashMap<String, Object>> playersInGameToMap(ArrayList<Player> playersInGame, Player activePlayer){
-		ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> playersInGameToMap(ArrayList<Player> playersInGame, Player activePlayer) {
+        ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
 
-		for(Player player: playersInGame) {
-			HashMap<String, Object> playerMap = new HashMap<>();
-			if(player instanceof AIPlayer) {
-				playerMap.put("isAI", true);
-			} else {
-				playerMap.put("isAI", false);
-			}
-			if(player == activePlayer) {
-				playerMap.put("isActive", true);
-			} else {
-				playerMap.put("isActive", false);
-			}
-			playerMap.put("name", player.toString());
-			playerMap.put("deckSize", player.getDeckSize());
-			playerMap.put("topCard", topCardToMap(player));
+        for (Player player : playersInGame) {
+            HashMap<String, Object> playerMap = new HashMap<>();
+            if (player instanceof AIPlayer) {
+                playerMap.put("isAI", true);
+            } else {
+                playerMap.put("isAI", false);
+            }
+            if (player == activePlayer) {
+                playerMap.put("isActive", true);
+            } else {
+                playerMap.put("isActive", false);
+            }
+            playerMap.put("name", player.toString());
+            playerMap.put("deckSize", player.getDeckSize());
+            playerMap.put("topCard", topCardToMap(player));
 
-			playersInGameMaps.add(playerMap);
-		}
-		return playersInGameMaps;
-	private void gameOver(HashMap<String, Object> map, Player gameWinner) {
+            playersInGameMaps.add(playerMap);
+        }
+        return playersInGameMaps;
+    }
+
+    /**
+     *
+     * @param map
+     * @param gameWinner
+     */
+    private void gameOver(HashMap<String, Object> map, Player gameWinner) {
 
 		map.put("hasGameWinner", true);
 		map.put("gameWinnerName", gameWinner.toString());
