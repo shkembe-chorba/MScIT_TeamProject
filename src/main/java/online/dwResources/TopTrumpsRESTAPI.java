@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -61,65 +60,63 @@ public class TopTrumpsRESTAPI {
 	// API methods
 	// ----------------------------------------------------
 
+	/**
+	 * Initialises the game.
+	 * @param numAiPlayers chosen number of AI players.
+	 * @return "OK"
+	 */
+	@GET
+	@Path("/initGame")
+	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
+		model.reset(Integer.parseInt(numAiPlayers));
+		return "OK";
+	}
+
+	/**
+	 * Information needed to initialise a round.
+	 * EXAMPLE:
+	 * 	{
+	 * 		"round": 1,
+	 *		"communalPileSize": 4,
+	 *		"chosenAttributeName": "strength"/"NA" , for an AI/USER
+	 *		"playersInGame" : [
+	 *			{
+	 *				"name": "USER",
+	 *				"isAI": false,
+	 *				"isActive": true,
+	 *				"deckSize": 10,
+	 *				"topCard": {
+	 *					"name": "TRex",
+	 *					"attributes": [
+	 *						{
+	 *							"name": "strength",
+	 *							"value": 5
+	 *						}
+	 *					]
+	 *				}
+	 *     		}
+	 * 		]
+	 * 	}
+	 * @return JSON string, containing all info needed to initialise a round.
+	 * @throws JsonProcessingException
+	 */
 	@GET
 	@Path("/initRound")
-	/**
-	 *
-	 */
 	public String initRound() throws JsonProcessingException {
+		// Map that will contain all relevant info to initialise a round.
+		HashMap<String, Object> roundInfoMap = new HashMap<>();
 
 		int roundNumber = model.getRoundNumber();
 		int communalPileSize = model.getCommunalPileSize();
 		Player activePlayer = model.getActivePlayer();
 		ArrayList<Player> playersInGame = model.getPlayersInGame();
 		Attribute aiChosenAttribute = null;
-
 		if(activePlayer instanceof AIPlayer) {
 			aiChosenAttribute = ((AIPlayer) activePlayer).chooseAttribute();
 		}
 
-		HashMap<String, Object> roundInfoMap = new HashMap<>();
-		ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
-		for(Player player: playersInGame) {
-			HashMap<String, Object> playerMap = new HashMap<>();
-
-			playerMap.put("name", player.toString());
-
-			if(player instanceof AIPlayer) {
-				playerMap.put("isAI", true);
-			} else {
-				playerMap.put("isAI", false);
-			}
-
-			if(player == activePlayer) {
-				playerMap.put("isActive", true);
-			} else {
-				playerMap.put("isActive", false);
-			}
-
-			playerMap.put("deckSize", player.getDeckSize());
-
-			HashMap<String, Object> topCardMap = new HashMap<>();
-
-			topCardMap.put("name",player.peekCard().getName());
-
-			ArrayList<HashMap<String, Object>> attributes = new ArrayList<>();
-
-			for(Attribute attribute: player.peekCard().getAttributes()) {
-				HashMap<String, Object> attributeMap = new HashMap<>();
-				attributeMap.put("name", attribute.getName());
-				attributeMap.put("value", attribute.getValue());
-				attributes.add(attributeMap);
-			}
-
-			topCardMap.put("attributes", attributes);
-
-			playerMap.put("topCard", topCardMap);
-
-			playersInGameMaps.add(playerMap);
-		}
-		roundInfoMap.put("playersInGame", playersInGameMaps);
-
+		// uses playersInGameToMap() helper method that returns a List of Maps with info for all players in game.
+		roundInfoMap.put("playersInGame", playersInGameToMap(playersInGame, activePlayer));
 		roundInfoMap.put("round", roundNumber);
 		roundInfoMap.put("communalPileSize", communalPileSize);
 		if(aiChosenAttribute != null) {
@@ -127,37 +124,27 @@ public class TopTrumpsRESTAPI {
 		} else {
 			roundInfoMap.put("chosenAttributeName", "NA");
 		}
-
-		String listAsJSONString = oWriter.writeValueAsString(roundInfoMap);
-		return listAsJSONString;
+		// converts the map to a JSON string.
+		String mapAsJSONString = oWriter.writeValueAsString(roundInfoMap);
+		return mapAsJSONString;
 	}
 
-	@GET
-	@Path("/initGame")
 	/**
-	 * This method resets the game model with the given number of AI players.
-	 * It returns the string "OK".
+	 * Game statistics as a JSON string.
+	 * Format :
+	 * 	 	{
+	 * 	  		"ai_wins": 5,
+	 * 	  		"user_wins": 3,
+	 * 	 		"avg_draws": 4,
+	 * 	  		"tot_games_played": 7,
+	 * 	  		"max_rounds": 8
+	 * 	  	}
+	 * @return
+	 * @throws IOException
 	 */
-	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
-		model.reset(Integer.parseInt(numAiPlayers));
-		return "OK";
-	}
-
 	@GET
 	@Path("/retrieveStats")
-	/**
-	 * This method returns the game statistics as a JSON string.
-	 * Format :
-	 * {
-	 * "ai_wins": 5,
-	 * "user_wins": 3,
-	 * "avg_draws": 4,
-	 * "tot_games_played": 7,
-	 * "max_rounds": 8
-	 * }
-	 */
 	public String retrieveStats() throws IOException {
-
 		try {
 			database.connect();
 		} catch(SQLException e) {
@@ -180,17 +167,85 @@ public class TopTrumpsRESTAPI {
 		return listAsJSONString;
 	}
 
-	@GET
-	@Path("/helloWord")
 	/**
-	 * Here is an example of how to read parameters provided in an HTML Get request.
-	 * 
-	 * @param Word - A word
-	 * @return - A String
-	 * @throws IOException
+	 * Helper method. List of maps; Each map contains info about 1 player.
+	 * Used in the initRound method.
+	 *
+	 * EXAMPLE with 1 player still in game, the list contains 1 map for the player: "USER".
+	 * playersInGame : [
+	 *		{
+	 *			"name": "USER",
+	 * 			"isAI": false,
+	 *			"isActive": true,
+	 *			"deckSize": 10,
+	 *			"topCard": {
+	 *				"name": "TRex",
+	 *				"attributes": [
+	 *					{
+	 *						"name": "strength",
+	 *						"value": 5
+	 *					}
+	 *				]
+	 *			}
+	 *		}
+	 *	]
+	 * @param playersInGame list of all players still in game (not eliminated)
+	 * @param activePlayer player who will be playing in this round.
+	 * @return a list of maps. Each map contains info about 1 player.
 	 */
-	public String helloWord(@QueryParam("Work") String Word) throws IOException {
-		return "Hello " + Word;
+	private ArrayList<HashMap<String, Object>> playersInGameToMap(ArrayList<Player> playersInGame, Player activePlayer){
+		ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
+
+		for(Player player: playersInGame) {
+			HashMap<String, Object> playerMap = new HashMap<>();
+			if(player instanceof AIPlayer) {
+				playerMap.put("isAI", true);
+			} else {
+				playerMap.put("isAI", false);
+			}
+			if(player == activePlayer) {
+				playerMap.put("isActive", true);
+			} else {
+				playerMap.put("isActive", false);
+			}
+			playerMap.put("name", player.toString());
+			playerMap.put("deckSize", player.getDeckSize());
+			playerMap.put("topCard", topCardToMap(player));
+
+			playersInGameMaps.add(playerMap);
+		}
+		return playersInGameMaps;
 	}
 
+	/**
+	 * Helper method. Takes a Player and returns a map for their topCard contents.
+	 * Used in playersInGameToMap()
+	 * EXAMPLE CONTENTS:
+	 * topCard: {
+	 * 	 		"name": "TRex",
+	 * 	 		"attributes": [
+	 * 	 					{
+	 * 	 					"name": "strength",
+	 * 	 					"value": 5
+	 * 	 					}
+	 * 	 				]
+	 * 	 			}
+	 * @param player
+	 * @return
+	 */
+	private HashMap<String, Object> topCardToMap (Player player){
+		HashMap<String, Object> topCardMap = new HashMap<>();
+		topCardMap.put("name",player.peekCard().getName());
+
+		ArrayList<HashMap<String, Object>> attributes = new ArrayList<>();
+		for(Attribute attribute: player.peekCard().getAttributes()) {
+			HashMap<String, Object> attributeMap = new HashMap<>();
+			attributeMap.put("name", attribute.getName());
+			attributeMap.put("value", attribute.getValue());
+			attributes.add(attributeMap);
+		}
+		topCardMap.put("attributes", attributes);
+
+		return topCardMap;
+	}
 }
