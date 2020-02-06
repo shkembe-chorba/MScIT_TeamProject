@@ -61,6 +61,77 @@ public class TopTrumpsRESTAPI {
 	// API methods
 	// ----------------------------------------------------
 
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	@GET
+	@Path("/playRoundWithAttribute")
+	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) {
+
+		Attribute selectedAttribute = new Attribute(attributeName, 0);
+		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
+		boolean hasRoundWinner;
+		if (roundWinner == null){
+			//Draw case
+			hasRoundWinner = false;
+		} else {
+			hasRoundWinner = true;
+		}
+
+		//Check for eliminations
+		model.checkToEliminate();
+		//Check for game winner
+		Player gameWinner = model.checkForWinner();
+		//Initialize map that will be returned as a JSON file.
+		HashMap<String, Object> map = new HashMap<>();
+
+		if(gameWinner == null) {
+			//There is no game winner
+			boolean userInGame = model.userStillInGame();
+
+			if(userInGame) {
+				//There is no game winner
+				//and the user is still in game
+				if(hasRoundWinner) {
+					map.put("roundWinnerName", roundWinner.toString());
+					map.put("hasDraw", false);
+				} else {
+					map.put("roundWinnerName", "NA");
+					map.put("hasDraw", true);
+				}
+
+				map.put("userInGame",true);
+
+				//Add relevant stuff for game over as NA
+			} else {
+				//There is no game winner
+				//and the user was eliminated
+
+				//Finish game without user input
+				while(gameWinner == null) {
+					Player activePlayer = model.getActivePlayer();
+					selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
+					model.playRoundWithAttribute(selectedAttribute);
+					model.checkToEliminate();
+					gameWinner = model.checkForWinner();
+				}
+
+				//There is a game winner
+				map.put("roundWinnerName", "NA");
+				map.put("hasDraw", "NA");
+				map.put("userInGame", false);
+				//Add relevant stuff for game over
+			}
+		} else {
+			//There is a game winner
+
+			//copy is a game winner from above(refactor into method)
+		}
+
+	}
+
 	@GET
 	@Path("/initRound")
 	/**
@@ -179,18 +250,4 @@ public class TopTrumpsRESTAPI {
 
 		return listAsJSONString;
 	}
-
-	@GET
-	@Path("/helloWord")
-	/**
-	 * Here is an example of how to read parameters provided in an HTML Get request.
-	 * 
-	 * @param Word - A word
-	 * @return - A String
-	 * @throws IOException
-	 */
-	public String helloWord(@QueryParam("Work") String Word) throws IOException {
-		return "Hello " + Word;
-	}
-
 }
