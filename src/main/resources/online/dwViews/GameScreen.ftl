@@ -54,9 +54,7 @@
 		});
 
 		// Add every player to the card decks element
-		players.attach("#card-decks");
-
-
+		players.forEach(p => p.attach("#card-decks"));
 
 		// Method that is called on page load
 		function initalize() {

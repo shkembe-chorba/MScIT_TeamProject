@@ -120,10 +120,10 @@ const PlayerFactory = playerObj => {
       $(container).append($player);
     },
     hideCard: () => {
-      $player.find('.card-hider').addClass('card-hider-show');
+      $player.find('.card-hider').addClass('card-hider-hide');
     },
     showCard: () => {
-      $player.find('.card-hider').removeClass('card-hider-show');
+      $player.find('.card-hider').removeClass('card-hider-hide');
     },
   };
 

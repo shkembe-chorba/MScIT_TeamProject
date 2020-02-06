@@ -7,11 +7,11 @@
     z-index: 100;
     left: 0;
     top: 0;
-    visibility: visible;
+    visibility: hidden;
 }
 
-.card-hider-show {
-    visibility: hidden;
+.card-hider-hide {
+    visibility: visible;
 }
 
 /* This is needed to ensure the card hider doesn't cover the card header (which has player info) */
