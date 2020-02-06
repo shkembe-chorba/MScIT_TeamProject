@@ -1,127 +1,121 @@
 <html>
 
-	<head>
-		<!-- Web page title -->
-    	<title>Top Trumps</title>
-    	
-    	<!-- Import JQuery, as it provides functions you will probably find useful (see https://jquery.com/) -->
-    	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
-    	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-    	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
+<head>
+    <title>Top Trumps</title>
 
-		<!-- Optional Styling of the Website, for the demo I used Bootstrap (see https://getbootstrap.com/docs/4.0/getting-started/introduction/) -->
-		<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/TREC_IS/bootstrap.min.css">
-    	<script src="http://dcs.gla.ac.uk/~richardm/vex.combined.min.js"></script>
-    	<script>vex.defaultOptions.className = 'vex-theme-os';</script>
-    	<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/assets/stylesheets/vex.css"/>
-    	<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/assets/stylesheets/vex-theme-os.css"/>
-    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
 
-	</head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
-    	
-    	<div class="container">
+</head>
 
-			<!-- Add your HTML Here -->
-		
-		</div>
-		
-		<script type="text/javascript">
-		
-			// Method that is called on page load
-			function initalize() {
-			
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
-				
-				// For example, lets call our sample methods
-				helloJSONList();
-				helloWord("Student");
-				
-			}
-			
-			// -----------------------------------------
-			// Add your other Javascript methods Here
-			// -----------------------------------------
-		
-			// This is a reusable method for creating a CORS request. Do not edit this.
-			function createCORSRequest(method, url) {
-  				var xhr = new XMLHttpRequest();
-  				if ("withCredentials" in xhr) {
+<body onload="initalize() ">
 
-    				// Check if the XMLHttpRequest object has a "withCredentials" property.
-    				// "withCredentials" only exists on XMLHTTPRequest2 objects.
-    				xhr.open(method, url, true);
+<div class="container">
+    <div class="pb-2 mt-4 mb-10 border-bottom">
+        <a class="btn btn-outline-primary btn-lg" href="/toptrumps/game" role="button">Home</a>
+    </div>
 
-  				} else if (typeof XDomainRequest != "undefined") {
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="p-3">
+                    <h1> Game Statistics </h1>
+                </div>
+            </div>
+            <div class="row justify-content-md-center"><br>
+                <h3 > Games played:&nbsp</h3> <h3 id="gamesPlayed">  </h3> </div>
+            </div><br>
+            <div class="row justify-content-md-center">
+                <h3> Won by human:&nbsp </h3><h3 id=humanWins></h3>  </h3>
+            </div><br>
+            <div class="row justify-content-md-center">
 
-    				// Otherwise, check if XDomainRequest.
-    				// XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    				xhr = new XDomainRequest();
-    				xhr.open(method, url);
+                    <h3> Won by AI:&nbsp</h3> <h3 id="aiWins"></h3> </h3>
+                </div><br>
+            <div class="row justify-content-md-center">
+                <br>
+                    <h3> Average number of draws in game:&nbsp
+                        <h3 id="drawNumber"></h3> </h3>
+            </div><br>
+            <div class="row justify-content-md-center">
+                    <h3> Longest game played:&nbsp <h3 id="maxGame"></h3> </h3>
+                </div>
+            </div>
 
- 				 } else {
 
-    				// Otherwise, CORS is not supported by the browser.
-    				xhr = null;
+        </div>
+    </div>
 
-  				 }
-  				 return xhr;
-			}
-		
-		</script>
-		
-		<!-- Here are examples of how to call REST API Methods -->
-		<script type="text/javascript">
-		
-			// This calls the helloJSONList REST method from TopTrumpsRESTAPI
-			function helloJSONList() {
-			
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloJSONList"); // Request type and URL
-				
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-  					alert("CORS not supported");
-				}
+</div>
 
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives 
-				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
-				};
-				
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();		
-			}
-			
-			// This calls the helloJSONList REST method from TopTrumpsRESTAPI
-			function helloWord(word) {
-			
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?Word="+word); // Request type and URL+parameters
-				
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-  					alert("CORS not supported");
-				}
 
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives 
-				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
-				};
-				
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();		
-			}
 
-		</script>
-		
-		</body>
+
+
+
+
+
+
+<script type="text/javascript">
+    // Method that is called on page load and initializes the statistics displayed on screen
+    function initalize() { loadStatistics() }
+</script>
+
+<script type="text/javascript">
+
+
+
+    function loadStatistics() {
+        const statsObject = retrieveStatistics();
+        $("#gamesPlayed").text(statsObject.tot_games_played);
+        $("#humanWins").text(statsObject.user_wins);
+        $("#drawNumber").text(statsObject.avg_draws);
+        $("#aiWins").text(statsObject.ai_wins);
+        $("#maxGame").text(statsObject.max_rounds);
+    }
+    /**
+     * This function returns the game statistics as a javascript object/dictionary.
+     * Format :
+     * {
+     * "ai_wins": 5,
+     * "user_wins": 3,
+     * "avg_draws": 4,
+     * "tot_games_played": 7,
+     * "max_rounds": 8
+     * }
+     */
+    function retrieveStatistics() {
+
+        // First create a CORS request, this is the message we are going to send (a get request in this case)
+        var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/retrieveStats"); // Request type and URL
+
+        // Message is not sent yet, but we can check that the browser supports CORS
+        if (!xhr) {
+            alert("CORS not supported");
+        }
+        // CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
+        // to do when the response arrives
+        xhr.onload = function(e) {
+            var responseText = xhr.response; // the text of the response
+            return JSON.parse(responseText);
+        };
+        // We have done everything we need to prepare the CORS request, so send it
+        xhr.send();
+    }
+
+</script>
+
+</body>
+
 </html>
