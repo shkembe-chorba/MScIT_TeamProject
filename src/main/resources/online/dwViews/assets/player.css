@@ -1,0 +1,20 @@
+/* Styling for a 'card cover' that masks the card's attributes */
+.card-hider {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rebeccapurple;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    visibility: visible;
+}
+
+.card-hider-show {
+    visibility: hidden;
+}
+
+/* This is needed to ensure the card hider doesn't cover the card header (which has player info) */
+.card-body {
+    position: relative;
+}
