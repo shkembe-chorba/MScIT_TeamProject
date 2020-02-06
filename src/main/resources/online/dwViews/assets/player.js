@@ -41,7 +41,7 @@ const TEST_JSON = {
   ],
 };
 
-const attributeFactory = attribute => {
+const attributeTemplate = attribute => {
   return `
       <li class="list-group-item d-flex justify-content-between align-items-center">
         ${attribute.name}
@@ -50,7 +50,7 @@ const attributeFactory = attribute => {
     `;
 };
 
-const cardFactory = card => {
+const cardTemplate = card => {
   return `
     <div class="card-body">
 
@@ -65,13 +65,13 @@ const cardFactory = card => {
         <h4 class="card-title">${card.name}</h4>
 
         <ul class="list-group list-group-flush">
-            ${card.attributes.map(a => attributeFactory(a))}
+            ${card.attributes.map(a => attributeTemplate(a))}
         </ul>
     </div>
     `;
 };
 
-const playerFactory = player => {
+const playerTemplate = player => {
   return `
     <div class="card">
       <div class="card-header">
@@ -94,7 +94,38 @@ const playerFactory = player => {
             </div>
         </div>
     </div>
-    ${cardFactory(player.card)}
+    ${cardTemplate(player.card)}
   </div>
     `;
+};
+
+const PlayerFactory = playerObj => {
+  // Store an internal reference to the overall player object via passed in variable
+
+  // PRIVATE VARIABLES / Constructor (Uses a closure):
+  // -----------------------
+  // Create a jquery reference inside this 'class' as a private member (using closure)
+  const $player = $(playerTemplate(playerObj));
+
+  // Returns an object of this 'Class' with the public methods below:
+  const Player = {
+    getObject: () => {
+      return playerObj;
+    },
+    isUser: () => {
+      return playerObj.isAI ? false : true;
+    },
+    // Add to a dom element (by ID or class)
+    attach: container => {
+      $(container).append($player);
+    },
+    hideCard: () => {
+      $player.find('.card-hider').addClass('card-hider-show');
+    },
+    showCard: () => {
+      $player.find('.card-hider').removeClass('card-hider-show');
+    },
+  };
+
+  return Player;
 };
