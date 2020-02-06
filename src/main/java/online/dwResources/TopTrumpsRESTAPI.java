@@ -12,11 +12,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import model.Database;
-import model.GameModel;
-import model.RetrievedGameStatistics;
+import model.*;
 import online.configuration.TopTrumpsJSONConfiguration;
 
 @Path("/toptrumps") // Resources specified here should be hosted at http://localhost:7777/toptrumps
@@ -62,12 +62,83 @@ public class TopTrumpsRESTAPI {
 	// ----------------------------------------------------
 
 	@GET
-	@Path("/resetGameModel")
+	@Path("/initRound")
+	/**
+	 *
+	 */
+	public String initRound() throws JsonProcessingException {
+
+		int roundNumber = model.getRoundNumber();
+		int communalPileSize = model.getCommunalPileSize();
+		Player activePlayer = model.getActivePlayer();
+		ArrayList<Player> playersInGame = model.getPlayersInGame();
+		Attribute aiChosenAttribute = null;
+
+		if(activePlayer instanceof AIPlayer) {
+			aiChosenAttribute = ((AIPlayer) activePlayer).chooseAttribute();
+		}
+
+		HashMap<String, Object> roundInfoMap = new HashMap<>();
+		ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
+		for(Player player: playersInGame) {
+			HashMap<String, Object> playerMap = new HashMap<>();
+
+			playerMap.put("name", player.toString());
+
+			if(player instanceof AIPlayer) {
+				playerMap.put("isAI", true);
+			} else {
+				playerMap.put("isAI", false);
+			}
+
+			if(player == activePlayer) {
+				playerMap.put("isActive", true);
+			} else {
+				playerMap.put("isActive", false);
+			}
+
+			playerMap.put("deckSize", player.getDeckSize());
+
+			HashMap<String, Object> topCardMap = new HashMap<>();
+
+			topCardMap.put("name",player.peekCard().getName());
+
+			ArrayList<HashMap<String, Object>> attributes = new ArrayList<>();
+
+			for(Attribute attribute: player.peekCard().getAttributes()) {
+				HashMap<String, Object> attributeMap = new HashMap<>();
+				attributeMap.put("name", attribute.getName());
+				attributeMap.put("value", attribute.getValue());
+				attributes.add(attributeMap);
+			}
+
+			topCardMap.put("attributes", attributes);
+
+			playerMap.put("topCard", topCardMap);
+
+			playersInGameMaps.add(playerMap);
+		}
+		roundInfoMap.put("playersInGame", playersInGameMaps);
+
+		roundInfoMap.put("round", roundNumber);
+		roundInfoMap.put("communalPileSize", communalPileSize);
+		if(aiChosenAttribute != null) {
+			roundInfoMap.put("chosenAttributeName", aiChosenAttribute.getName());
+		} else {
+			roundInfoMap.put("chosenAttributeName", "NA");
+		}
+
+		String listAsJSONString = oWriter.writeValueAsString(roundInfoMap);
+		return listAsJSONString;
+	}
+
+	@GET
+	@Path("/initGame")
 	/**
 	 * This method resets the game model with the given number of AI players.
 	 * It returns the string "OK".
 	 */
-	public String resetGameModel(@QueryParam("NumAiPlayers") String numAiPlayers) {
+	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
 		model.reset(Integer.parseInt(numAiPlayers));
 		return "OK";
 	}
@@ -93,16 +164,16 @@ public class TopTrumpsRESTAPI {
 
 		}
 		RetrievedGameStatistics stats = database.retrieveGameStats();
-		HashMap<String,Object> map = new HashMap<>();
-		map.put("ai_wins",stats.getGamesWonByAi());
-		map.put("user_wins",stats.getGamesWonByUser());
-		map.put("avg_draws",stats.getAvgDraws());
-		map.put("tot_games_played", stats.getTotalGamesPlayed());
-		map.put("max_rounds", stats.getMaxRounds());
+		HashMap<String,Object> statsMap = new HashMap<>();
+		statsMap.put("ai_wins",stats.getGamesWonByAi());
+		statsMap.put("user_wins",stats.getGamesWonByUser());
+		statsMap.put("avg_draws",stats.getAvgDraws());
+		statsMap.put("tot_games_played", stats.getTotalGamesPlayed());
+		statsMap.put("max_rounds", stats.getMaxRounds());
 
 		// We can turn arbatory Java objects directly into JSON strings using
 		// Jackson seralization, assuming that the Java objects are not too complex.
-		String listAsJSONString = oWriter.writeValueAsString(map);
+		String listAsJSONString = oWriter.writeValueAsString(statsMap);
 
 		database.disconnect();
 

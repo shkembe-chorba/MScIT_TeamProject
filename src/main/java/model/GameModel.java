@@ -262,4 +262,6 @@ public class GameModel {
     public Player[] getPlayers() {
         return players;
     }
+
+    public ArrayList<Player> getPlayersInGame() {return playersInGame;}
 }
