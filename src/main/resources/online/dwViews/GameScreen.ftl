@@ -2,6 +2,7 @@
 
 <#include "./assets/ftl-templates/Head.ftl">
 <#include "./assets/ftl-templates/Modal.ftl">
+<<#include "./assets/ftl-templates/DropDown.ftl">
 	<body onload="initalize()">
 
 		<div class="container">
@@ -13,8 +14,11 @@
 							<h4>Game round X</h4>
 						</div>
 					</div>
+
 					<div class="row justify-content-md-center">
-						<button type="button" class="btn btn-lg">Play round</button>
+						<button type="button" id="buttonRound" class="btn btn-primary">
+						</button>
+
 						<div class="card" style="width: 40rem;text-align:center">
 							<div class="card-body">
 								<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
@@ -41,6 +45,7 @@
 				setupNewGameModal();
 				// Show the new game modal
 				$(NEW_GAME_MODAL).modal('show');
+				setupRoundButton();
 			}
 
 			// New Game Modal:
@@ -63,9 +68,10 @@
 					// Call the api
 					apiInitGame(numAiPlayers, setupRound)
 					$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
+					setupRoundButton();
 				});
 			}
-			
+
 				function setupRound() {
 					apiInitRound((obj) => {
 						players = obj.playersInGame.map(p => {
@@ -74,6 +80,20 @@
 						players.forEach(p => p.attach("#card-decks"));
 					})
 			}
+
+
+			// SET UP ROUND BUTTON
+			const ROUND_BUTTON = "#buttonRound";
+			function setupRoundButton() {
+				$(ROUND_BUTTON).text("Play round");
+
+				$(ROUND_BUTTON).click(() => {
+					$(“.card-deck”).empty();
+					setupRound();
+
+			})
+			}
+
 		</script>
 
 
