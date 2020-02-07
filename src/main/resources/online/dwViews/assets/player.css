@@ -1,3 +1,7 @@
+.card {
+    max-width: 200px;
+}
+
 /* Styling for a 'card cover' that masks the card's attributes */
 .card-hider {
     position: absolute;

@@ -112,6 +112,9 @@ const PlayerFactory = playerObj => {
     getObject: () => {
       return playerObj;
     },
+    getJqueryObject: () => {
+      return $player;
+    },
     isUser: () => {
       return playerObj.isAI ? false : true;
     },
