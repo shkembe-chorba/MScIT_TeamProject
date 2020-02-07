@@ -25,16 +25,20 @@
 						</div>
 					</div>
 					<br>
+
 					<!-- The Player Card Deck Wrapper -->
 					<div id="card-decks" class="card-deck">
 					</div>
 			</div>
+
 			<!-- Import our Pseudo Player class and style sheet -->
 			<link rel="stylesheet" href="assets/components/Player/player.css" />
 			<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
 			<!-- Import API -->
 			<script type="text/javascript" src="./assets/api/api.js"> </script>
+
+
 			<script type="text/javascript">
 				// CALL ALL SETUP FUNCTIONS HERE
 				function initalize() {
@@ -68,10 +72,29 @@
 				}
 
 				function setupRound() {
-					apiInitRound((obj) => {
-						players = obj.playersInGame.map(p => {
+					apiInitRound((resultApi) => {
+						// destroy all player cards in the wrapper
+						$("#card-decks").empty();
+
+						// Creates a variable by 'destructuring' the api object
+						const {
+							playersInGame
+						} = resultApi;
+
+						// Create player objects.
+						const players = playersInGame.map(p => {
 							return PlayerFactory(p);
 						})
+
+						// Get User
+						const user = players.filter(p => p.isUser())[0];
+						// Get AI Player array
+						const ais = players.filter(p => !p.isUser());
+
+						// Hide the ais cards.
+						ais.forEach(ai => ai.hideCard());
+
+						// Attach the card to the screen.
 						players.forEach(p => p.attach("#card-decks"));
 					})
 				}
