@@ -15,12 +15,12 @@
 						</div>
 						<div class="row justify-content-md-center ">
 							<div class="col-auto p-3">
-								<a class="btn btn-outline-primary btn-lg" href="./game" role="button">Game</a>
+								<a class="btn btn-outline-primary btn-lg" href="/toptrumps/game" role="button">Game</a>
 							</div>
 						</div>
 						<div class="row justify-content-md-center">
 							<div class="col-auto">
-								<a class="btn btn-outline-primary btn-lg" href="./stats" role="button">Statistics</a>
+								<a class="btn btn-outline-primary btn-lg" href="/toptrumps/stats" role="button">Statistics</a>
 							</div>
 						</div>
 
