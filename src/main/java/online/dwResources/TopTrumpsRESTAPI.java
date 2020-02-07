@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -82,12 +81,11 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/playRoundWithAttribute")
 	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) throws JsonProcessingException {
-
 		//Initialize map that will be returned as a JSON file.
 		HashMap<String, Object> map = new HashMap<>();
-
 		Attribute selectedAttribute = new Attribute(attributeName, 0);
 		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
+
 		if(roundWinner != null) {
 			map.put("roundWinnerName", roundWinner.toString());
 			map.put("hasDraw", false);
@@ -96,50 +94,30 @@ public class TopTrumpsRESTAPI {
 			map.put("hasDraw", true);
 		}
 
-		//Do eliminations
 		model.checkToEliminate();
 		boolean userInGame = model.userStillInGame();
 		map.put("userEliminated", !userInGame);
 
-		//Check for game winner
 		Player gameWinner = model.checkForWinner();
 		if(gameWinner == null) {
-			//There is no game winner
-
 			if(userInGame) {
-				//There is no game winner
-				//and the user is still in game
-
 				map.put("hasGameWinner", false);
 				map.put("gameWinnerName", "NA");
 				map.put("gameAutoCompleted", false);
-
-				//Add relevant stuff for game over as NA
 			} else {
-				//There is no game winner
-				//and the user was eliminated
-
-				//Finish game without user input
-				while(gameWinner == null) {
-					Player activePlayer = model.getActivePlayer();
-					selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
-					model.playRoundWithAttribute(selectedAttribute);
-					model.checkToEliminate();
-					gameWinner = model.checkForWinner();
-				}
-				//There is a game winner
+				autoCompleteGame(gameWinner, selectedAttribute);
 				gameOver(map, gameWinner);
 				map.put("gameAutoCompleted", true);
 			}
 		} else {
-			//There is a game winner
 			gameOver(map, gameWinner);
 			map.put("gameAutoCompleted", false);
 		}
-
 		String mapAsJSONString = oWriter.writeValueAsString(map);
 		return mapAsJSONString;
 	}
+
+
 
 	/**
 	 *
@@ -307,16 +285,41 @@ public class TopTrumpsRESTAPI {
         return playersInGameMaps;
     }
 
+	/**
+	 * Plays the game between AIs until there is a winner.
+	 * @param gameWinner
+	 * @param selectedAttribute
+	 */
+	private void autoCompleteGame(Player gameWinner, Attribute selectedAttribute){
+		while(gameWinner == null) {
+			Player activePlayer = model.getActivePlayer();
+			selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
+			model.playRoundWithAttribute(selectedAttribute);
+			model.checkToEliminate();
+			gameWinner = model.checkForWinner();
+		}
+	}
+
     /**
-     *
+	 * Takes a map and adds to it winner information. Uploads Game Statistics to database.
+     * EXAMPLE: {
+	 * 			"hasGameWinner": true
+	 * 			"gameWinnerName": AI1
+	 * 			}
      * @param map
      * @param gameWinner
      */
     private void gameOver(HashMap<String, Object> map, Player gameWinner) {
-
 		map.put("hasGameWinner", true);
 		map.put("gameWinnerName", gameWinner.toString());
+		uploadGameStats(gameWinner);
+	}
 
+	/**
+	 * Uploads Game Statistics to the database.
+	 * @param gameWinner
+	 */
+	private void uploadGameStats(Player gameWinner){
 		try {
 			database.connect();
 		} catch(SQLException e) {
