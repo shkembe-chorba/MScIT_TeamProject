@@ -73,7 +73,16 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 *
+	 * Obtains a JSON string for the play round with attribute.
+	 * EXAMPLE:
+	 * 	{
+	 * 	    "roundWinnerName": "USER"
+	 * 	    "hasDraw": false
+	 * 	    "userEliminated": true
+	 * 	    "hasGameWinner": false
+	 * 	    "gameWinnerName": "NA"
+	 * 	    "gameAutocompleted": false
+	 * 	}
 	 * @param attributeName
 	 * @return
 	 * @throws JsonProcessingException
@@ -93,7 +102,6 @@ public class TopTrumpsRESTAPI {
 			map.put("roundWinnerName", "NA");
 			map.put("hasDraw", true);
 		}
-
 		model.checkToEliminate();
 		boolean userInGame = model.userStillInGame();
 		map.put("userEliminated", !userInGame);
@@ -117,11 +125,20 @@ public class TopTrumpsRESTAPI {
 		return mapAsJSONString;
 	}
 
-
-
 	/**
-	 *
-	 * @return
+	 * Obtains the won rounds for every player during the game.
+	 * [
+	 *     {
+	 *     	"name": "USER",
+	 *      "score": 15,
+	 *      },
+	 *      {
+	 *      name: "AI1",
+	 *      "score", 10
+	 *      }
+	 *      ...
+	 * ]
+	 * @return json string with names and rounds won
 	 * @throws JsonProcessingException
 	 */
 	@GET
@@ -135,7 +152,6 @@ public class TopTrumpsRESTAPI {
 			playerMap.put("score", player.getRoundsWon());
 			playerList.add(playerMap);
 		}
-
 		String listAsJSONString = oWriter.writeValueAsString(playerList);
 		return listAsJSONString;
 	}
@@ -301,6 +317,7 @@ public class TopTrumpsRESTAPI {
 	}
 
     /**
+	 * Helper method.
 	 * Takes a map and adds to it winner information. Uploads Game Statistics to database.
      * EXAMPLE: {
 	 * 			"hasGameWinner": true
@@ -316,7 +333,7 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Uploads Game Statistics to the database.
+	 * Helper Method. Uploads Game Statistics to the database.
 	 * @param gameWinner
 	 */
 	private void uploadGameStats(Player gameWinner){
