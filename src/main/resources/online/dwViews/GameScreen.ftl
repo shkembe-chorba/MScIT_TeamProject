@@ -7,6 +7,24 @@
 		<div class="container">
 			<#include "./assets/ftl-templates/Nav.ftl">
 
+            <div class="container pt-3">
+                <div class="row">
+                    <div class="col">
+                        <h4>Game round X</h4>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <button type="button" class="btn btn-lg">Play round</button>
+                    <div class="card" style="width: 40rem;text-align:center">
+                        <div class="card-body">
+                            <h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
+                            <h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 				<!-- The Player Card Deck Wrapper -->
 				<div id="card-decks" class="card-deck">
 				</div>
