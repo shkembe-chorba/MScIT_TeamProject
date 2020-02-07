@@ -56,13 +56,13 @@
 			<version>${dropwizard.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.dropwizard/dropwizard-assets -->
+		<!-- Add folder for assets to use in ftl files
+		https://mvnrepository.com/artifact/io.dropwizard/dropwizard-assets -->
 		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-assets</artifactId>
 			<version>${dropwizard.version}</version>
 		</dependency>
-
 
 		<!-- One of the requirements is to save results in a (mysql) database, so lets import the
 	     database connection driver libruary for that as well -->

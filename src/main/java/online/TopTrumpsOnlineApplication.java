@@ -1,6 +1,5 @@
 package online;
 
-
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -83,7 +82,8 @@ public class TopTrumpsOnlineApplication extends Application<TopTrumpsJSONConfigu
 	@Override
 	public void initialize(Bootstrap<TopTrumpsJSONConfiguration> bootstrap) {
 		bootstrap.addBundle(new ViewBundle<TopTrumpsJSONConfiguration>());
+		// Add bundle linking to assets folder in dwViews
 		bootstrap.addBundle(
-				new AssetsBundle("/online/assets/", "/toptrumps/assets", null, "assets"));
+				new AssetsBundle("/online/dwViews/assets/", "/toptrumps/assets", null, "assets"));
 	}
 }
