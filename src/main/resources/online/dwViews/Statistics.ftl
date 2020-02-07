@@ -43,8 +43,8 @@
                 </div>
         </div>
 
-
-        <script type="text/javascript" src="./assets/api/api.js"> </script>
+        <!-- Test API -->
+        <script type="text/javascript" src="./assets/api/api-test.js"> </script>
 
         <script type="text/javascript">
             // Method that is called on page load and initializes the statistics displayed on screen

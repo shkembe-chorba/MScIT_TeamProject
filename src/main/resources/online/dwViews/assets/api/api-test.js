@@ -1,55 +1,11 @@
-/**
- * api-test.js
- *
- * A module that allows developing with test APIs and not relying on the server.
- */
-
-// FUNCTIONS
-
-// Get the statistics from the API
-export const apiGetStats = async () => {
-  return {};
+const MOCK_STATS = {
+  ai_wins: 5,
+  user_wins: 3,
+  avg_draws: 4,
+  tot_games_played: 7,
+  max_rounds: 8,
 };
 
-// Post the user defined configuration to the API
-export const apiInitGame = async numAIPlayers => {
-  return true;
-};
-
-export const apiInitRound = async () => {
-  return {
-    players: [
-      {
-        name: 'USER',
-        isAi: false,
-        isActive: false,
-        decksize: 20,
-        card: {
-          name: 'card',
-
-          attributes: {
-            strength: 14,
-            stamina: 5,
-          },
-        },
-      },
-      {
-        name: 'AI1',
-        isAi: true,
-        isActive: true,
-        decksize: 10,
-        card: {
-          name: 'card2',
-          attributes: {
-            strength: 10,
-            stamina: 5,
-          },
-        },
-      },
-    ],
-  };
-};
-
-export const apiPlayRound = async attribute => {
-  return {};
-};
+function apiGetStatistics(callback) {
+  callback(MOCK_STATS);
+}
