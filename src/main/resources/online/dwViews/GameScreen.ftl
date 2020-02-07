@@ -33,8 +33,8 @@
 	</div>
 
 	<!-- Import our Pseudo Player class and style sheet -->
-	<link rel="stylesheet" href="assets/player.css" />
-	<script type="text/javascript" src="./assets/player.js"> </script>
+	<link rel="stylesheet" href="assets/components/Player/player.css" />
+	<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
 
 	<script type="text/javascript">
