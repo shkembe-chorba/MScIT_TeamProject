@@ -1,5 +1,3 @@
-<html>
-
 <head>
     <!-- Web page title -->
     <title>Top Trumps</title>
@@ -16,28 +14,6 @@
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
     </script>
 
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 </head>
-
-<body>
-    <!-- Call the initalize method when the page loads -->
-
-    <div class="container">
-        <div id="player" />
-        <div id="communal" />
-        <div id="aiplayers" class="card-columns">
-
-        </div>
-    </div>
-
-    <script src="./assets/stats/index.js" type="module"></script>
-
-
-</body>
-
-
-
-
-</html>

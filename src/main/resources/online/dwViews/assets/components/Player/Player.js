@@ -78,7 +78,7 @@ const playerTemplate = player => {
         <div class="row ">
             <div class="col-12 d-flex justify-content-center">
                 <h3>
-                    <span class="badge badge-success">
+                    <span class="tt-is-active badge">
                         <i class="fa fa-user" aria-hidden="true"></i>
                         ${player.name}
                         <i class="fa fa-star" aria-hidden="true"></i>
@@ -102,31 +102,31 @@ const playerTemplate = player => {
 const PlayerFactory = playerObj => {
   // Store an internal reference to the overall player object via passed in variable
 
-  // PRIVATE VARIABLES / Constructor (Uses a closure):
+  // PRIVATE VARIABLES / CONSTRUCTOR (Uses a closure):
   // -----------------------
   // Create a jquery reference inside this 'class' as a private member (using closure)
-  const $player = $(playerTemplate(playerObj));
+  const $this = $(playerTemplate(playerObj));
 
-  // Returns an object of this 'Class' with the public methods below:
+  if (playerObj.isActive) {
+    $this.find('.tt-is-active').addClass('badge-success');
+  } else {
+    $this.find('.tt-is-active').addClass('badge-warning');
+  }
+
+  // PUBLIC METHODS:
   const Player = {
-    getObject: () => {
-      return playerObj;
-    },
-    getJqueryObject: () => {
-      return $player;
-    },
     isUser: () => {
       return playerObj.isAI ? false : true;
     },
     // Add to a dom element (by ID or class)
     attach: container => {
-      $(container).append($player);
+      $(container).append($this);
     },
     hideCard: () => {
-      $player.find('.card-hider').addClass('card-hider-hide');
+      $this.find('.card-hider').addClass('card-hider-hide');
     },
     showCard: () => {
-      $player.find('.card-hider').removeClass('card-hider-hide');
+      $this.find('.card-hider').removeClass('card-hider-hide');
     },
   };
 
