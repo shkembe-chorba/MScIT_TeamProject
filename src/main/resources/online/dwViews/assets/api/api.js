@@ -42,6 +42,7 @@ function apiGet(url, callback) {
   // CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
   // to do when the response arrives
   xhr.onload = function() {
+    console.log("We reached here");
     const obj = JSON.parse(xhr.response);
     callback(obj);
   };
@@ -53,16 +54,22 @@ function apiGet(url, callback) {
 // -------------
 
 /**
- * This function returns the game statistics as a javascript object/dictionary.
+ * apiGetStatistics
+ * ----------------
+ * Returns the game statistics as a JavaScript object/dictionary.
+ *
+ * Must be called when a player requests the game statistics.
+ *
  * Format :
- * {
- * "ai_wins": 5,
- * "user_wins": 3,
- * "avg_draws": 4,
- * "tot_games_played": 7,
- * "max_rounds": 8
- * }
+ * 	 	{
+ * 	  		"aiWins": 5,
+ * 	  		"userWins": 3,
+ * 	 		"avgDraws": 4,
+ * 	  		"totGamesPlayed": 7,
+ * 	  		"maxRounds": 8
+ * 	  	}
  */
+
 function apiGetStatistics(callback) {
   apiGet(URL_GET_STATISTICS, callback);
 }
