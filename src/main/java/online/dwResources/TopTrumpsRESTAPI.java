@@ -43,7 +43,6 @@ public class TopTrumpsRESTAPI {
 	private Database database = new Database();
 	private GameModel model;
 	private String deckFile;
-	private ArrayList<Player> playersEliminatedLastRound = new ArrayList<>();
 
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
@@ -80,34 +79,36 @@ public class TopTrumpsRESTAPI {
 	/**
 	 * Plays a round with the chosen attribute and auto completes the game if the
 	 * user is eliminated and there is no winner. If there is a winner in the round
-	 * or the game is auto completed this will be reflected in hasGameWinner and
+	 * or the game is auto completed this will be reflected in gameWinnerName and
 	 * the database will be updated.
 	 * Returns a JSON string with information for playing a round with an attribute
 	 * and possible game over information.
 	 *
 	 * Must be called after initRound().
 	 *
-	 * If the game is auto completed roundWinnerName and /////////hasDraw correspond to information
+	 * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to information
 	 * about the last round before the autocompletion, not the last round overall.
 	 *
 	 * userEliminated corresponding to true does not always mean that the game was
 	 * auto completed, the check for that must be done via gameAutoCompleted.
 	 *
-	 * //////////hasGameWinner being true does not necessarily mean that the game ended
+	 * roundWinnerName corresponds to null if there was a draw and it
+	 * corresponds to the name of the round winner otherwise.
+	 *
+	 * gameWinnerName corresponds to null if there was no game winner and it
+	 * corresponds to the name of the winner otherwise.
+	 *
+	 * gameWinnerName not being null does not necessarily mean that the game ended
 	 * in the current round, the game could have been auto completed.
 	 * That must be checked via gameAutoCompleted.
-	 *
-	 * ////////gameWinnerName corresponds to "NA" when there is no game winner
-	 * and it corresponds to the game winner name otherwise.
-	 *
-	 * ///////////roundWinnerName
 	 *
 	 * EXAMPLE:
 	 * 	{
 	 * 	    "roundWinnerName": "USER"/null,
 	 * 	    "userEliminated": true,
 	 * 	    "gameWinnerName": "USER"/null,
-	 * 	    "gameAutoCompleted": false
+	 * 	    "gameAutoCompleted": false,
+	 * 	    "eliminatedPlayersNames": [ "AI1", "AI2"]
 	 * 	}
 	 * @param attributeName
 	 * @return
@@ -126,9 +127,15 @@ public class TopTrumpsRESTAPI {
 		} else {
 			map.put("roundWinnerName", null);
 		}
-		///////
-		playersEliminatedLastRound = model.checkToEliminate();
-		///////
+		
+
+		ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
+		ArrayList<String> eliminatedPlayersNames = new ArrayList<>();
+		for(Player player: eliminatedPlayers) {
+			eliminatedPlayersNames.add(player.toString());
+		}
+		map.put("eliminatedPlayersNames",eliminatedPlayersNames);
+
 		boolean userInGame = model.userStillInGame();
 		map.put("userEliminated", !userInGame);
 
