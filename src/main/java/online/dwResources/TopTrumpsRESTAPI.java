@@ -39,12 +39,12 @@ public class TopTrumpsRESTAPI {
 	private static final String CWD = System.getProperty("user.dir");
 	private Database database = new Database();
 	private GameModel model;
-	
+
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
 	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
 	 * number of AI players.
-	 * 
+	 *
 	 * @param conf
 	 */
 	public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
@@ -58,10 +58,10 @@ public class TopTrumpsRESTAPI {
 	// ----------------------------------------------------
 
 	/**
-	 * Initialises the game with the chosen number of AI players.
-	 * Returns the String "OK".
+	 * Initialises the game with the chosen number of AI players. Returns the String "OK".
 	 *
 	 * Must be called before a game begins.
+	 *
 	 * @param numAiPlayers chosen number of AI players.
 	 * @return "OK"
 	 */
@@ -69,56 +69,49 @@ public class TopTrumpsRESTAPI {
 	@Path("/initGame")
 	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
 		model.reset(Integer.parseInt(numAiPlayers));
-		return "OK";
+		return "{\"loaded\":true}";
 	}
 
 	/**
-	 * Plays a round with the chosen attribute and auto completes the game if the
-	 * user is eliminated and there is no winner. If there is a winner in the round
-	 * or the game is auto completed this will be reflected in gameWinnerName and
-	 * the database will be updated.
-	 * Returns a JSON string with information for playing a round with an attribute
-	 * and possible game over information.
+	 * Plays a round with the chosen attribute and auto completes the game if the user is eliminated
+	 * and there is no winner. If there is a winner in the round or the game is auto completed this
+	 * will be reflected in gameWinnerName and the database will be updated. Returns a JSON string
+	 * with information for playing a round with an attribute and possible game over information.
 	 *
 	 * Must be called after initRound().
 	 *
-	 * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to information
-	 * about the last round before the autocompletion, not the last round overall.
+	 * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to
+	 * information about the last round before the autocompletion, not the last round overall.
 	 *
-	 * userEliminated corresponding to true does not always mean that the game was
-	 * auto completed, the check for that must be done via gameAutoCompleted.
+	 * userEliminated corresponding to true does not always mean that the game was auto completed,
+	 * the check for that must be done via gameAutoCompleted.
 	 *
-	 * roundWinnerName corresponds to null if there was a draw and it
-	 * corresponds to the name of the round winner otherwise.
+	 * roundWinnerName corresponds to null if there was a draw and it corresponds to the name of the
+	 * round winner otherwise.
 	 *
-	 * gameWinnerName corresponds to null if there was no game winner and it
-	 * corresponds to the name of the winner otherwise.
+	 * gameWinnerName corresponds to null if there was no game winner and it corresponds to the name
+	 * of the winner otherwise.
 	 *
-	 * gameWinnerName not being null does not necessarily mean that the game ended
-	 * in the current round, the game could have been auto completed.
-	 * That must be checked via gameAutoCompleted.
+	 * gameWinnerName not being null does not necessarily mean that the game ended in the current
+	 * round, the game could have been auto completed. That must be checked via gameAutoCompleted.
 	 *
-	 * EXAMPLE:
-	 * 	{
-	 * 	    "roundWinnerName": "USER"/null,
-	 * 	    "userEliminated": true,
-	 * 	    "gameWinnerName": "USER"/null,
-	 * 	    "gameAutoCompleted": false,
-	 * 	    "eliminatedPlayersNames": [ "AI1", "AI2"]
-	 * 	}
+	 * EXAMPLE: { "roundWinnerName": "USER"/null, "userEliminated": true, "gameWinnerName":
+	 * "USER"/null, "gameAutoCompleted": false, "eliminatedPlayersNames": [ "AI1", "AI2"] }
+	 *
 	 * @param attributeName
 	 * @return
 	 * @throws JsonProcessingException
 	 */
 	@GET
 	@Path("/playRoundWithAttribute")
-	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName) throws JsonProcessingException {
-		//Initialize map that will be returned as a JSON file.
+	public String playRoundWithAttribute(@QueryParam("AttributeName") String attributeName)
+			throws JsonProcessingException {
+		// Initialize map that will be returned as a JSON file.
 		HashMap<String, Object> map = new HashMap<>();
 		Attribute selectedAttribute = new Attribute(attributeName, 0);
 		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
 
-		if(roundWinner != null) {
+		if (roundWinner != null) {
 			map.put("roundWinnerName", roundWinner.toString());
 		} else {
 			map.put("roundWinnerName", null);
@@ -127,17 +120,17 @@ public class TopTrumpsRESTAPI {
 
 		ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
 		ArrayList<String> eliminatedPlayersNames = new ArrayList<>();
-		for(Player player: eliminatedPlayers) {
+		for (Player player : eliminatedPlayers) {
 			eliminatedPlayersNames.add(player.toString());
 		}
-		map.put("eliminatedPlayersNames",eliminatedPlayersNames);
+		map.put("eliminatedPlayersNames", eliminatedPlayersNames);
 
 		boolean userInGame = model.userStillInGame();
 		map.put("userEliminated", !userInGame);
 
 		Player gameWinner = model.checkForWinner();
-		if(gameWinner == null) {
-			if(userInGame) {
+		if (gameWinner == null) {
+			if (userInGame) {
 				map.put("gameWinnerName", null);
 				map.put("gameAutoCompleted", false);
 			} else {
@@ -158,18 +151,8 @@ public class TopTrumpsRESTAPI {
 	 *
 	 * Must be called when a game has ended, i.e. there is a winner.
 	 *
-	 * EXAMPLE:
-	 * [
-	 *     {
-	 *     	"name": "USER",
-	 *      "score": 15,
-	 *      },
-	 *      {
-	 *      name: "AI1",
-	 *      "score", 10
-	 *      }
-	 *      ...
-	 * ]
+	 * EXAMPLE: [ { "name": "USER", "score": 15, }, { name: "AI1", "score", 10 } ... ]
+	 *
 	 * @return json string with names and rounds won
 	 * @throws JsonProcessingException
 	 */
@@ -178,7 +161,7 @@ public class TopTrumpsRESTAPI {
 	public String getGameOverScores() throws JsonProcessingException {
 		Player[] players = model.getPlayers();
 		ArrayList<HashMap<String, Object>> playerList = new ArrayList<>();
-		for(Player player: players) {
+		for (Player player : players) {
 			HashMap<String, Object> playerMap = new HashMap<>();
 			playerMap.put("name", player.toString());
 			playerMap.put("score", player.getRoundsWon());
@@ -188,42 +171,22 @@ public class TopTrumpsRESTAPI {
 		return listAsJSONString;
 	}
 
-    /**
-     * Makes the AI choose an attribute if it is active.
-	 * Returns the information needed to initialise a round.
+	/**
+	 * Makes the AI choose an attribute if it is active. Returns the information needed to
+	 * initialise a round.
 	 *
 	 * Must be called at the beginning of a round.
 	 *
-	 * chosenAttributeName corresponds to "NA"
-	 * if the user is active and it corresponds to the
+	 * chosenAttributeName corresponds to "NA" if the user is active and it corresponds to the
 	 * attribute that the AI chooses otherwise.
-     *
-	 * EXAMPLE:
-     * 	{
-     * 		"round": 1,
-     *		"communalPileSize": 4,
-     *		"chosenAttributeName": "strength"/"NA",
-     *		"playersInGame" : [
-     *			{
-     *				"name": "USER",
-     *				"isAI": false,
-     *				"isActive": true,
-     *				"deckSize": 10,
-     *				"topCard": {
-     *					"name": "TRex",
-     *					"attributes": [
-     *						{
-     *							"name": "strength",
-     *							"value": 5
-     *						}
-     *					]
-     *				}
-     *     		}
-     * 		]
-     * 	}
-     * @return JSON string, containing all info needed to initialise a round.
-     * @throws JsonProcessingException
-     */
+	 *
+	 * EXAMPLE: { "round": 1, "communalPileSize": 4, "chosenAttributeName": "strength"/"NA",
+	 * "playersInGame" : [ { "name": "USER", "isAI": false, "isActive": true, "deckSize": 10,
+	 * "topCard": { "name": "TRex", "attributes": [ { "name": "strength", "value": 5 } ] } } ] }
+	 *
+	 * @return JSON string, containing all info needed to initialise a round.
+	 * @throws JsonProcessingException
+	 */
 	@GET
 	@Path("/initRound")
 	public String initRound() throws JsonProcessingException {
@@ -235,15 +198,16 @@ public class TopTrumpsRESTAPI {
 		Player activePlayer = model.getActivePlayer();
 		ArrayList<Player> playersInGame = model.getPlayersInGame();
 		Attribute aiChosenAttribute = null;
-		if(activePlayer instanceof AIPlayer) {
+		if (activePlayer instanceof AIPlayer) {
 			aiChosenAttribute = ((AIPlayer) activePlayer).chooseAttribute();
 		}
 
-		// uses playersInGameToMap() helper method that returns a List of Maps with info for all players in game.
+		// uses playersInGameToMap() helper method that returns a List of Maps with info for all
+		// players in game.
 		roundInfoMap.put("playersInGame", playersInGameToMap(playersInGame, activePlayer));
 		roundInfoMap.put("round", roundNumber);
 		roundInfoMap.put("communalPileSize", communalPileSize);
-		if(aiChosenAttribute != null) {
+		if (aiChosenAttribute != null) {
 			roundInfoMap.put("chosenAttributeName", aiChosenAttribute.getName());
 		} else {
 			roundInfoMap.put("chosenAttributeName", "NA");
@@ -258,14 +222,8 @@ public class TopTrumpsRESTAPI {
 	 *
 	 * Must be called when a player requests the game statistics.
 	 *
-	 * Format :
-	 * 	 	{
-	 * 	  		"aiWins": 5,
-	 * 	  		"userWins": 3,
-	 * 	 		"avgDraws": 4,
-	 * 	  		"totGamesPlayed": 7,
-	 * 	  		"maxRounds": 8
-	 * 	  	}
+	 * Format : { "aiWins": 5, "userWins": 3, "avgDraws": 4, "totGamesPlayed": 7, "maxRounds": 8 }
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -274,14 +232,14 @@ public class TopTrumpsRESTAPI {
 	public String retrieveStats() throws IOException {
 		try {
 			database.connect();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 
 		}
 		RetrievedGameStatistics stats = database.retrieveGameStats();
-		HashMap<String,Object> statsMap = new HashMap<>();
-		statsMap.put("aiWins",stats.getGamesWonByAi());
-		statsMap.put("userWins",stats.getGamesWonByUser());
-		statsMap.put("avgDraws",stats.getAvgDraws());
+		HashMap<String, Object> statsMap = new HashMap<>();
+		statsMap.put("aiWins", stats.getGamesWonByAi());
+		statsMap.put("userWins", stats.getGamesWonByUser());
+		statsMap.put("avgDraws", stats.getAvgDraws());
 		statsMap.put("totGamesPlayed", stats.getTotalGamesPlayed());
 		statsMap.put("maxRounds", stats.getMaxRounds());
 
@@ -295,62 +253,50 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Helper method. Returns an list of maps; Each map contains info about 1 player.
-	 * Used in the initRound method.
+	 * Helper method. Returns an list of maps; Each map contains info about 1 player. Used in the
+	 * initRound method.
 	 *
 	 * EXAMPLE with 1 player still in game, the list contains 1 map for the player: "USER".
-	 * playersInGame : [
-	 *		{
-	 *			"name": "USER",
-	 * 			"isAI": false,
-	 *			"isActive": true,
-	 *			"deckSize": 10,
-	 *			"topCard": {
-	 *				"name": "TRex",
-	 *				"attributes": [
-	 *					{
-	 *						"name": "strength",
-	 *						"value": 5
-	 *					}
-	 *				]
-	 *			}
-	 *		}
-	 *	]
+	 * playersInGame : [ { "name": "USER", "isAI": false, "isActive": true, "deckSize": 10,
+	 * "topCard": { "name": "TRex", "attributes": [ { "name": "strength", "value": 5 } ] } } ]
+	 *
 	 * @param playersInGame list of all players still in game (not eliminated)
-	 * @param activePlayer player who will be playing in this round.
+	 * @param activePlayer  player who will be playing in this round.
 	 * @return a list of maps. Each map contains info about 1 player.
 	 */
-	private ArrayList<HashMap<String, Object>> playersInGameToMap(ArrayList<Player> playersInGame, Player activePlayer) {
-        ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> playersInGameToMap(ArrayList<Player> playersInGame,
+			Player activePlayer) {
+		ArrayList<HashMap<String, Object>> playersInGameMaps = new ArrayList<>();
 
-        for (Player player : playersInGame) {
-            HashMap<String, Object> playerMap = new HashMap<>();
-            if (player instanceof AIPlayer) {
-                playerMap.put("isAI", true);
-            } else {
-                playerMap.put("isAI", false);
-            }
-            if (player == activePlayer) {
-                playerMap.put("isActive", true);
-            } else {
-                playerMap.put("isActive", false);
-            }
-            playerMap.put("name", player.toString());
-            playerMap.put("deckSize", player.getDeckSize());
-            playerMap.put("topCard", topCardToMap(player));
+		for (Player player : playersInGame) {
+			HashMap<String, Object> playerMap = new HashMap<>();
+			if (player instanceof AIPlayer) {
+				playerMap.put("isAI", true);
+			} else {
+				playerMap.put("isAI", false);
+			}
+			if (player == activePlayer) {
+				playerMap.put("isActive", true);
+			} else {
+				playerMap.put("isActive", false);
+			}
+			playerMap.put("name", player.toString());
+			playerMap.put("deckSize", player.getDeckSize());
+			playerMap.put("topCard", topCardToMap(player));
 
-            playersInGameMaps.add(playerMap);
-        }
-        return playersInGameMaps;
-    }
+			playersInGameMaps.add(playerMap);
+		}
+		return playersInGameMaps;
+	}
 
 	/**
 	 * Plays the game between AIs until there is a winner.
+	 *
 	 * @return game winner
 	 */
-	private Player autoCompleteGame(){
+	private Player autoCompleteGame() {
 		Player gameWinner = null;
-		while(gameWinner == null) {
+		while (gameWinner == null) {
 			Player activePlayer = model.getActivePlayer();
 			Attribute selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
 			model.playRoundWithAttribute(selectedAttribute);
@@ -360,57 +306,48 @@ public class TopTrumpsRESTAPI {
 		return gameWinner;
 	}
 
-    /**
-	 * Helper method.
-	 * Takes a map and adds to it winner information. Uploads Game Statistics to database.
-     * EXAMPLE: {
-	 * 			"hasGameWinner": true
-	 * 			"gameWinnerName": AI1
-	 * 			}
-     * @param map
-     * @param gameWinner
-     */
-    private void gameOver(HashMap<String, Object> map, Player gameWinner) {
+	/**
+	 * Helper method. Takes a map and adds to it winner information. Uploads Game Statistics to
+	 * database. EXAMPLE: { "hasGameWinner": true "gameWinnerName": AI1 }
+	 *
+	 * @param map
+	 * @param gameWinner
+	 */
+	private void gameOver(HashMap<String, Object> map, Player gameWinner) {
 		map.put("gameWinnerName", gameWinner.toString());
 		uploadGameStats(gameWinner);
 	}
 
 	/**
 	 * Helper Method. Uploads Game Statistics to the database.
+	 *
 	 * @param gameWinner
 	 */
-	private void uploadGameStats(Player gameWinner){
+	private void uploadGameStats(Player gameWinner) {
 		try {
 			database.connect();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 
 		}
-		database.uploadGameStats(model.getDraws(),model.getRoundNumber(),gameWinner.toString(),model.getPlayers());
+		database.uploadGameStats(model.getDraws(), model.getRoundNumber(), gameWinner.toString(),
+				model.getPlayers());
 		database.disconnect();
 	}
 
 	/**
-	 * Helper method. Takes a Player and returns a map for their topCard contents.
-	 * Used in playersInGameToMap()
-	 * EXAMPLE CONTENTS:
-	 * topCard: {
-	 * 	 		"name": "TRex",
-	 * 	 		"attributes": [
-	 * 	 					{
-	 * 	 					"name": "strength",
-	 * 	 					"value": 5
-	 * 	 					}
-	 * 	 				]
-	 * 	 			}
+	 * Helper method. Takes a Player and returns a map for their topCard contents. Used in
+	 * playersInGameToMap() EXAMPLE CONTENTS: topCard: { "name": "TRex", "attributes": [ { "name":
+	 * "strength", "value": 5 } ] }
+	 *
 	 * @param player
 	 * @return
 	 */
-	private HashMap<String, Object> topCardToMap (Player player){
+	private HashMap<String, Object> topCardToMap(Player player) {
 		HashMap<String, Object> topCardMap = new HashMap<>();
-		topCardMap.put("name",player.peekCard().getName());
+		topCardMap.put("name", player.peekCard().getName());
 
 		ArrayList<HashMap<String, Object>> attributes = new ArrayList<>();
-		for(Attribute attribute: player.peekCard().getAttributes()) {
+		for (Attribute attribute : player.peekCard().getAttributes()) {
 			HashMap<String, Object> attributeMap = new HashMap<>();
 			attributeMap.put("name", attribute.getName());
 			attributeMap.put("value", attribute.getValue());

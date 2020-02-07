@@ -35,8 +35,10 @@
 		<link rel="stylesheet" href="assets/components/Player/player.css" />
 		<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
-		<script type="text/javascript">
+		<!-- Import API -->
+		<script type="text/javascript" src="./assets/api/api.js"> </script>
 
+		<script type="text/javascript">
 			// Method that is called on page load
 			function initalize() {
 				apiInitGame(4, setupRound)
@@ -44,11 +46,11 @@
 
 			function setupRound() {
 				apiInitRound((obj) => {
-					players = obj.players.map(p => {
+					players = obj.playersInGame.map(p => {
 						return PlayerFactory(p);
 					})
 
-					players.attach("#card-decks");
+					players.forEach(p => p.attach("#card-decks"));
 				})
 			}
 		</script>
@@ -152,10 +154,6 @@
 				// We have done everything we need to prepare the CORS request, so send it
 				xhr.send();
 			}
-
-
-
-
 		</script>
 	</body>
 

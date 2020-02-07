@@ -72,9 +72,9 @@ const cardTemplate = (card) => {
 };
 
 const playerTemplate = (player) => {
-  const icon = player.isAI ?
-      `<i class="fa fa-desktop" aria-hidden="true"></i>` :
-      `<i class="fa fa-user" aria-hidden="true"></i>`;
+  const icon = player.isAI
+    ? `<i class="fa fa-desktop" aria-hidden="true"></i>`
+    : `<i class="fa fa-user" aria-hidden="true"></i>`;
 
   return `
     <div class="card">
@@ -98,7 +98,7 @@ const playerTemplate = (player) => {
             </div>
         </div>
     </div>
-    ${cardTemplate(player.card)}
+    ${cardTemplate(player.topCard)}
   </div>
     `;
 };
