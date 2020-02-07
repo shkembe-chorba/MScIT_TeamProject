@@ -8,9 +8,9 @@ import java.sql.*;
 public class Database {
 
     // Default database Connection parameters.
-    private static final String URL = "jdbc:postgresql://localhost:5432/project";
+    private static final String URL = "jdbc:postgresql://localhost:5432/m_19_2175499m";
     private static final String USER = "postgres";
-    private static final String PASS = "zoid_berg1";
+    private static final String PASS = "12345";
 
     private Connection connection = null;
 
@@ -21,7 +21,7 @@ public class Database {
 
     /**
      * Database constructor.
-     * 
+     *
      * @param url  database url
      * @param user database username
      * @param pass database password
@@ -41,7 +41,7 @@ public class Database {
 
     /**
      * Getter for the database connection.
-     * 
+     *
      * @return the database connection
      */
     protected Connection getConnection() {
@@ -116,13 +116,16 @@ public class Database {
 
     /**
      * Method creates an object that contains the retrieved overall game stats (5 metrics)
-     * 
+     *
      * @return object containing stats
      */
     public RetrievedGameStatistics retrieveGameStats() {
         RetrievedGameStatistics retrievedGameStatistics = null;
         try {
-            int gamesPlayed = 0, aiWins = 0, userWins = 0, maxRounds = 0;
+            int gamesPlayed = 0;
+            int aiWins = 0;
+            int userWins = 0;
+            int maxRounds = 0;
             double avgDraws = 0;
 
             Statement statement = connection.createStatement();
