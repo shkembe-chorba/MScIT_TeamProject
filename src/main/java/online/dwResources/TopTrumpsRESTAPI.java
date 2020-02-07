@@ -62,7 +62,7 @@ public class TopTrumpsRESTAPI {
 
 	/**
 	 * Initialises the game with the chosen number of AI players.
-	 * Returns "OK".
+	 * Returns the String "OK".
 	 *
 	 * Must be called before a game begins.
 	 * @param numAiPlayers chosen number of AI players.
@@ -251,7 +251,9 @@ public class TopTrumpsRESTAPI {
 
 	/**
 	 * Returns the game statistics as a JSON string.
+	 *
 	 * Must be called when a player requests the game statistics.
+	 *
 	 * Format :
 	 * 	 	{
 	 * 	  		"aiWins": 5,

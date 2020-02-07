@@ -82,7 +82,7 @@
 			 * user is eliminated and there is no winner. If there is a winner in the round
 			 * or the game is auto completed this will be reflected in hasGameWinner and
 			 * the database will be updated.
-			 * Returns a JSON string with information for playing a round with an attribute
+			 * Returns a JavaScript object/dictionary with information for playing a round with an attribute
 			 * and possible game over information.
 			 *
 			 * Must be called after initRound().
@@ -132,7 +132,8 @@
 			}
 
 			/**
-			 * Returns the won rounds for every player during the game.
+			 * Returns the won rounds for every player during the game
+			 * as a JavaScript array of objects/dictionaries.
 			 *
 			 * Must be called when a game has ended, i.e. there is a winner.
 			 *
@@ -173,7 +174,8 @@
 
 			/**
 			 * Makes the AI choose an attribute if it is active.
-			 * Returns the information needed to initialise a round.
+			 * Returns the information needed to initialise a round
+			 * as a JavaScript object/dictionary.
 			 *
 			 * Must be called at the beginning of a round.
 			 *
@@ -228,7 +230,7 @@
 
 			/**
 			 * Initialises the game with the chosen number of AI players.
-			 * Returns "OK".
+			 * Returns the String "OK".
 			 *
 			 * Must be called before a game begins.
 			 * @param numAiPlayers chosen number of AI players

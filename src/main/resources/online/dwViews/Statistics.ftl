@@ -79,7 +79,9 @@
 
 			/**
 			 * Returns the game statistics as a JavaScript object/dictionary.
+			 *
 			 * Must be called when a player requests the game statistics.
+			 *
 			 * Format :
 			 * 	 	{
 			 * 	  		"aiWins": 5,
