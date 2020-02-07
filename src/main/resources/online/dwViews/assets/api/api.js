@@ -34,7 +34,6 @@ function createCORSRequest(method, url) {
 
 // Don't need to touch this, it's DRY :D
 function apiGet(url, callback, paramDictionary) {
-
   // Add the contents of the parameter dictionary to the end of the URL
   let requestString = "";
 
@@ -43,10 +42,10 @@ function apiGet(url, callback, paramDictionary) {
     const queryPrefix = index === 0 ? "?" : "&";
     // Return "?key1=val1&key2=val2 ... "
     requestString += queryPrefix + key + "=" + paramDictionary[key];
-  })
+  });
 
   // First create a CORS request, this is the message we are going to send (a get request in this case)
-  let xhr = createCORSRequest("GET", url+requestString); // Request type and URL
+  let xhr = createCORSRequest("GET", url + requestString); // Request type and URL
 
   // Message is not sent yet, but we can check that the browser supports CORS
   if (!xhr) {
@@ -83,7 +82,7 @@ function apiGet(url, callback, paramDictionary) {
  */
 
 function apiGetStatistics(callback) {
-  apiGet(URL_GET_STATISTICS, callback);
+  apiGet(URL_GET_STATISTICS, callback, {});
 }
 
 /**
@@ -121,8 +120,8 @@ function apiGetStatistics(callback) {
  * 		]
  * 	}
  */
-function apiInitRound (callback) {
-  apiGet(URL_INIT_ROUND, callback);
+function apiInitRound(callback) {
+  apiGet(URL_INIT_ROUND, callback, {});
 }
 
 /**
@@ -132,8 +131,8 @@ function apiInitRound (callback) {
  * Must be called before a game begins.
  * @param numAiPlayers chosen number of AI players
  */
-function apiInitGame (numPlayers, callback) {
+function apiInitGame(numPlayers, callback) {
   apiGet(URL_INIT_GAME, callback, {
-    NumAiPlayers: numPlayers
+    NumAiPlayers: numPlayers,
   });
 }
