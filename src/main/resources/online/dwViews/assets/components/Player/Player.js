@@ -72,6 +72,10 @@ const cardTemplate = (card) => {
 };
 
 const playerTemplate = (player) => {
+  const icon = player.isAI ?
+      `<i class="fa fa-desktop" aria-hidden="true"></i>` :
+      `<i class="fa fa-user" aria-hidden="true"></i>`;
+
   return `
     <div class="card">
       <div class="card-header">
@@ -79,7 +83,7 @@ const playerTemplate = (player) => {
             <div class="col-12 d-flex justify-content-center">
                 <h3>
                     <span class="tt-is-active badge">
-                        <i class="fa fa-user" aria-hidden="true"></i>
+                        ${icon}
                         ${player.name}
                         <i class="fa fa-star" aria-hidden="true"></i>
                     </span>

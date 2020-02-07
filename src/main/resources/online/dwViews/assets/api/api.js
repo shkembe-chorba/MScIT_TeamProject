@@ -8,6 +8,8 @@
 
 // API PATHS
 const URL_GET_STATISTICS = "http://localhost:7777/toptrumps/retrieveStats";
+const URL_INIT_ROUND = "http://localhost:7777/toptrumps/initRound";
+const URL_INIT_GAME = "http://localhost:7777/toptrumps/initGame";
 
 // CORS REQUEST HELPER FUNCTIONS
 // -----------------------------
@@ -31,9 +33,20 @@ function createCORSRequest(method, url) {
 }
 
 // Don't need to touch this, it's DRY :D
-function apiGet(url, callback) {
+function apiGet(url, callback, paramDictionary) {
+
+  // Add the contents of the parameter dictionary to the end of the URL
+  let requestString = "";
+
+  Object.keys(paramDictionary).forEach((key, index) => {
+    // If it is the first item, append query character, otherwise &
+    const queryPrefix = index === 0 ? "?" : "&";
+    // Return "?key1=val1&key2=val2 ... "
+    requestString += queryPrefix + key + "=" + paramDictionary[key];
+  })
+
   // First create a CORS request, this is the message we are going to send (a get request in this case)
-  let xhr = createCORSRequest("GET", url); // Request type and URL
+  let xhr = createCORSRequest("GET", url+requestString); // Request type and URL
 
   // Message is not sent yet, but we can check that the browser supports CORS
   if (!xhr) {
@@ -71,4 +84,56 @@ function apiGet(url, callback) {
 
 function apiGetStatistics(callback) {
   apiGet(URL_GET_STATISTICS, callback);
+}
+
+/**
+ * Makes the AI choose an attribute if it is active.
+ * Returns the information needed to initialise a round
+ * as a JavaScript object/dictionary.
+ *
+ * Must be called at the beginning of a round.
+ *
+ * chosenAttributeName corresponds to "NA"
+ * if the user is active and it corresponds to the
+ * attribute that the AI chooses otherwise.
+ *
+ * EXAMPLE:
+ * 	{
+ * 		"round": 1,
+ *		"communalPileSize": 4,
+ *		"chosenAttributeName": "strength"/null,
+ *		"playersInGame" : [
+ *			{
+ *				"name": "USER",
+ *				"isAI": false,
+ *				"isActive": true,
+ *				"deckSize": 10,
+ *				"topCard": {
+ *					"name": "TRex",
+ *					"attributes": [
+ *						{
+ *							"name": "strength",
+ *							"value": 5
+ *						}
+ *					]
+ *				}
+ *     		}
+ * 		]
+ * 	}
+ */
+function apiInitRound (callback) {
+  apiGet(URL_INIT_ROUND, callback);
+}
+
+/**
+ * Initialises the game with the chosen number of AI players.
+ * Returns the String "OK".
+ *
+ * Must be called before a game begins.
+ * @param numAiPlayers chosen number of AI players
+ */
+function apiInitGame (numPlayers, callback) {
+  apiGet(URL_INIT_GAME, callback, {
+    NumAiPlayers: numPlayers
+  });
 }
