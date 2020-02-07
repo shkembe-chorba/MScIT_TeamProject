@@ -36,14 +36,10 @@ public class TopTrumpsRESTAPI {
 	 * A Jackson Object writer. It allows us to turn Java objects into JSON strings easily.
 	 */
 	private ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-	private static final String DECK_READ_ERROR = "Could not load deck from file, please place in working directory.";
-	private static final int DECK_READ_ERROR_CODE = 2;
-	private static final int DATABASE_CONNECTION_ERROR_CODE = 3;
 	private static final String CWD = System.getProperty("user.dir");
 	private Database database = new Database();
 	private GameModel model;
-	private String deckFile;
-
+	
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
 	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
@@ -127,7 +123,7 @@ public class TopTrumpsRESTAPI {
 		} else {
 			map.put("roundWinnerName", null);
 		}
-		
+
 
 		ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
 		ArrayList<String> eliminatedPlayersNames = new ArrayList<>();
