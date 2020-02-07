@@ -1,38 +1,38 @@
 const TEST_JSON = {
   players: [
     {
-      name: 'USER',
+      name: "USER",
       isAI: false,
       isActive: true,
       deckSize: 5,
       card: {
-        name: 'Card',
+        name: "Card",
         attributes: [
           {
-            name: 'test attribute',
+            name: "test attribute",
             value: 12,
           },
           {
-            name: 'test attribute 2',
+            name: "test attribute 2",
             value: 5,
           },
         ],
       },
     },
     {
-      name: 'AI1',
+      name: "AI1",
       isAI: true,
       isActive: false,
       deckSize: 15,
       card: {
-        name: 'AI Card',
+        name: "AI Card",
         attributes: [
           {
-            name: 'test attribute',
+            name: "test attribute",
             value: 4,
           },
           {
-            name: 'test attribute 2',
+            name: "test attribute 2",
             value: 20,
           },
         ],
@@ -41,7 +41,7 @@ const TEST_JSON = {
   ],
 };
 
-const attributeTemplate = attribute => {
+const attributeTemplate = (attribute) => {
   return `
       <li class="list-group-item d-flex justify-content-between align-items-center">
         ${attribute.name}
@@ -50,7 +50,7 @@ const attributeTemplate = attribute => {
     `;
 };
 
-const cardTemplate = card => {
+const cardTemplate = (card) => {
   return `
     <div class="card-body">
 
@@ -65,13 +65,13 @@ const cardTemplate = card => {
         <h4 class="card-title">${card.name}</h4>
 
         <ul class="list-group list-group-flush">
-            ${card.attributes.map(a => attributeTemplate(a))}
+            ${card.attributes.map((a) => attributeTemplate(a))}
         </ul>
     </div>
     `;
 };
 
-const playerTemplate = player => {
+const playerTemplate = (player) => {
   return `
     <div class="card">
       <div class="card-header">
@@ -99,7 +99,7 @@ const playerTemplate = player => {
     `;
 };
 
-const PlayerFactory = playerObj => {
+const PlayerFactory = (playerObj) => {
   // Store an internal reference to the overall player object via passed in variable
 
   // PRIVATE VARIABLES / CONSTRUCTOR (Uses a closure):
@@ -108,9 +108,9 @@ const PlayerFactory = playerObj => {
   const $this = $(playerTemplate(playerObj));
 
   if (playerObj.isActive) {
-    $this.find('.tt-is-active').addClass('badge-success');
+    $this.find(".tt-is-active").addClass("badge-success");
   } else {
-    $this.find('.tt-is-active').addClass('badge-warning');
+    $this.find(".tt-is-active").addClass("badge-warning");
   }
 
   // PUBLIC METHODS:
@@ -119,14 +119,14 @@ const PlayerFactory = playerObj => {
       return playerObj.isAI ? false : true;
     },
     // Add to a dom element (by ID or class)
-    attach: container => {
+    attach: (container) => {
       $(container).append($this);
     },
     hideCard: () => {
-      $this.find('.card-hider').addClass('card-hider-hide');
+      $this.find(".card-hider").addClass("card-hider-hide");
     },
     showCard: () => {
-      $this.find('.card-hider').removeClass('card-hider-hide');
+      $this.find(".card-hider").removeClass("card-hider-hide");
     },
   };
 
