@@ -102,7 +102,7 @@
 			 *
 			 * EXAMPLE:
 			 * 	{
-			 * 	    "roundWinnerName": "USER",
+			 * 	    "roundWinnerName": "USER"/"NA",
 			 * 	    "hasDraw": false,
 			 * 	    "userEliminated": true,
 			 * 	    "hasGameWinner": false,

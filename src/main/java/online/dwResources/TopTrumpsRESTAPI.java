@@ -43,6 +43,8 @@ public class TopTrumpsRESTAPI {
 	private Database database = new Database();
 	private GameModel model;
 	private String deckFile;
+	private ArrayList<Player> playersEliminatedLastRound = new ArrayList<>();
+
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
 	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
@@ -85,26 +87,26 @@ public class TopTrumpsRESTAPI {
 	 *
 	 * Must be called after initRound().
 	 *
-	 * If the game is auto completed roundWinnerName and hasDraw correspond to information
+	 * If the game is auto completed roundWinnerName and /////////hasDraw correspond to information
 	 * about the last round before the autocompletion, not the last round overall.
 	 *
 	 * userEliminated corresponding to true does not always mean that the game was
 	 * auto completed, the check for that must be done via gameAutoCompleted.
 	 *
-	 * hasGameWinner being true does not necessarily mean that the game ended
+	 * //////////hasGameWinner being true does not necessarily mean that the game ended
 	 * in the current round, the game could have been auto completed.
 	 * That must be checked via gameAutoCompleted.
 	 *
-	 * gameWinnerName corresponds to "NA" when there is no game winner
+	 * ////////gameWinnerName corresponds to "NA" when there is no game winner
 	 * and it corresponds to the game winner name otherwise.
+	 *
+	 * ///////////roundWinnerName
 	 *
 	 * EXAMPLE:
 	 * 	{
-	 * 	    "roundWinnerName": "USER",
-	 * 	    "hasDraw": false,
+	 * 	    "roundWinnerName": "USER"/null,
 	 * 	    "userEliminated": true,
-	 * 	    "hasGameWinner": false,
-	 * 	    "gameWinnerName": "NA"/"USER",
+	 * 	    "gameWinnerName": "USER"/null,
 	 * 	    "gameAutoCompleted": false
 	 * 	}
 	 * @param attributeName
@@ -121,20 +123,19 @@ public class TopTrumpsRESTAPI {
 
 		if(roundWinner != null) {
 			map.put("roundWinnerName", roundWinner.toString());
-			map.put("hasDraw", false);
 		} else {
-			map.put("roundWinnerName", "NA");
-			map.put("hasDraw", true);
+			map.put("roundWinnerName", null);
 		}
-		model.checkToEliminate();
+		///////
+		playersEliminatedLastRound = model.checkToEliminate();
+		///////
 		boolean userInGame = model.userStillInGame();
 		map.put("userEliminated", !userInGame);
 
 		Player gameWinner = model.checkForWinner();
 		if(gameWinner == null) {
 			if(userInGame) {
-				map.put("hasGameWinner", false);
-				map.put("gameWinnerName", "NA");
+				map.put("gameWinnerName", null);
 				map.put("gameAutoCompleted", false);
 			} else {
 				gameWinner = autoCompleteGame();
@@ -367,7 +368,6 @@ public class TopTrumpsRESTAPI {
      * @param gameWinner
      */
     private void gameOver(HashMap<String, Object> map, Player gameWinner) {
-		map.put("hasGameWinner", true);
 		map.put("gameWinnerName", gameWinner.toString());
 		uploadGameStats(gameWinner);
 	}
