@@ -61,7 +61,10 @@ public class TopTrumpsRESTAPI {
 	// ----------------------------------------------------
 
 	/**
-	 * Initialises the game.
+	 * Initialises the game with the chosen number of AI players.
+	 * Returns "OK".
+	 *
+	 * Must be called before a game begins.
 	 * @param numAiPlayers chosen number of AI players.
 	 * @return "OK"
 	 */
@@ -73,15 +76,36 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Obtains a JSON string for the play round with attribute.
+	 * Plays a round with the chosen attribute and auto completes the game if the
+	 * user is eliminated and there is no winner. If there is a winner in the round
+	 * or the game is auto completed this will be reflected in hasGameWinner and
+	 * the database will be updated.
+	 * Returns a JSON string with information for playing a round with an attribute
+	 * and possible game over information.
+	 *
+	 * Must be called after initRound().
+	 *
+	 * If the game is auto completed roundWinnerName and hasDraw correspond to information
+	 * about the last round before the autocompletion, not the last round overall.
+	 *
+	 * userEliminated corresponding to true does not always mean that the game was
+	 * auto completed, the check for that must be done via gameAutoCompleted.
+	 *
+	 * hasGameWinner being true does not necessarily mean that the game ended
+	 * in the current round, the game could have been auto completed.
+	 * That must be checked via gameAutoCompleted.
+	 *
+	 * gameWinnerName corresponds to "NA" when there is no game winner
+	 * and it corresponds to the game winner name otherwise.
+	 *
 	 * EXAMPLE:
 	 * 	{
 	 * 	    "roundWinnerName": "USER"
-	 * 	    "hasDraw": false
-	 * 	    "userEliminated": true
-	 * 	    "hasGameWinner": false
-	 * 	    "gameWinnerName": "NA"
-	 * 	    "gameAutocompleted": false
+	 * 	    "hasDraw": false,
+	 * 	    "userEliminated": true,
+	 * 	    "hasGameWinner": false,
+	 * 	    "gameWinnerName": "NA"/"USER",
+	 * 	    "gameAutoCompleted": false
 	 * 	}
 	 * @param attributeName
 	 * @return
@@ -113,7 +137,7 @@ public class TopTrumpsRESTAPI {
 				map.put("gameWinnerName", "NA");
 				map.put("gameAutoCompleted", false);
 			} else {
-				autoCompleteGame(gameWinner, selectedAttribute);
+				gameWinner = autoCompleteGame();
 				gameOver(map, gameWinner);
 				map.put("gameAutoCompleted", true);
 			}
@@ -126,7 +150,11 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Obtains the won rounds for every player during the game.
+	 * Returns the won rounds for every player during the game.
+	 *
+	 * Must be called when a game has ended, i.e. there is a winner.
+	 *
+	 * EXAMPLE:
 	 * [
 	 *     {
 	 *     	"name": "USER",
@@ -157,12 +185,20 @@ public class TopTrumpsRESTAPI {
 	}
 
     /**
-     * Information needed to initialise a round.
-     * EXAMPLE:
+     * Makes the AI choose an attribute if it is active.
+	 * Returns the information needed to initialise a round.
+	 *
+	 * Must be called at the beginning of a round.
+	 *
+	 * chosenAttributeName corresponds to "NA"
+	 * if the user is active and it corresponds to the
+	 * attribute that the AI chooses otherwise.
+     *
+	 * EXAMPLE:
      * 	{
      * 		"round": 1,
      *		"communalPileSize": 4,
-     *		"chosenAttributeName": "strength"/"NA" , for an AI/USER
+     *		"chosenAttributeName": "strength"/"NA",
      *		"playersInGame" : [
      *			{
      *				"name": "USER",
@@ -214,14 +250,15 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Game statistics as a JSON string.
+	 * Returns the game statistics as a JSON string.
+	 * Must be called when a player requests the game statistics.
 	 * Format :
 	 * 	 	{
-	 * 	  		"ai_wins": 5,
-	 * 	  		"user_wins": 3,
-	 * 	 		"avg_draws": 4,
-	 * 	  		"tot_games_played": 7,
-	 * 	  		"max_rounds": 8
+	 * 	  		"aiWins": 5,
+	 * 	  		"userWins": 3,
+	 * 	 		"avgDraws": 4,
+	 * 	  		"totGamesPlayed": 7,
+	 * 	  		"maxRounds": 8
 	 * 	  	}
 	 * @return
 	 * @throws IOException
@@ -236,11 +273,11 @@ public class TopTrumpsRESTAPI {
 		}
 		RetrievedGameStatistics stats = database.retrieveGameStats();
 		HashMap<String,Object> statsMap = new HashMap<>();
-		statsMap.put("ai_wins",stats.getGamesWonByAi());
-		statsMap.put("user_wins",stats.getGamesWonByUser());
-		statsMap.put("avg_draws",stats.getAvgDraws());
-		statsMap.put("tot_games_played", stats.getTotalGamesPlayed());
-		statsMap.put("max_rounds", stats.getMaxRounds());
+		statsMap.put("aiWins",stats.getGamesWonByAi());
+		statsMap.put("userWins",stats.getGamesWonByUser());
+		statsMap.put("avgDraws",stats.getAvgDraws());
+		statsMap.put("totGamesPlayed", stats.getTotalGamesPlayed());
+		statsMap.put("maxRounds", stats.getMaxRounds());
 
 		// We can turn arbatory Java objects directly into JSON strings using
 		// Jackson seralization, assuming that the Java objects are not too complex.
@@ -252,7 +289,7 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Helper method. List of maps; Each map contains info about 1 player.
+	 * Helper method. Returns an list of maps; Each map contains info about 1 player.
 	 * Used in the initRound method.
 	 *
 	 * EXAMPLE with 1 player still in game, the list contains 1 map for the player: "USER".
@@ -303,17 +340,18 @@ public class TopTrumpsRESTAPI {
 
 	/**
 	 * Plays the game between AIs until there is a winner.
-	 * @param gameWinner
-	 * @param selectedAttribute
+	 * @return game winner
 	 */
-	private void autoCompleteGame(Player gameWinner, Attribute selectedAttribute){
+	private Player autoCompleteGame(){
+		Player gameWinner = null;
 		while(gameWinner == null) {
 			Player activePlayer = model.getActivePlayer();
-			selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
+			Attribute selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
 			model.playRoundWithAttribute(selectedAttribute);
 			model.checkToEliminate();
 			gameWinner = model.checkForWinner();
 		}
+		return gameWinner;
 	}
 
     /**

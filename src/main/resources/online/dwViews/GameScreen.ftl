@@ -78,7 +78,37 @@
 		<script type="text/javascript">
 		
 			/**
+			 * Plays a round with the chosen attribute and auto completes the game if the
+			 * user is eliminated and there is no winner. If there is a winner in the round
+			 * or the game is auto completed this will be reflected in hasGameWinner and
+			 * the database will be updated.
+			 * Returns a JSON string with information for playing a round with an attribute
+			 * and possible game over information.
 			 *
+			 * Must be called after initRound().
+			 *
+			 * If the game is auto completed roundWinnerName and hasDraw correspond to information
+			 * about the last round before the autocompletion, not the last round overall.
+			 *
+			 * userEliminated corresponding to true does not always mean that the game was
+			 * auto completed, the check for that must be done via gameAutoCompleted.
+			 *
+			 * hasGameWinner being true does not necessarily mean that the game ended
+			 * in the current round, the game could have been auto completed.
+			 * That must be checked via gameAutoCompleted.
+			 *
+			 * gameWinnerName corresponds to "NA" when there is no game winner
+			 * and it corresponds to the game winner name otherwise.
+			 *
+			 * EXAMPLE:
+			 * 	{
+			 * 	    "roundWinnerName": "USER"
+			 * 	    "hasDraw": false,
+			 * 	    "userEliminated": true,
+			 * 	    "hasGameWinner": false,
+			 * 	    "gameWinnerName": "NA"/"USER",
+			 * 	    "gameAutoCompleted": false
+			 * 	}
 			 */
 			function playRoundWithAttribute(attributeName) {
 
@@ -102,7 +132,22 @@
 			}
 
 			/**
+			 * Returns the won rounds for every player during the game.
 			 *
+			 * Must be called when a game has ended, i.e. there is a winner.
+			 *
+			 * EXAMPLE:
+			 * [
+			 *     {
+			 *     	"name": "USER",
+			 *      "score": 15,
+			 *      },
+			 *      {
+			 *      name: "AI1",
+			 *      "score", 10
+			 *      }
+			 *      ...
+			 * ]
 			 */
 			function getGameOverScores() {
 
@@ -127,7 +172,38 @@
 
 
 			/**
+			 * Makes the AI choose an attribute if it is active.
+			 * Returns the information needed to initialise a round.
 			 *
+			 * Must be called at the beginning of a round.
+			 *
+			 * chosenAttributeName corresponds to "NA"
+			 * if the user is active and it corresponds to the
+			 * attribute that the AI chooses otherwise.
+			 *
+			 * EXAMPLE:
+			 * 	{
+			 * 		"round": 1,
+			 *		"communalPileSize": 4,
+			 *		"chosenAttributeName": "strength"/"NA",
+			 *		"playersInGame" : [
+			 *			{
+			 *				"name": "USER",
+			 *				"isAI": false,
+			 *				"isActive": true,
+			 *				"deckSize": 10,
+			 *				"topCard": {
+			 *					"name": "TRex",
+			 *					"attributes": [
+			 *						{
+			 *							"name": "strength",
+			 *							"value": 5
+			 *						}
+			 *					]
+			 *				}
+			 *     		}
+			 * 		]
+			 * 	}
 			 */
 			function initRound() {
 
@@ -151,9 +227,11 @@
 			}
 
 			/**
-			 * This function resets the game model with the given number of AI players.
-			 * It returns the string "OK".
-			 * @param numAiPlayers
+			 * Initialises the game with the chosen number of AI players.
+			 * Returns "OK".
+			 *
+			 * Must be called before a game begins.
+			 * @param numAiPlayers chosen number of AI players
 			 */
 			function initGame(numAiPlayers) {
 			

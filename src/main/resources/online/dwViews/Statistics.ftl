@@ -78,15 +78,16 @@
 		<script type="text/javascript">
 
 			/**
-			 * This function returns the game statistics as a javascript object/dictionary.
+			 * Returns the game statistics as a JavaScript object/dictionary.
+			 * Must be called when a player requests the game statistics.
 			 * Format :
-			 * {
-			 * "ai_wins": 5,
-			 * "user_wins": 3,
-			 * "avg_draws": 4,
-			 * "tot_games_played": 7,
-			 * "max_rounds": 8
-			 * }
+			 * 	 	{
+			 * 	  		"aiWins": 5,
+			 * 	  		"userWins": 3,
+			 * 	 		"avgDraws": 4,
+			 * 	  		"totGamesPlayed": 7,
+			 * 	  		"maxRounds": 8
+			 * 	  	}
 			 */
 			function retrieveStats() {
 			
