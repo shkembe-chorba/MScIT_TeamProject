@@ -42,7 +42,6 @@ function apiGet(url, callback) {
   // CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
   // to do when the response arrives
   xhr.onload = function() {
-    console.log("We reached here");
     const obj = JSON.parse(xhr.response);
     callback(obj);
   };
