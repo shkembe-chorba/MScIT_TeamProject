@@ -1,7 +1,7 @@
 <html>
 
 <#include "./assets/ftl-templates/Head.ftl">
-
+<#include "./assets/ftl-templates/Modal.ftl">
 	<body onload="initalize()">
 
 		<div class="container">
@@ -19,23 +19,54 @@
 							<div class="card-body">
 								<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
 								<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
-
 							</div>
 						</div>
 					</div>
 				</div>
-
+			<br>
 				<!-- The Player Card Deck Wrapper -->
 				<div id="card-decks" class="card-deck">
 				</div>
-
 		</div>
-
 		<!-- Import our Pseudo Player class and style sheet -->
 		<link rel="stylesheet" href="assets/components/Player/player.css" />
 		<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
 		<script type="text/javascript">
+			// JQuery Selectors
+			// ----------------
+			// New Game Modal:
+			const NEW_GAME_MODAL = "#newGameModal";
+			const NEW_GAME_MODAL_PLAY = '#newGameModal-play';
+			const NEW_GAME_MODAL_PLAYERS = '#newGameModal-players';
+			const NEW_GAME_MODAL_CLOSERS = '.newGameModal-abort';
+			const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
+			// ---------------
+			// Setup Functions
+			// ---------------
+			// These functions create event handlers for clicks etc.
+			// New Game Modal:
+			function setupNewGameModal() {
+				// Redirect if the user aborts
+				$(NEW_GAME_MODAL_CLOSERS).click(() => {
+					window.location.href = "../toptrumps";
+				})
+				// Setup game on click
+				$(NEW_GAME_MODAL_PLAY).click(() => {
+					// Get value from the radio boxes
+					const numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
+					// Call the api
+					setupGame(numAiPlayers);
+				});
+			}
+			// CALL ALL SETUP FUNCTIONS HERE
+			function initalize() {
+				// Setup event handlers
+				setupNewGameModal();
+				// Show the new game modal
+				$(NEW_GAME_MODAL).modal('show');
+			}
+
 			// Create an array of all the players with our pseudo Player class
 			const players = TEST_JSON.players.map(p => {
 				return PlayerFactory(p);
@@ -54,16 +85,6 @@
 			// Add every player to the card decks element
 			players.forEach(p => p.attach("#card-decks"));
 
-			// Method that is called on page load
-			function initalize() {
-
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
-
-
-
-			}
 		</script>
 
 
