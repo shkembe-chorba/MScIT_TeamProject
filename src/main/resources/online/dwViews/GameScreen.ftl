@@ -1,7 +1,7 @@
 <html>
 
 <#include "./assets/ftl-templates/Head.ftl">
-
+<#include "./assets/ftl-templates/Modal.ftl">
 	<body onload="initalize()">
 
 		<div class="container">
@@ -19,39 +19,60 @@
 							<div class="card-body">
 								<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
 								<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
-
 							</div>
 						</div>
 					</div>
 				</div>
-
+			<br>
 				<!-- The Player Card Deck Wrapper -->
 				<div id="card-decks" class="card-deck">
 				</div>
-
 		</div>
-
 		<!-- Import our Pseudo Player class and style sheet -->
 		<link rel="stylesheet" href="assets/components/Player/player.css" />
 		<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
 		<!-- Import API -->
 		<script type="text/javascript" src="./assets/api/api.js"> </script>
-
 		<script type="text/javascript">
-			// Method that is called on page load
+			// CALL ALL SETUP FUNCTIONS HERE
 			function initalize() {
-				apiInitGame(4, setupRound)
+				// Setup event handlers
+				setupNewGameModal();
+				// Show the new game modal
+				$(NEW_GAME_MODAL).modal('show');
 			}
 
-			function setupRound() {
-				apiInitRound((obj) => {
-					players = obj.playersInGame.map(p => {
-						return PlayerFactory(p);
-					})
+			// New Game Modal:
+			const NEW_GAME_MODAL = "#newGameModal";
+			const NEW_GAME_MODAL_PLAY = '#newGameModal-play';
+			const NEW_GAME_MODAL_PLAYERS = '#newGameModal-players';
+			const NEW_GAME_MODAL_CLOSERS = '#newGameModal-abort';
+			const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
 
-					players.forEach(p => p.attach("#card-decks"));
+			function setupNewGameModal() {
+				// Redirect if the user aborts
+				$(NEW_GAME_MODAL_CLOSERS).click(() => {
+					window.location.href = "../toptrumps";
 				})
+				// Setup game on click
+				$(NEW_GAME_MODAL_PLAY).click(() => {
+					// Get value from the radio boxes
+					let numAiPlayers = 0;
+					numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
+					// Call the api
+					apiInitGame(numAiPlayers, setupRound)
+					$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
+				});
+			}
+			
+				function setupRound() {
+					apiInitRound((obj) => {
+						players = obj.playersInGame.map(p => {
+							return PlayerFactory(p);
+						})
+						players.forEach(p => p.attach("#card-decks"));
+					})
 			}
 		</script>
 
