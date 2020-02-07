@@ -35,34 +35,23 @@
 		<link rel="stylesheet" href="assets/components/Player/player.css" />
 		<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
 
+		<!-- Import API -->
+		<script type="text/javascript" src="./assets/api/api.js"> </script>
+
 		<script type="text/javascript">
-			// Create an array of all the players with our pseudo Player class
-			const players = TEST_JSON.players.map(p => {
-				return PlayerFactory(p);
-			})
-
-			// Get just the user
-			const user = players.filter(p => p.isUser())[0];
-			// Get the ais in an array
-			const ais = players.filter(p => !p.isUser());
-
-			// Hide all the AI cards from view
-			ais.forEach(ai => {
-				ai.hideCard();
-			});
-
-			// Add every player to the card decks element
-			players.forEach(p => p.attach("#card-decks"));
-
 			// Method that is called on page load
 			function initalize() {
+				apiInitGame(4, setupRound)
+			}
 
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
+			function setupRound() {
+				apiInitRound((obj) => {
+					players = obj.playersInGame.map(p => {
+						return PlayerFactory(p);
+					})
 
-
-
+					players.forEach(p => p.attach("#card-decks"));
+				})
 			}
 		</script>
 
@@ -160,92 +149,6 @@
 				xhr.onload = function (e) {
 					var responseText = xhr.response; // the text of the response
 					return JSON.parse(responseText);
-				};
-
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();
-			}
-
-
-			/**
-			 * Makes the AI choose an attribute if it is active.
-			 * Returns the information needed to initialise a round
-			 * as a JavaScript object/dictionary.
-			 *
-			 * Must be called at the beginning of a round.
-			 *
-			 * chosenAttributeName corresponds to "NA"
-			 * if the user is active and it corresponds to the
-			 * attribute that the AI chooses otherwise.
-			 *
-			 * EXAMPLE:
-			 * 	{
-			 * 		"round": 1,
-			 *		"communalPileSize": 4,
-			 *		"chosenAttributeName": "strength"/"NA",
-			 *		"playersInGame" : [
-			 *			{
-			 *				"name": "USER",
-			 *				"isAI": false,
-			 *				"isActive": true,
-			 *				"deckSize": 10,
-			 *				"topCard": {
-			 *					"name": "TRex",
-			 *					"attributes": [
-			 *						{
-			 *							"name": "strength",
-			 *							"value": 5
-			 *						}
-			 *					]
-			 *				}
-			 *     		}
-			 * 		]
-			 * 	}
-			 */
-			function initRound() {
-
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/initRound"); // Request type and URL
-
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-					alert("CORS not supported");
-				}
-
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives
-				xhr.onload = function (e) {
-					var responseText = xhr.response; // the text of the response
-					return JSON.parse(responseText);
-				};
-
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();
-			}
-
-			/**
-			 * Initialises the game with the chosen number of AI players.
-			 * Returns the String "OK".
-			 *
-			 * Must be called before a game begins.
-			 * @param numAiPlayers chosen number of AI players
-			 */
-			function initGame(numAiPlayers) {
-
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/initGame?NumAiPlayers=" +
-					numAiPlayers); // Request type and URL+parameters
-
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-					alert("CORS not supported");
-				}
-
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives
-				xhr.onload = function (e) {
-					var responseText = xhr.response; // the text of the response
-					return responseText;
 				};
 
 				// We have done everything we need to prepare the CORS request, so send it
