@@ -1,3 +1,10 @@
+/**
+ * A psuedo class that uses closures to encapsulate information and returns an object
+ * with all the public methods.
+ *
+ * Javascript that controls the main PLAY BUTTON, our unique ONE BUTTON DOES ALL!tm interface.
+ */
+
 const PlayButtonFactory = (attributes) => {
   // CLASS NAMES
   // -----------
@@ -44,6 +51,7 @@ const PlayButtonFactory = (attributes) => {
   const $gameOverButton = $this.find("." + GAME_OVER_BUTTON);
   const $dropdownButton = $this.find("." + DROPDOWN_BUTTON);
 
+  // Store all the buttons in an array for easy hiding
   const buttonArray = [
     $nextRoundButton,
     $playRoundButton,
@@ -54,67 +62,62 @@ const PlayButtonFactory = (attributes) => {
   const $attributeList = $this.find("." + ATTRIBUTE_LIST);
 
   // This will store the function the user wants to be calledback on a click of an attribute.
+  // Initially returns null, is passed the attribute name as a parameter.
   let userCallback = (attributeName) => {
     return null;
   };
 
   // PRIVATE FUNCTIONS
 
+  // For everything in the button array, hide it.
   const hideButtons = () => {
     buttonArray.forEach((b) => b.hide());
   };
 
   // CONSTRUCTOR
 
+  // Hide buttons on init.
   hideButtons();
 
   // Public methods
-  const PlayButton = {
+  return {
     // Show the next round button, hide the others
-
     setNextRoundButton: () => {
       hideButtons();
       $nextRoundButton.show();
     },
-
-    // Set the nextround callback function
+    // Set the nextround click callback function
     onNextRoundClick: (callback) => {
       $nextRoundButton.click(callback);
     },
-
     // Show the play round button, hide the others
-
     setPlayRoundButton: () => {
       hideButtons();
       $playRoundButton.show();
     },
-
-    // Set the playround callback function
+    // Set the playround click callback function
     onPlayRoundClick: (callback) => {
       $playRoundButton.click(callback);
     },
-
+    // Show the game over style button, hide the others
     setGameOverButton: () => {
       hideButtons();
       $gameOverButton.show();
     },
-
+    // Set the gameover click callback function
     onGameOverClick: (callback) => {
       $gameOverButton.click(callback);
     },
-
     // Show the attribute button, hide the others
     setAttributeButton: () => {
       hideButtons();
       $dropdownButton.show();
     },
-
     // Sets the user callback function when an attribute is clicked.
-    // The callback should take the attribute name as a parameter.
+    // The callback is passed the attribute name as a parameter.
     onAttributeClick: (callback) => {
       userCallback = callback;
     },
-
     // Add attribute,
     addAttribute: (attributeName) => {
       // Create an attribute dom element
@@ -126,17 +129,13 @@ const PlayButtonFactory = (attributes) => {
       // Add it to our attribute list
       $attributeList.append($attribute);
     },
-
     // Clear all attributes
     clearAttributes: () => {
       $attributeList.empty();
     },
-
     // Append to the target div id / class / ...
     attach: (target) => {
       $(target).append($this);
     },
   };
-
-  return PlayButton;
 };
