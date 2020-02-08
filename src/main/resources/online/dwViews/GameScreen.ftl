@@ -126,6 +126,23 @@
 							// Empty
 							// setupMessageBoard();
 
+							// CARDS
+							// -----
+							// Show all players' cards
+							PLAYERS.forEach(p => p.showCard());
+							// Display all players in 'loser' state (for draw)
+							PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
+							// Display winner if exists
+							PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
+							// Display eliminated players
+							PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
+
+							// SET BUTTON TO 'NEXT ROUND'
+							// --------------------------
+
+							// DISPLAY WINNER MESSAGES
+							// -----------------------
+
 						}
 
 						function setupRoundButton() {
