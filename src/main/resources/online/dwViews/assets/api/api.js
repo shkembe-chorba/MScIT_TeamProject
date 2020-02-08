@@ -10,6 +10,8 @@
 const URL_GET_STATISTICS = "http://localhost:7777/toptrumps/retrieveStats";
 const URL_INIT_ROUND = "http://localhost:7777/toptrumps/initRound";
 const URL_INIT_GAME = "http://localhost:7777/toptrumps/initGame";
+const URL_GAME_OVER_SCORES = "http://localhost:7777/toptrumps/getGameOverScores";
+const URL_PLAY_ROUND_WITH_ATTRIBUTE = "http://localhost:7777/toptrumps/playRoundWithAttribute";
 
 // CORS REQUEST HELPER FUNCTIONS
 // -----------------------------
@@ -135,4 +137,69 @@ function apiInitGame(numPlayers, callback) {
   apiGet(URL_INIT_GAME, callback, {
     NumAiPlayers: numPlayers,
   });
+}
+/**
+ * Plays a round with the chosen attribute and auto completes the game if the
+ * user is eliminated and there is no winner. If there is a winner in the round
+ * or the game is auto completed this will be reflected in gameWinnerName and
+ * the database will be updated.
+ * Returns a JavaScript object/dictionary with information for playing a round with an attribute
+ * and possible game over information.
+ *
+ * Must be called after initRound().
+ *
+ * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to information
+ * about the last round before the autocompletion, not the last round overall.
+ *
+ * userEliminated corresponding to true does not always mean that the game was
+ * auto completed, the check for that must be done via gameAutoCompleted.
+ *
+ * roundWinnerName corresponds to null if there was a draw and it
+ * corresponds to the name of the round winner otherwise.
+ *
+ * gameWinnerName corresponds to null if there was no game winner and it
+ * corresponds to the name of the winner otherwise.
+ *
+ * gameWinnerName not being null does not necessarily mean that the game ended
+ * in the current round, the game could have been auto completed.
+ * That must be checked via gameAutoCompleted.
+ *
+ * EXAMPLE:
+ * 	{
+ * 	    "roundWinnerName": "USER"/null,
+ * 	    "userEliminated": true,
+ * 	    "gameWinnerName": "USER"/null,
+ * 	    "gameAutoCompleted": false,
+ * 	    "eliminatedPlayersNames": [ "AI1", "AI2"]
+ * 	}
+ */
+
+function apiPlayRoundWithAttribute(attributeName, callback) {
+  apiGet(URL_PLAY_ROUND_WITH_ATTRIBUTE, callback, {
+  AttributeName: attributeName,
+});
+}
+
+/**
+ * Returns the won rounds for every player during the game
+ * as a JavaScript array of objects/dictionaries.
+ *
+ * Must be called when a game has ended, i.e. there is a winner.
+ *
+ * EXAMPLE:
+ * [
+ *     {
+ *     	"name": "USER",
+ *      "score": 15,
+ *      },
+ *      {
+ *      name: "AI1",
+ *      "score", 10
+ *      }
+ *      ...
+ * ]
+ */
+
+function apiGetGameOverScores(callback) {
+  apiGet(URL_GAME_OVER_SCORES, callback, {});
 }
