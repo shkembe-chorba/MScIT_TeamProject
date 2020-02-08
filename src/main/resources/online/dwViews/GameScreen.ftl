@@ -75,6 +75,7 @@
 						let PLAYER_CARDS;
 						let USER_CARD;
 						let AI_CARDS;
+						let CHOSEN_ATTRIBUTE;
 
 						// DOM Element ID References
 						const DOM_CARD_WRAPPER = "#card-decks";
@@ -165,9 +166,30 @@
 							}
 						}
 
-						function setupMessage() {
-							// TODO
+						function playRound(apiResponse) {
+							const {
+								eliminatedPlayersNames,
+								roundWinnerName
+							} = apiResponse;
+
+							// CARDS
+							// -----
+							// Show all players' cards
+							PLAYERS.forEach(p => p.showCard());
+							// Display all players in 'loser' state (for draw)
+							PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
+							// Display winner if exists
+							PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
+							// Display eliminated players
+							PLAYERS.filter(p => eliminatedPlayersNames.contains(p.getName())).forEach(p => p.eliminate());
+
+							// SET BUTTON TO 'NEXT ROUND'
+							// --------------------------
+
+							// DISPLAY WINNER MESSAGES
+							// -----------------------
 						}
+
 
 						// Sets round button to display text and
 						const ROUND_BUTTON = "#buttonRound";
