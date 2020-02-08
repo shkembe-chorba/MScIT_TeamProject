@@ -1,53 +1,10 @@
-const TEST_JSON = {
-  players: [
-    {
-      name: "USER",
-      isAI: false,
-      isActive: true,
-      deckSize: 5,
-      card: {
-        name: "Card",
-        attributes: [
-          {
-            name: "test attribute",
-            value: 12,
-          },
-          {
-            name: "test attribute 2",
-            value: 5,
-          },
-        ],
-      },
-    },
-    {
-      name: "AI1",
-      isAI: true,
-      isActive: false,
-      deckSize: 15,
-      card: {
-        name: "AI Card",
-        attributes: [
-          {
-            name: "test attribute",
-            value: 4,
-          },
-          {
-            name: "test attribute 2",
-            value: 20,
-          },
-        ],
-      },
-    },
-  ],
-};
+// "CLASS" TEMPLATES
 
 const attributeTemplate = (attribute) => {
-  return `
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        ${attribute.name}
+  return `<li class="tt-attribute list-group-item d-flex justify-content-between align-items-center">
+        <span class="tt-attribute-name">${attribute.name}</span>
         <span class="badge badge-primary badge-pill">${attribute.value}</span>
-      </li>
-    `;
+      </li>`;
 };
 
 const cardTemplate = (card) => {
@@ -63,9 +20,8 @@ const cardTemplate = (card) => {
         </div>
 
         <h4 class="card-title">${card.name}</h4>
-
         <ul class="list-group list-group-flush">
-            ${card.attributes.map((a) => attributeTemplate(a))}
+            ${card.attributes.map((a) => attributeTemplate(a)).join("")}
         </ul>
     </div>
     `;
@@ -77,29 +33,32 @@ const playerTemplate = (player) => {
     : `<i class="fa fa-user" aria-hidden="true"></i>`;
 
   return `
-    <div class="card">
-      <div class="card-header">
-        <div class="row ">
-            <div class="col-12 d-flex justify-content-center">
-                <h3>
-                    <span class="tt-is-active badge">
-                        ${icon}
-                        ${player.name}
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                    </span>
-                </h3>
-            </div>
-            <div class="col-12 d-flex justify-content-center">
-                <span class="badge badge-light">
-                    Cards in deck: <span class="badge badge-primary badge-pill">${
-                      player.deckSize
-                    }</span>
-                </span>
-            </div>
-        </div>
+    <div class="card card-player">
+        <div class="card-header">
+            <div class="row ">
+                <div class="col-12 d-flex justify-content-center">
+                    <h3>
+                        <span class="tt-is-active badge">
+                            ${icon}
+                           ${player.name}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                        </span>
+                    </h3>
+                </div>
+                <div class="col-12 d-flex justify-content-center">
+                    <div class="col text-center">
+                        <span class="tt-deck-size badge badge-light">
+                            Cards in deck:
+                            <span class="badge badge-primary badge-pill">${
+                              player.deckSize
+                            }</span>
+                        </span>
+                    </div>
+                </div>
+             </div>
+          </div>
+            ${cardTemplate(player.topCard)}
     </div>
-    ${cardTemplate(player.topCard)}
-  </div>
     `;
 };
 
@@ -117,6 +76,13 @@ const PlayerFactory = (playerObj) => {
     $this.find(".tt-is-active").addClass("badge-warning");
   }
 
+  const highlightAttribute = (attributeName, color) => {
+    $this
+      .find(`.tt-attribute:has(>.tt-attribute-name:contains(${attributeName}))`)
+      .css("background-color", color)
+      .css("color", "white");
+  };
+
   // PUBLIC METHODS:
   const Player = {
     isUser: () => {
@@ -131,6 +97,41 @@ const PlayerFactory = (playerObj) => {
     },
     showCard: () => {
       $this.find(".card-hider").removeClass("card-hider-hide");
+    },
+    setWinner: (attributeName) => {
+      highlightAttribute(attributeName, "green");
+      $this
+        .find(".tt-is-active")
+        .removeClass("badge-danger")
+        .removeClass("badge-warning")
+        .addClass("badge-success");
+    },
+    setLoser: (attributeName) => {
+      highlightAttribute(attributeName, "red");
+      $this
+        .find(".tt-is-active")
+        .removeClass("badge-warning")
+        .removeClass("badge-success")
+        .addClass("badge-danger");
+    },
+    eliminate: () => {
+      // Set header a violent red
+      $this.find(".card-header").css("background-color", "red");
+
+      // Set label to eliminated
+      $this
+        .find(".tt-is-active")
+        .removeClass("badge-warning")
+        .removeClass("badge-success")
+        .addClass("badge-danger") // Overrides primary and warning
+        .empty()
+        .text(`${playerObj.name} IS OUT`);
+
+      // Set deck size to red for emphasis on that fat 0.
+      $this
+        .find(".tt-deck-size")
+        .removeClass("badge-light")
+        .addClass("badge-danger");
     },
   };
 
