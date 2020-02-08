@@ -85,6 +85,9 @@ const PlayerFactory = (playerObj) => {
 
   // PUBLIC METHODS:
   const Player = {
+    getName: () => {
+      return playerObj.name;
+    },
     isUser: () => {
       return playerObj.isAI ? false : true;
     },
