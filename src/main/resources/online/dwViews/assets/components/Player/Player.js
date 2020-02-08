@@ -27,16 +27,16 @@ const cardTemplate = (card) => {
 
 const playerTemplate = (player) => {
   const icon = player.isAI
-      ? `<i class="fa fa-desktop" aria-hidden="true"></i>`
-      : `<i class="fa fa-user" aria-hidden="true"></i>`;
-
+    ? `<i class="fa fa-desktop" aria-hidden="true"></i>`
+    : `<i class="fa fa-user" aria-hidden="true"></i>`;
 
   const iconActive = player.isActive
-      ? `<i class="fa fa-star" aria-hidden="true"></i>`
-      : ``;
+    ? `<i class="fa fa-star" aria-hidden="true"></i>`
+    : ``;
 
   return `
-    <div class="card">
+
+    <div class="card card-player mt-3">
       <div class="card-header">
         <div class="row ">
             <div class="col-12 d-flex justify-content-center">
@@ -53,8 +53,8 @@ const playerTemplate = (player) => {
                         <span class="tt-deck-size badge badge-light">
                             Cards in deck:
                             <span class="badge badge-primary badge-pill">${
-      player.deckSize
-  }</span>
+                              player.deckSize
+                            }</span>
                         </span>
                     </div>
                 </div>
@@ -81,9 +81,9 @@ const PlayerFactory = (playerObj) => {
 
   const highlightAttribute = (attributeName, color) => {
     $this
-        .find(`.tt-attribute:has(>.tt-attribute-name:contains(${attributeName}))`)
-        .css("background-color", color)
-        .css("color", "white");
+      .find(`.tt-attribute:has(>.tt-attribute-name:contains(${attributeName}))`)
+      .css("background-color", color)
+      .css("color", "white");
   };
 
   // PUBLIC METHODS:
@@ -107,18 +107,18 @@ const PlayerFactory = (playerObj) => {
     setWinner: (attributeName) => {
       highlightAttribute(attributeName, "green");
       $this
-          .find(".tt-is-active")
-          .removeClass("badge-danger")
-          .removeClass("badge-warning")
-          .addClass("badge-success");
+        .find(".tt-is-active")
+        .removeClass("badge-danger")
+        .removeClass("badge-warning")
+        .addClass("badge-success");
     },
     setLoser: (attributeName) => {
       highlightAttribute(attributeName, "red");
       $this
-          .find(".tt-is-active")
-          .removeClass("badge-warning")
-          .removeClass("badge-success")
-          .addClass("badge-danger");
+        .find(".tt-is-active")
+        .removeClass("badge-warning")
+        .removeClass("badge-success")
+        .addClass("badge-danger");
     },
     eliminate: () => {
       // Set header a violent red
@@ -126,18 +126,18 @@ const PlayerFactory = (playerObj) => {
 
       // Set label to eliminated
       $this
-          .find(".tt-is-active")
-          .removeClass("badge-warning")
-          .removeClass("badge-success")
-          .addClass("badge-danger") // Overrides primary and warning
-          .empty()
-          .text(`${playerObj.name} IS OUT`);
+        .find(".tt-is-active")
+        .removeClass("badge-warning")
+        .removeClass("badge-success")
+        .addClass("badge-danger") // Overrides primary and warning
+        .empty()
+        .text(`${playerObj.name} IS OUT`);
 
       // Set deck size to red for emphasis on that fat 0.
       $this
-          .find(".tt-deck-size")
-          .removeClass("badge-light")
-          .addClass("badge-danger");
+        .find(".tt-deck-size")
+        .removeClass("badge-light")
+        .addClass("badge-danger");
     },
   };
 
