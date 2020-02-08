@@ -10,7 +10,7 @@ public class Database {
     // Default database Connection parameters.
     private static final String URL = "jdbc:postgresql://localhost:5432/project";
     private static final String USER = "postgres";
-    private static final String PASS = "zoid_berg1";
+    private static final String PASS = "12345";
 
     private Connection connection = null;
 
