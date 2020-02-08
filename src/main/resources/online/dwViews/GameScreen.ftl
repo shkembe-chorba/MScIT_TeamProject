@@ -107,7 +107,12 @@
 								let numAiPlayers = 0;
 								numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
 								// Call the api
-								apiInitGame(numAiPlayers, setupRound)
+								apiInitGame(numAiPlayers, (response) => {
+									if (response.loaded) {
+										// If we get a good response, initialise the round
+										apiInitRound(setupRound)
+									}
+								})
 								$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
 							});
 						}
