@@ -14,12 +14,21 @@
 								<h4>Game round X</h4>
 							</div>
 						</div>
-						<div class="row justify-content-md-center">
-							<button type="button" class="btn btn-lg">Play round</button>
-							<div class="card" style="width: 40rem;text-align:center">
-								<div class="card-body">
-									<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-									<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+						<div class="row justify-content-center">
+							<div class="col-3">
+								<div class="row">
+									<button type="button" class="btn btn-lg">Play round</button>
+								</div>
+								<div class="row">
+									<h6> Communal Pile Size: <span> 10 </span> </h6>
+								</div>
+							</div>
+							<div class="col-9">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
+										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -40,6 +49,11 @@
 
 
 			<script type="text/javascript">
+				// Globals
+				let PLAYERS;
+				let USER;
+				let AIS;
+
 				// CALL ALL SETUP FUNCTIONS HERE
 				function initalize() {
 					// Setup event handlers
@@ -82,20 +96,20 @@
 						} = resultApi;
 
 						// Create player objects.
-						const players = playersInGame.map(p => {
+						PLAYERS = playersInGame.map(p => {
 							return PlayerFactory(p);
 						})
 
 						// Get User
-						const user = players.filter(p => p.isUser())[0];
+						USER = PLAYERS.filter(p => p.isUser())[0];
 						// Get AI Player array
-						const ais = players.filter(p => !p.isUser());
+						AIS = PLAYERS.filter(p => !p.isUser());
 
 						// Hide the ais cards.
-						ais.forEach(ai => ai.hideCard());
+						AIS.forEach(ai => ai.hideCard());
 
 						// Attach the card to the screen.
-						players.forEach(p => p.attach("#card-decks"));
+						PLAYERS.forEach(p => p.attach("#card-decks"));
 					})
 				}
 			</script>
