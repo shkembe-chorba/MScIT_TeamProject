@@ -50,7 +50,12 @@ const PlayButtonFactory = (attributes) => {
   // Public methods
   const PlayButton = {
     // Show the next round button, hide the others
-    setNextRoundButton: () => {},
+
+    setNextRoundButton: () => {
+      $playRoundButton.hide();
+      $nextRoundButton.show();
+      $dropdownButton.hide();
+    },
 
     // Set the nextround callback function
     onNextRoundClick: (callback) => {
@@ -58,15 +63,27 @@ const PlayButtonFactory = (attributes) => {
     },
 
     // Show the play round button, hide the others
-    setPlayRoundButton: () => {},
+
+    setPlayRoundButton: () => {
+      $playRoundButton.show();
+      $nextRoundButton.hide();
+      $dropdownButton.hide();
+    },
+
 
     // Set the playround callback function
     onPlayRoundClick: (callback) => {
       $playRoundButton.click(callback);
     },
 
+
     // Show the attribute button, hide the others
-    setAttributeButton: () => {},
+
+    setAttributeButton: () => {
+      $playRoundButton.hide();
+      $nextRoundButton.hide();
+      $dropdownButton.show();
+    },
 
     // Sets the user callback function when an attribute is clicked.
     // The callback should take the attribute name as a parameter.
