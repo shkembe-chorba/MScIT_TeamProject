@@ -16,19 +16,19 @@
 						</div>
 						<div class="row justify-content-md-center">
 							<button type="button" id="buttonRound" class="btn btn-primary">
+							Play round
 							</button>
-
-							<div class="dropdown">
-								<button class="btn btn-primary dropdown-toggle" type="button" id="buttonAttribute" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true">
-								</button>
+							<button class="btn btn-primary dropdown-toggle" type="button" id="buttonAttribute" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true">
+								Play round
+							</button>
 								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-									<a class="dropdown-item" id="att1">Attribute 1</a>
-									<a class="dropdown-item" id="att2">Attribute 2</a>
-									<a class="dropdown-item" id="att3">Attribute 3</a>
-									<a class="dropdown-item" id="att4">Attribute 4</a>
-									<a class="dropdown-item" id="att5">Attribute 5</a>
+									<a class="dropdown-item" id="att1"></a>
+									<a class="dropdown-item" id="att2"></a>
+									<a class="dropdown-item" id="att3"></a>
+									<a class="dropdown-item" id="att4"></a>
+									<a class="dropdown-item" id="att5"></a>
 								</div>
-							</div>
+
 
 							<div class="card" style="width: 40rem;text-align:center">
 								<div class="card-body">
@@ -56,9 +56,9 @@
 			<script type="text/javascript">
 				// CALL ALL SETUP FUNCTIONS HERE
 				function initalize() {
+					setUpRoundButton();
 					// Setup event handlers
 					setupNewGameModal();
-					setUpRoundButton();
 					// Show the new game modal
 					$(NEW_GAME_MODAL).modal('show');
 
@@ -119,11 +119,12 @@
 						}
 						// if it is human who needs to choose attribute
 						else { setupAttributeButton();
-							$("#att1").text();
-							$("#att2").text();
-							$("#att3").text();
-							$("#att4").text();
-							$("#att5").text();
+						//sets attributes to the attribute names
+							$("#att1").text(resultApi.playersInGame[0].topCard.attributes[0].name);
+							$("#att2").text(resultApi.playersInGame[0].topCard.attributes[1].name);
+							$("#att3").text(resultApi.playersInGame[0].topCard.attributes[2].name);
+							$("#att4").text(resultApi.playersInGame[0].topCard.attributes[3].name);
+							$("#att5").text(resultApi.playersInGame[0].topCard.attributes[4].name);
 						}
 					})
 				}
@@ -134,7 +135,6 @@
 				function setUpRoundButton() {
 						$(ATTRIBUTE_BUTTON).hide();
 						$(ROUND_BUTTON).show();
-						$(ROUND_BUTTON).text("Play round");
 						$(ROUND_BUTTON).click(() => {
 							// returns null to api to play the round with attribute function
 							// will call a function that is responsible for getting game logic
@@ -144,7 +144,6 @@
 
 				function setupAttributeButton() {
 					$(ROUND_BUTTON).hide();
-					$(ATTRIBUTE_BUTTON).text("Play round with attribute");
 					$(ATTRIBUTE_BUTTON).show();
 				}
 			</script>
@@ -250,5 +249,4 @@
 				}
 			</script>
 		</body>
-
 </html>
