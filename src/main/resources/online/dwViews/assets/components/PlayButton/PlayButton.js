@@ -49,6 +49,9 @@ const PlayButtonFactory = (attributes) => {
   return {
     // Show the next round button, hide the others
     setNextRoundButton: () => {
+      $playRoundButton.hide();
+      $nextRoundButton.show();
+      $dropdownButton.hide();
 
     },
 
@@ -59,6 +62,9 @@ const PlayButtonFactory = (attributes) => {
 
     // Show the play round button, hide the others
     setPlayRoundButton: () => {
+      $playRoundButton.show();
+      $nextRoundButton.hide();
+      $dropdownButton.hide();
 
     },
 
@@ -67,9 +73,12 @@ const PlayButtonFactory = (attributes) => {
       $playRoundButton.click(callback);
     },
 
+
     // Show the attribute button, hide the others
     setAttributeButton: () => {
-
+      $playRoundButton.hide();
+      $nextRoundButton.hide();
+      $dropdownButton.show();
     },
 
     // Sets the user callback function when an attribute is clicked.
