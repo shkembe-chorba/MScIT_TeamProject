@@ -33,7 +33,7 @@ const playerTemplate = (player) => {
     : `<i class="fa fa-user" aria-hidden="true"></i>`;
 
   return `
-    <div class="card card-player">
+    <div class="card card-player mt-3">
         <div class="card-header">
             <div class="row ">
                 <div class="col-12 d-flex justify-content-center">
