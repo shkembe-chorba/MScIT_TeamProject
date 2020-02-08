@@ -29,20 +29,26 @@ const cardTemplate = (card) => {
 
 const playerTemplate = (player) => {
   const icon = player.isAI
-    ? `<i class="fa fa-desktop" aria-hidden="true"></i>`
-    : `<i class="fa fa-user" aria-hidden="true"></i>`;
+      ? `<i class="fa fa-desktop" aria-hidden="true"></i>`
+      : `<i class="fa fa-user" aria-hidden="true"></i>`;
+
+
+  const iconActive = player.isActive
+      ? `<i class="fa fa-star" aria-hidden="true"></i>`
+      : ``;
 
   return `
-    <div class="card card-player mt-3">
-        <div class="card-header">
-            <div class="row ">
-                <div class="col-12 d-flex justify-content-center">
-                    <h3>
-                        <span class="tt-is-active badge">
-                            ${icon}
-                           ${player.name}
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                        </span>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="row ">
+            <div class="col-12 d-flex justify-content-center">
+                <h3>
+                    <span class="tt-is-active badge">
+                        ${icon}
+                        ${iconActive}
+                        ${player.name}
+                    </span>
                     </h3>
                 </div>
                 <div class="col-12 d-flex justify-content-center">
