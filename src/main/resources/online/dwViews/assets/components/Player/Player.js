@@ -10,7 +10,6 @@ const attributeTemplate = (attribute) => {
 const cardTemplate = (card) => {
   return `
     <div class="card-body">
-
         <div class="card-hider">
             <div class="row align-items-center" style="height: 100%">
                 <div class="col text-center">
@@ -18,7 +17,6 @@ const cardTemplate = (card) => {
                 </div>
             </div>
         </div>
-
         <h4 class="card-title">${card.name}</h4>
         <ul class="list-group list-group-flush">
             ${card.attributes.map((a) => attributeTemplate(a)).join("")}
@@ -37,7 +35,6 @@ const playerTemplate = (player) => {
     : ``;
 
   return `
-
     <div class="card card-player mt-3">
       <div class="card-header">
         <div class="row ">
