@@ -71,6 +71,9 @@
 				// Attach 'next round' click.
 				PLAY_BUTTON.onNextRoundClick(setupRound);
 
+				// Only show play round button when game window initialized
+				PLAY_BUTTON.setPlayRoundButton();
+
 				// MODAL
 				// -------
 
@@ -132,7 +135,7 @@
 
 					// If it is the AI who plays next
 					if (resultApi.chosenAttributeName !== null) {
-						PLAY_BUTTON.setRoundButton();
+						PLAY_BUTTON.setPlayRoundButton();
 					}
 					// if it is human who needs to choose attribute
 					else {
@@ -144,25 +147,6 @@
 				})
 			}
 
-			// Sets round button to display text and
-			const ROUND_BUTTON = "#buttonRound";
-			const ATTRIBUTE_BUTTON = "#buttonAttribute";
-
-			function setUpRoundButton() {
-
-				$(ATTRIBUTE_BUTTON).hide();
-				$(ROUND_BUTTON).show();
-				$(ROUND_BUTTON).click(() => {
-					// returns null to api to play the round with attribute function
-					// will call a function that is responsible for getting game logic
-					//	playRoundWithAttribute(null) function - once it is done
-				})
-			}
-
-			function setupAttributeButton() {
-				$(ROUND_BUTTON).hide();
-				$(ATTRIBUTE_BUTTON).show();
-			}
 		</script>
 
 
