@@ -37,16 +37,23 @@
 
 			<!-- Import our Pseudo Player class and style sheet -->
 			<link rel="stylesheet" href="assets/components/Player/player.css" />
-			<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
+			<script type="text/javascript" src="./assets/components/Player/Player.js"> </script>
+			<script type="text/javascript" src="./assets/components/PlayButton/PlayButton.js"> </script>
 
 			<!-- Import API -->
 			<script type="text/javascript" src="./assets/api/api.js"> </script>
 
 
 			<script type="text/javascript">
+				// GLOBALS
+				let PLAY_BUTTON = PlayButtonFactory();
+
 				// CALL ALL SETUP FUNCTIONS HERE
 				function initalize() {
-					setUpRoundButton();
+
+					// ADD COMPONENTS TO THE DOM:
+					PLAY_BUTTON.attach("#tt-button-wrapper");
+
 					// Setup event handlers
 					setupNewGameModal();
 					// Show the new game modal
@@ -105,17 +112,14 @@
 
 						// If it is the AI who plays next
 						if (resultApi.chosenAttributeName !== null) {
-							setUpRoundButton();
+							PLAY_BUTTON.setRoundButton();
 						}
 						// if it is human who needs to choose attribute
 						else {
-							setupAttributeButton();
-							//sets attributes to the attribute names
-							$("#att1").text(resultApi.playersInGame[0].topCard.attributes[0].name);
-							$("#att2").text(resultApi.playersInGame[0].topCard.attributes[1].name);
-							$("#att3").text(resultApi.playersInGame[0].topCard.attributes[2].name);
-							$("#att4").text(resultApi.playersInGame[0].topCard.attributes[3].name);
-							$("#att5").text(resultApi.playersInGame[0].topCard.attributes[4].name);
+							PLAY_BUTTON.setAttributeButton();
+							resultApi.playersInGame[0].topCard.attributes.forEach(a => {
+								PLAY_BUTTON.addAttribute(a.name);
+							})
 						}
 					})
 				}
@@ -125,6 +129,7 @@
 				const ATTRIBUTE_BUTTON = "#buttonAttribute";
 
 				function setUpRoundButton() {
+
 					$(ATTRIBUTE_BUTTON).hide();
 					$(ROUND_BUTTON).show();
 					$(ROUND_BUTTON).click(() => {

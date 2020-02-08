@@ -11,7 +11,7 @@ const PlayButtonFactory = (attributes) => {
   // ---------
 
   // Wrap in a div so our Jquery object only references one thing!
-  const buttonTemplate = (attributes) => `
+  const buttonTemplate = () => `
       <div>
           <button type="button" class="${ROUND_BUTTON} btn btn-primary"> Play round </button>
           <button type="button" class="${DROPDOWN_BUTTON} btn btn-primary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true">
@@ -31,7 +31,7 @@ const PlayButtonFactory = (attributes) => {
   // -------------------------------
 
   // Create jquery reference referencing the button template.
-  const $this = $(buttonTemplate(attributes));
+  const $this = $(buttonTemplate());
 
   // It's probably better to search locally for classes inside THIS's div, as IDs may create conflicts in the
   // long term on the page in general.
