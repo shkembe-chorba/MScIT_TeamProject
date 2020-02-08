@@ -42,18 +42,6 @@
 		<!-- Import API -->
 		<script type="text/javascript" src="./assets/api/api.js"> </script>
 
-
-
-
-
-		<!-- Import our Pseudo Player class and style sheet -->
-		<link rel="stylesheet" href="assets/components/Player/player.css" />
-		<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
-
-		<!-- Import API -->
-		<script type="text/javascript" src="./assets/api/api.js"> </script>
-
-
 		<script type="text/javascript">
 			// Global JS Components
 			let PLAYER_CARDS;
