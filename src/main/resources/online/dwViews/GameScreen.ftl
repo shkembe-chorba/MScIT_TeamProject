@@ -43,13 +43,7 @@
 		<script type="text/javascript" src="./assets/api/api.js"> </script>
 
 
-		<script type="text/javascript">
-			// GLOBAL VARIABLES
-			// ----------------
-			let PLAY_BUTTON = PlayButtonFactory();
 
-
-		</script>
 
 
 					<!-- Import our Pseudo Player class and style sheet -->
@@ -66,6 +60,7 @@
 						let USER_CARD;
 						let AI_CARDS;
 						let CHOSEN_ATTRIBUTE;
+						let PLAY_BUTTON = PlayButtonFactory();
 
 						// DOM Element ID References
 						const DOM_CARD_WRAPPER = "#card-decks";
@@ -75,6 +70,7 @@
 							// Setup event handlers
 							setupNewGameModal();
 							setupRoundButton();
+							// setupPlayButton();
 							// Show the new game modal
 							$(NEW_GAME_MODAL).modal('show');
 
@@ -115,24 +111,23 @@
 								chosenAttributeName
 							} = apiResponse;
 
-							setupPlayerCards(playersInGame);
-							setupPlayButton(chosenAttributeName);
-							// Empty
-							setupMessageBoard();
+							setupPlayerCards(playersInGame, apiResponse);
 
-						}
-						function setupPlayButton(parameter) {
-							if (parameter !== null) {
+							if (chosenAttributeName !== null) {
 								PLAY_BUTTON.setPlayRoundButton();
 							}
 							// if it is human who needs to choose attribute
 							else {
 								PLAY_BUTTON.setAttributeButton();
-								resultApi.playersInGame[0].topCard.attributes.forEach(a => {
+								apiResponse.playersInGame[0].topCard.attributes.forEach(a => {
 									PLAY_BUTTON.addAttribute(a.name);
 								})
 							}
+							// Empty
+							// setupMessageBoard();
+
 						}
+
 						function setupRoundButton() {
 							// PLAY BUTTON
 							// -----------
