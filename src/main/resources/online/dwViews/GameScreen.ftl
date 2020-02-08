@@ -181,7 +181,7 @@
 							// Display winner if exists
 							PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
 							// Display eliminated players
-							PLAYERS.filter(p => eliminatedPlayersNames.contains(p.getName())).forEach(p => p.eliminate());
+							PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
 
 							// SET BUTTON TO 'NEXT ROUND'
 							// --------------------------
