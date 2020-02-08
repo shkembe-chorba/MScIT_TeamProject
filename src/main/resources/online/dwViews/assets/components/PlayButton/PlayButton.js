@@ -2,7 +2,8 @@ const PlayButtonFactory = (attributes) => {
   // CLASS NAMES
   // -----------
 
-  const ROUND_BUTTON = "tt-round-button";
+  const NEXT_ROUND_BUTTON = "tt-next-round-button";
+  const PLAY_ROUND_BUTTON = "tt-play-round-button";
   const DROPDOWN_BUTTON = "tt-dropdown-button";
   const ATTRIBUTE = "tt-attribute-selector";
   const ATTRIBUTE_LIST = "tt-attribute-list";
@@ -13,7 +14,8 @@ const PlayButtonFactory = (attributes) => {
   // Wrap in a div so our Jquery object only references one thing!
   const buttonTemplate = () => `
       <div>
-          <button type="button" class="${ROUND_BUTTON} btn btn-primary"> Play round </button>
+          <button type="button" class="${PLAY_ROUND_BUTTON} btn btn-primary"> Play round </button>
+          <button type="button" class="${NEXT_ROUND_BUTTON} btn btn-warning"> Next round </button>
           <button type="button" class="${DROPDOWN_BUTTON} btn btn-primary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true">
               Play round
           </button>
@@ -35,7 +37,8 @@ const PlayButtonFactory = (attributes) => {
 
   // It's probably better to search locally for classes inside THIS's div, as IDs may create conflicts in the
   // long term on the page in general.
-  const $roundButton = $this.find("." + ROUND_BUTTON);
+  const $nextRoundButton = $this.find("." + NEXT_ROUND_BUTTON);
+  const $playRoundButton = $this.find("." + PLAY_ROUND_BUTTON);
   const $dropdownButton = $this.find("." + DROPDOWN_BUTTON);
   const $attributeList = $this.find("." + ATTRIBUTE_LIST);
 
@@ -44,10 +47,37 @@ const PlayButtonFactory = (attributes) => {
 
   // Public methods
   return {
-    // Todo
-    setRoundButton: () => {},
-    // Todo
-    setAttributeButton: () => {},
+    // Show the next round button, hide the others
+    setNextRoundButton: () => {
+
+    },
+
+    // Set the nextround callback function
+    onNextRoundClick: (callback) => {
+      $nextRoundButton.click(callback);
+    },
+
+    // Show the play round button, hide the others
+    setPlayRoundButton: () => {
+
+    },
+
+    // Set the playround callback function
+    onPlayRoundClick: (callback) => {
+      $playRoundButton.click(callback);
+    },
+
+    // Show the attribute button, hide the others
+    setAttributeButton: () => {
+
+    },
+
+    // Sets the user callback function when an attribute is clicked.
+    // The callback should take the attribute name as a parameter.
+    onAttributeClick: (callback) => {
+      userCallback = callback;
+    },
+
     // Add attribute,
     addAttribute: (attributeName) => {
       // Create an attribute dom element
@@ -59,17 +89,16 @@ const PlayButtonFactory = (attributes) => {
       // Add it to our attribute list
       $attributeList.append($attribute);
     },
+
+    // Clear all attributes
     clearAttributes: () => {
       $attributeList.empty();
     },
+    
     // Append to the target div id / class / ...
     attach: (target) => {
       $(target).append($this);
     },
-    // Sets the user callback function when an attribute is clicked.
-    // The callback should take the attribute name as a parameter.
-    onAttributeClick: (callback) => {
-      userCallback = callback;
-    },
+    
   };
 };
