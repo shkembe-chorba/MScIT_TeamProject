@@ -43,16 +43,18 @@ const PlayButtonFactory = (attributes) => {
   const $attributeList = $this.find("." + ATTRIBUTE_LIST);
 
   // This will store the function the user wants to be calledback on a click of an attribute.
-  let userCallback = (attributeName) => {};
+  let userCallback = (attributeName) => {
+    return null;
+  };
 
   // Public methods
   return {
     // Show the next round button, hide the others
+
     setNextRoundButton: () => {
       $playRoundButton.hide();
       $nextRoundButton.show();
       $dropdownButton.hide();
-
     },
 
     // Set the nextround callback function
@@ -61,12 +63,13 @@ const PlayButtonFactory = (attributes) => {
     },
 
     // Show the play round button, hide the others
+
     setPlayRoundButton: () => {
       $playRoundButton.show();
       $nextRoundButton.hide();
       $dropdownButton.hide();
-
     },
+
 
     // Set the playround callback function
     onPlayRoundClick: (callback) => {
@@ -75,6 +78,7 @@ const PlayButtonFactory = (attributes) => {
 
 
     // Show the attribute button, hide the others
+
     setAttributeButton: () => {
       $playRoundButton.hide();
       $nextRoundButton.hide();
@@ -103,11 +107,10 @@ const PlayButtonFactory = (attributes) => {
     clearAttributes: () => {
       $attributeList.empty();
     },
-    
+
     // Append to the target div id / class / ...
     attach: (target) => {
       $(target).append($this);
     },
-    
   };
 };
