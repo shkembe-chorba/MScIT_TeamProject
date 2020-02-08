@@ -48,7 +48,7 @@ const PlayButtonFactory = (attributes) => {
   };
 
   // Public methods
-  return {
+  const PlayButton = {
     // Show the next round button, hide the others
     setNextRoundButton: () => {},
 
@@ -96,4 +96,6 @@ const PlayButtonFactory = (attributes) => {
       $(target).append($this);
     },
   };
+
+  return PlayButton;
 };
