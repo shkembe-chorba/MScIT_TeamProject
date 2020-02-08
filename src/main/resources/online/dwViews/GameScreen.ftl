@@ -15,20 +15,10 @@
 							</div>
 						</div>
 						<div class="row justify-content-md-center">
-							<button type="button" id="buttonRound" class="btn btn-primary">
-							Play round
-							</button>
-							<button class="btn btn-primary dropdown-toggle" type="button" id="buttonAttribute" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true">
-								Play round
-							</button>
-								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-									<a class="dropdown-item" id="att1"></a>
-									<a class="dropdown-item" id="att2"></a>
-									<a class="dropdown-item" id="att3"></a>
-									<a class="dropdown-item" id="att4"></a>
-									<a class="dropdown-item" id="att5"></a>
-								</div>
 
+							<div id="tt-button-wrapper">
+								<!-- Button is inserted here -->
+							</div>
 
 							<div class="card" style="width: 40rem;text-align:center">
 								<div class="card-body">
@@ -118,8 +108,9 @@
 							setUpRoundButton();
 						}
 						// if it is human who needs to choose attribute
-						else { setupAttributeButton();
-						//sets attributes to the attribute names
+						else {
+							setupAttributeButton();
+							//sets attributes to the attribute names
 							$("#att1").text(resultApi.playersInGame[0].topCard.attributes[0].name);
 							$("#att2").text(resultApi.playersInGame[0].topCard.attributes[1].name);
 							$("#att3").text(resultApi.playersInGame[0].topCard.attributes[2].name);
@@ -132,15 +123,16 @@
 				// Sets round button to display text and
 				const ROUND_BUTTON = "#buttonRound";
 				const ATTRIBUTE_BUTTON = "#buttonAttribute";
+
 				function setUpRoundButton() {
-						$(ATTRIBUTE_BUTTON).hide();
-						$(ROUND_BUTTON).show();
-						$(ROUND_BUTTON).click(() => {
-							// returns null to api to play the round with attribute function
-							// will call a function that is responsible for getting game logic
+					$(ATTRIBUTE_BUTTON).hide();
+					$(ROUND_BUTTON).show();
+					$(ROUND_BUTTON).click(() => {
+						// returns null to api to play the round with attribute function
+						// will call a function that is responsible for getting game logic
 						//	playRoundWithAttribute(null) function - once it is done
-						})
-					}
+					})
+				}
 
 				function setupAttributeButton() {
 					$(ROUND_BUTTON).hide();
@@ -249,4 +241,5 @@
 				}
 			</script>
 		</body>
+
 </html>
