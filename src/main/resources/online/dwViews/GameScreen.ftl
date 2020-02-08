@@ -62,10 +62,13 @@
 
 
 						<script type="text/javascript">
-							// Globals
-							let PLAYERS;
-							let USER;
-							let AIS;
+							// Global JS Components
+							let PLAYER_CARDS;
+							let USER_CARD;
+							let AI_CARDS;
+
+							// DOM Element ID References
+							const DOM_CARD_WRAPPER = "#card-decks";
 
 							// CALL ALL SETUP FUNCTIONS HERE
 							function initalize() {
@@ -100,47 +103,54 @@
 								});
 							}
 
-							function setupRound() {
-								apiInitRound((resultApi) => {
-									// destroy all player cards in the wrapper
-									$("#card-decks").empty();
+							function setupRound(apiResponse) {
 
-									// Creates a variable by 'destructuring' the api object
-									const {
-										playersInGame
-									} = resultApi;
+								// Destructure apiResponse fields into variables
+								const {
+									playersInGame,
+									chosenAttributeName
+								} = apiResponse;
 
-									// Create player objects.
-									PLAYERS = playersInGame.map(p => {
-										return PlayerFactory(p);
-									})
+								setupPlayerCards(playersInGame);
+								setupPlayButton(chosenAttributeName);
 
-									// Get User
-									USER = PLAYERS.filter(p => p.isUser())[0];
-									// Get AI Player array
-									AIS = PLAYERS.filter(p => !p.isUser());
+							}
 
-									// Hide the ais cards.
-									AIS.forEach(ai => ai.hideCard());
+							function setupPlayerCards(players) {
+								// Clear the cards from the wrapper
+								$(DOM_CARD_WRAPPER).empty();
 
-									// Attach the card to the screen.
-									PLAYERS.forEach(p => p.attach("#card-decks"));
-
-
-									// If it is the AI who plays next
-									if (resultApi.chosenAttributeName !== null) {
-										setUpRoundButton();
-									}
-									// if it is human who needs to choose attribute
-									else {
-										setupAttributeButton();
-										$("#att1").text();
-										$("#att2").text();
-										$("#att3").text();
-										$("#att4").text();
-										$("#att5").text();
-									}
+								// Create player objects.
+								PLAYERS = players.map(p => {
+									return PlayerFactory(p);
 								})
+
+								// Get User
+								USER = PLAYERS.filter(p => p.isUser())[0];
+								// Get AI Player array
+								AIS = PLAYERS.filter(p => !p.isUser());
+
+								// Hide the ais cards.
+								AIS.forEach(ai => ai.hideCard());
+
+								// Attach the cards to the screen.
+								PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
+							}
+
+							function setupPlayButton(chosenAttributeName) {
+								// If it is the AI who plays next
+								if (resultApi.chosenAttributeName !== null) {
+									setUpRoundButton();
+								}
+								// if it is human who needs to choose attribute
+								else {
+									setupAttributeButton();
+									$("#att1").text();
+									$("#att2").text();
+									$("#att3").text();
+									$("#att4").text();
+									$("#att5").text();
+								}
 							}
 
 							// Sets round button to display text and
