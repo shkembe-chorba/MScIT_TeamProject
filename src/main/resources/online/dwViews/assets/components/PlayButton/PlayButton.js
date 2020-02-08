@@ -23,26 +23,26 @@ const PlayerButtonFactory = (attributes) => {
   // PRIVATE VARIABLES / CONSTRUCTOR FUNCTIONS
 
   // Create jquery reference referencing the button template.
-  const $this = $(playerTemplate(attributes));
+  const $this = $(buttonTemplate(attributes));
 
   // It's probably better to search locally for classes inside THIS's div, as IDs may create conflicts in the
   // long term on the page in general.
-  const $roundButton = this.find(".tt-round-button");
-  const $dropdownButton = this.find(".tt-round-button");
-  const $attributes = this.find(".tt-attribute-selector");
+  const $roundButton = $this.find(".tt-round-button");
+  const $dropdownButton = $this.find(".tt-dropdown-button");
+  const $attributes = $this.find(".tt-attribute-selector");
 
   // Setup an on-click for each of our attributes
 
   // This will store the function the user wants to be calledback on a click of an attribute.
-  let userCallback;
+  let userCallback = (attributeName) => {};
 
   // For each Jquery attribute
   $attributes.each(function() {
-    // Get the jquery attribute
+    // Get the jquery object for the attribute
     const $attribute = this;
     // When the user clicks this attribute, it calls the 'userCallback' set in the public method below.
     // It is passed the contents of the attribute anchor (the attribute name).
-    this.onClick(function() {
+    $attribute.click(() => {
       userCallback($attribute.text().trim());
     });
   });
