@@ -35,7 +35,6 @@ const playerTemplate = (player) => {
     : ``;
 
   return `
-
     <div class="card card-player mt-3">
       <div class="card-header">
         <div class="row ">
