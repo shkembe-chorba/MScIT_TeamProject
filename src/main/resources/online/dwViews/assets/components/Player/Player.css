@@ -1,5 +1,9 @@
-.card {
-  max-width: 200px;
+/* To make cards wrap */
+.card-player {
+  margin-bottom: 1rem !important;
+  /* important hack for wrapping */
+  min-width: 180px;
+  max-width: 220px;
 }
 
 /* Styling for a 'card cover' that masks the card's attributes */
