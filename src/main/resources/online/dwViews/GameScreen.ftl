@@ -1,18 +1,10 @@
 <html>
 
-<!-- HEAD HTML -->
 <#include "./assets/ftl-templates/Head.ftl">
 
-<!-- BODY HTML-->
-
 <body onload="initalize()">
-
-<!-- INCLUDE MODAL FROM TEMPLATE -->
-<#include "./assets/ftl-templates/Modal.ftl">
-
 <div class="container">
-
-	<!-- INCLUDE NAV FROM TEMPLATE -->
+	<#include "./assets/ftl-templates/Modal.ftl">
 	<#include "./assets/ftl-templates/Nav.ftl">
 
 	<div class="container pt-3">
@@ -21,55 +13,26 @@
 				<h4>Game round X</h4>
 			</div>
 		</div>
-						<div class="row justify-content-md-center">
+		<div class="row justify-content-md-center">
 
-							<div id="tt-button-wrapper">
-								<!-- Button is inserted here -->
-							</div>
+			<div id="tt-button-wrapper">
+				<!-- Button is inserted here -->
+			</div>
 
-							<div class="card" style="width: 40rem;text-align:center">
-								<div class="card-body">
-									<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-									<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+			<div class="card" style="width: 40rem;text-align:center">
+				<div class="card-body">
+					<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
+					<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
 
-									<div class="row justify-content-center">
-							<div class="col-3">
-								<div class="row">
-									<button type="button" id="buttonRound" class="btn btn-primary">
-									</button>
-
-									<div class="dropdown">
-										<button class="btn btn-primary dropdown-toggle" type="button"
-											id="buttonAttribute" data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="false" aria-hidden="true">
-										</button>
-										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-											<a class="dropdown-item" id="att1">Attribute 1</a>
-											<a class="dropdown-item" id="att2">Attribute 2</a>
-											<a class="dropdown-item" id="att3">Attribute 3</a>
-											<a class="dropdown-item" id="att4">Attribute 4</a>
-											<a class="dropdown-item" id="att5">Attribute 5</a>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<h6> Communal Pile Size: <span> 10 </span> </h6>
-								</div>
-							</div>
-							<div class="col-9">
-								<div class="card">
-									<div class="card-body">
-										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
-									</div>
-
-								</div>
-							</div>
-										<!-- DOM_CARD_WRAPPER -->
-										<div id="card-decks" class="card-deck">
-										</div>
-									</div>
-								</div>
+	<!-- The Player Card Deck Wrapper -->
+	<div id="card-decks" class="card-deck">
+	</div>
+</div>
 
 		<!-- Import our Pseudo Player class and style sheet -->
 		<link rel="stylesheet" href="assets/components/Player/player.css" />
