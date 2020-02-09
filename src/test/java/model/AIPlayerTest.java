@@ -13,21 +13,21 @@ import org.junit.jupiter.api.Test;
 public class AIPlayerTest {
 
     // Define potential attributes
-    final Attribute ATTRIBUTE_LOW_VALUE = new Attribute("Strength", 1);
-    final Attribute ATTRIBUTE_HIGH_VALUE = new Attribute("Stamina", 20);
-    final Attribute ATTRIBUTE_MID_VALUE = new Attribute("Money", 4);
+    final static Attribute ATTRIBUTE_LOW_VALUE = new Attribute("Strength", 1);
+    final static Attribute ATTRIBUTE_HIGH_VALUE = new Attribute("Stamina", 20);
+    final static Attribute ATTRIBUTE_MID_VALUE = new Attribute("Money", 4);
 
-    final Attribute[] ATTRIBUTE_ARRAY =
+    final static Attribute[] ATTRIBUTE_ARRAY =
             {ATTRIBUTE_HIGH_VALUE, ATTRIBUTE_MID_VALUE, ATTRIBUTE_LOW_VALUE};
 
     // The pile for testing
-    Pile testPile;
+    static Pile testPile;
 
     /**
      * Sets up the TEST_PILE
      */
     @BeforeAll
-    void setupTestItems() {
+    static void setupTestItems() {
         // Create a test card
         Card card = new Card("Test");
 
