@@ -66,7 +66,8 @@ public class GlobalCommand {
     }
 
     /**
-     * Returns the global command and its description.
+     * Returns the global command and its description. May be useful for displaying command menu to
+     * a user, like if they type 'help'.
      */
     @Override
     public String toString() {

@@ -1,26 +1,35 @@
 package commandline.utils;
 
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
+import commandline.IOStreamTest;
+
+/**
+ * Logger tests
+ */
 public class LoggerTest {
 
+    /*
+     * Setup
+     */
+
+    // Creates a temporary test log in the current directory
     private static final String TEST_FILE_PATH_STRING = "./testLogger.log";
 
-    @AfterEach
-    private void removeFilesCreated() {
-        File testFile = new File(TEST_FILE_PATH_STRING);
-        testFile.delete();
-    }
-
+    // A helper function for getting the contents of the test log
     private String getTestFileContents() {
         String fileContent = "";
         try {
@@ -33,10 +42,22 @@ public class LoggerTest {
         return fileContent;
     }
 
+    // Delete the temporary test log after each test
+    @AfterEach
+    private void removeFilesCreated() {
+        File testFile = new File(TEST_FILE_PATH_STRING);
+        testFile.delete();
+    }
+
     @Nested
+    @DisplayName("When the logger has been enabled")
     class Enabled {
 
-        @DisplayName("Correct new file is created when enabled")
+        /*
+         * Validation tests
+         */
+
+        @DisplayName("A test log file is created when enabled")
         @Test
         public void newFileWhenEnabled() {
 
@@ -52,9 +73,10 @@ public class LoggerTest {
             assertTrue(outputFile.exists());
         }
 
-        @DisplayName("Logger can be used statically when enabled")
+        @DisplayName("Logger can be used statically when enabled and in app scope")
         @Test
         void canBeUsedStatically() {
+            // Create in scope
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
             Logger.log("Test");
         }
@@ -63,8 +85,11 @@ public class LoggerTest {
         @DisplayName("Each entry creates the message with a divider after it")
         @Test
         void logEntryCorrectFormat() {
+
+            // Expect that the divider string is given after each log.
             String expectedOutput = "Test\n" + Logger.LOGGER_DIVIDER_STRING + "\n";
 
+            // Create in scope
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
 
             try {
@@ -78,27 +103,41 @@ public class LoggerTest {
             assertEquals(expectedOutput, getTestFileContents());
         }
 
+        @DisplayName("Can provide a header to each log easily")
+        @Test
+        void logEntryCorrectFormatWithHeader() {
+
+            // Expect that a header that is one space above the message can be provided
+            String expectedOutput = "Header\n\n" + "Test\n" + Logger.LOGGER_DIVIDER_STRING + "\n";
+
+            // Create in scope
+            Logger logger = new Logger(TEST_FILE_PATH_STRING);
+
+            try {
+                logger.enable();
+            } catch (IOException e) {
+                fail("I/O error during test");
+            }
+
+            Logger.log("Header", "Test");
+
+            assertEquals(expectedOutput, getTestFileContents());
+        }
     }
 
-
+    // This class extends IOStreamTest to allow access to streams
     @Nested
-    class NotEnabled {
-        private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-        private final PrintStream originalErr = System.err;
+    @DisplayName("When the logger is not enabled")
+    class NotEnabled extends IOStreamTest {
 
-        @BeforeEach
-        public void setUpStreams() {
-            System.setErr(new PrintStream(errContent));
-        }
-
-        @AfterEach
-        public void restoreStreams() {
-            System.setErr(originalErr);
-        }
+        /*
+         * Defect tests
+         */
 
         @DisplayName("Logger does not throw when used statically but disabled")
         @Test
         void loggerIsSilentWhenNotEnabled() {
+            // Create in scope
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
             Logger.log("This should not throw");
         }
@@ -106,15 +145,16 @@ public class LoggerTest {
         @DisplayName("No default behaviour to System.err")
         @Test
         void noOutputToSystemDotOut() {
+            // Create in scope
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
             Logger.log("Test");
-            assertEquals("", errContent.toString());
+            assertEquals("", getErr().toString());
         }
 
         @DisplayName("No file is made when logger is not enabled")
         @Test
         void noFileUntilEnabled() {
-
+            // Create in scope
             Logger logger = new Logger(TEST_FILE_PATH_STRING);
             File outputFile = new File(TEST_FILE_PATH_STRING);
 
