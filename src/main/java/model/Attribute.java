@@ -24,6 +24,16 @@ public class Attribute implements Comparable<Attribute> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Attribute) {
+            Attribute a = (Attribute) obj;
+            return this.getName().equals(a.getName());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return String.format("%s: %d", name, value);
     }
