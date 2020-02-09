@@ -1,4 +1,4 @@
-package commandline.view;
+package commandline;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
