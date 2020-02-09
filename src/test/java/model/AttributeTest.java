@@ -9,8 +9,16 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Attribute tests
+ */
 public class AttributeTest {
 
+    /*
+     * Validation Tests
+     */
+
+    @DisplayName("getName()")
     @Test
     public void testGetAttributeName() {
         Attribute testAttribute = new Attribute("Strength", 1);
@@ -19,6 +27,7 @@ public class AttributeTest {
         assertEquals(expectedString, actualString);
     }
 
+    @DisplayName("getValue()")
     @Test
     public void testGetAttributeValue() {
         Attribute testAttribute = new Attribute("Strength", 1);
@@ -27,8 +36,14 @@ public class AttributeTest {
         assertEquals(expectedInt, actualInt);
     }
 
+    @DisplayName("compareTo()")
     @Nested
     public class CompareTo {
+
+        /*
+         * Validation Tests
+         */
+
         @DisplayName("Attributes can be compared based on value")
         @Test
         public void comparableWorksAsExpected() {
@@ -43,18 +58,5 @@ public class AttributeTest {
             Arrays.sort(unorderedArray);
             assertArrayEquals(orderedArray, unorderedArray);
         }
-
-        // REMOVED, to allow AI class to compare attributes to see which is best
-
-        // @DisplayName("Attributes with different names cannot be compared")
-        // @Test
-        // public void attributesWithDifferentNamesCannotBeCompared() {
-
-        // Attribute a1 = new Attribute("Strength", 10);
-        // Attribute a2 = new Attribute("Stamina", 4);
-
-        // assertThrows(IllegalArgumentException.class, () -> a1.compareTo(a2));
-        // }
-
     }
 }
