@@ -1,44 +1,23 @@
 package commandline.view;
 
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
+import commandline.IOStreamTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class CommandLineViewTest {
-
-    // Setup I/O for each test
-    // ------------------------
-
-    private final InputStream originalIn = System.in;
-    private final PrintStream originalOut = System.out;
-    private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-
-    @BeforeEach
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-    }
-
-    @AfterEach
-    public void restoreStreams() {
-        System.setOut(originalOut);
-        System.setIn(originalIn);
-    }
-
-    // Helper to provide mock input
-    private void provideInput(String data) {
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-    }
-    // --- End Setup ----
+public class CommandLineViewTest extends IOStreamTest {
 
     @DisplayName("display...() methods")
     @Nested
@@ -49,7 +28,7 @@ public class CommandLineViewTest {
         public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
-            assertEquals("Output message\n", outContent.toString());
+            assertEquals("Output message\n", getOut());
         }
 
         @DisplayName("display...List finishes with just one new line")
@@ -60,10 +39,10 @@ public class CommandLineViewTest {
             List<String> testList = Arrays.asList(new String[] {"a", "b", "c"});
 
             view.displayBulletList(testList);
-            assertFalse(outContent.toString().endsWith("\n\n"));
+            assertFalse(getOut().endsWith("\n\n"));
 
             view.displayIndentedList(testList);
-            assertFalse(outContent.toString().endsWith("\n\n"));
+            assertFalse(getOut().endsWith("\n\n"));
 
         }
 
@@ -76,7 +55,7 @@ public class CommandLineViewTest {
             view.displayMessage("first");
             view.displayDivider();
             view.displayMessage("second");
-            assertEquals(expectedOutput, outContent.toString());
+            assertEquals(expectedOutput, getOut());
         }
     }
 
@@ -130,7 +109,7 @@ public class CommandLineViewTest {
             CommandLineView view = new CommandLineView();
             // Lambda function checks for 'one word'
             view.getUserInput(x -> x.matches("^\\w+$"), "Does not match one word.");
-            assertTrue(outContent.toString().contains("Does not match one word.\n"));
+            assertTrue(getOut().contains("Does not match one word.\n"));
         }
     }
     @DisplayName("getUserSelection() / getUserSelectionIndex()")
@@ -179,7 +158,7 @@ public class CommandLineViewTest {
 
             CommandLineView view = new CommandLineView();
             view.getUserSelectionIndex(Arrays.asList(input)); // Convert array to list.
-            assertTrue(outContent.toString().contains(expectedErrorMessage));
+            assertTrue(getOut().contains(expectedErrorMessage));
         }
     }
 
