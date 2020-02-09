@@ -3,19 +3,18 @@
 <!-- HEAD -->
 <#include "./assets/ftl-templates/Head.ftl">
 
-	<body onload="initalize()">
+	<body onload="initialize()">
 
 		<!-- HTML -->
 		<div class="container">
 			<#include "./assets/ftl-templates/Modal.ftl">
 				<#include "./assets/ftl-templates/Nav.ftl">
-
+					<#include "./assets/ftl-templates/GameOverModal.ftl">
 					<!-- mt-3 = margin between nav and game-->
 					<div class="container mt-3">
 						<!-- ROUND DISPLAY -->
 						<!-- #tt-round-number -->
-						<h4>Game round <span id="tt-round-number">X</span></h4>
-
+						<h4>Game round <span id="tt-round-number"></span></h4>
 						<!-- Responsive design for smaller screens (see row / col values) -->
 						<div class="row justify-content-center align-items-center">
 							<div class="col-sm-12 col-md-6 col-lg-3 text-center mb-3">
@@ -63,6 +62,7 @@
 			let USER_CARD;
 			let AI_CARDS;
 			let CHOSEN_ATTRIBUTE;
+			let ROUND_NUMBER = "#tt-round-number";
 			// This does not:
 			const PLAY_BUTTON = PlayButtonFactory();
 
@@ -82,7 +82,7 @@
 			// INITIALISE GAME PHASE
 			// ---------------------
 
-			function initalize() {
+			function initialize() {
 				// Setup event handlers
 				initialiseNewGameModal();
 				initialisePlayButton();
@@ -128,9 +128,9 @@
 				PLAY_BUTTON.onNextRoundClick(() => {
 					apiInitRound(setupRound);
 				});
-
 				PLAY_BUTTON.onGameOverClick(() => {
-					apiGetGameOverScores(gameOver)
+					apiGetGameOverScores(gameOver);
+					gameOverModal.modal('show');
 				})
 			}
 
@@ -144,26 +144,21 @@
 					playersInGame,
 					chosenAttributeName
 				} = apiResponse;
+				const attributes = apiResponse.playersInGame[0].topCard.attributes;
+
+				//Set the round number
+				$(ROUND_NUMBER).text(apiResponse.round);
 
 				// Set the chosen attribute (if an AI player has already called it)
 				CHOSEN_ATTRIBUTE = chosenAttributeName;
 
 				setupPlayerCards(playersInGame);
+				// Set the button to the correct type - human can choose only when they are the active player
+				setupButtonView(chosenAttributeName, attributes);
 
-				if (chosenAttributeName !== null) {
-					PLAY_BUTTON.setPlayRoundButton();
-				}
-				// if it is human who needs to choose attribute
-				else {
-					PLAY_BUTTON.clearAttributes();
-					PLAY_BUTTON.setAttributeButton();
-					apiResponse.playersInGame[0].topCard.attributes.forEach(a => {
-						PLAY_BUTTON.addAttribute(a.name);
-					})
-				}
 				// Empty
 				// setupMessageBoard();
-			}
+				}
 
 			function setupPlayerCards(players) {
 				// Clear the cards from the wrapper
@@ -181,50 +176,63 @@
 				// Attach the cards to the screen.
 				PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
 			}
-
-			// PLAY ROUND PHASE
-			// ----------------
-
-			function playRound(apiResponse) {
-
-				// Get these variables out of apiResponse by destructuring js object
-				const {
-					eliminatedPlayersNames,
-					roundWinnerName,
-					userEliminated,
-					gameWinnerName
-				} = apiResponse;
-
-				// CARDS
-				// -----
-				// Show all players' cards
-				PLAYERS.forEach(p => p.showCard());
-				// Display all players in 'loser' state (for draw)
-				PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
-				// Display winner if exists
-				PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
-				// Display eliminated players
-				PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
-
-				// DISPLAY WINNER MESSAGES
-				// -----------------------
-
-				// SET BUTTON
-				// ----------
-				if (userEliminated || gameWinnerName) {
-					PLAY_BUTTON.setGameOverButton();
-				} else {
-					PLAY_BUTTON.setNextRoundButton();
+			// If the AI returned a chosen attribute, there is the next round button displayed
+			function setupButtonView(chosenAttributeName, attributes) {
+				if (chosenAttributeName !== null) {
+					PLAY_BUTTON.setPlayRoundButton();
+				}
+				// if it is human who needs to choose attribute
+				else {
+					PLAY_BUTTON.clearAttributes();
+					PLAY_BUTTON.setAttributeButton();
+					attributes.forEach(a => {
+						PLAY_BUTTON.addAttribute(a.name);
+					})
 				}
 			}
 
+				// PLAY ROUND PHASE
+				// ----------------
+
+				function playRound(apiResponse) {
+
+					// Get these variables out of apiResponse by destructuring js object
+					const {
+						eliminatedPlayersNames,
+						roundWinnerName,
+						userEliminated,
+						gameWinnerName
+					} = apiResponse;
+
+					// CARDS
+					// Show all players' cards
+					PLAYERS.forEach(p => p.showCard());
+					// Display all players in 'loser' state (for draw)
+					PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
+					// Display winner if exists
+					PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
+					// Display eliminated players
+					PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
+
+					// DISPLAY WINNER MESSAGES
+					// ----------------
+
+					// SET BUTTON
+					// ----------------
+					if (userEliminated || gameWinnerName) {
+						PLAY_BUTTON.setGameOverButton();
+
+					} else {
+						PLAY_BUTTON.setNextRoundButton();
+					}
+				}
+
 			// GAME OVER PHASE
-			// ---------------
+			// ----------------
+			function gameOver(apiResponse) {
+				PLAY_BUTTON.onGameOverClick();
+				}
 
-			function gameOver() {
-
-				// Include Game Over Logic here
-			}
 		</script>
 
 	</body>
