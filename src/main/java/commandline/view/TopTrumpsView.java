@@ -1,7 +1,7 @@
 package commandline.view;
 
 import commandline.controller.CliController;
-import commandline.controller.TopTrumpsControllerInterface;
+import commandline.controller.CliControllerInterface;
 import model.Attribute;
 import model.Card;
 import model.Player;
@@ -22,7 +22,7 @@ public class TopTrumpsView {
     public static final String QUIT_COMMAND = "quit";
     public static final String QUIT_COMMAND_DESCRIPTION = "quits the program";
 
-    private TopTrumpsControllerInterface controller;
+    private CliControllerInterface controller;
     private CommandLineView cli = new CommandLineView();
 
     /**
@@ -30,7 +30,7 @@ public class TopTrumpsView {
      *
      * @param controller A controller which implements the TopTrumpsControllerInterface interface.
      */
-    public TopTrumpsView(TopTrumpsControllerInterface controller) {
+    public TopTrumpsView(CliControllerInterface controller) {
         this.controller = controller;
         setupQuitCommand();
     }
@@ -143,7 +143,7 @@ public class TopTrumpsView {
 
     /**
      * Displays The category chosen is + category attribute name
-     * 
+     *
      * @param attribute
      */
     public void displayChosenCategory(Attribute attribute) {

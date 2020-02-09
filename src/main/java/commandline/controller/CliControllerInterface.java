@@ -5,7 +5,7 @@ import java.sql.SQLException;
 /**
  * An interface which can be implemented for dummy testing.
  */
-public interface TopTrumpsControllerInterface {
+public interface CliControllerInterface {
     public void run() throws SQLException;
 
     public void quit();
