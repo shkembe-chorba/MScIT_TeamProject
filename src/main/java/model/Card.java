@@ -10,8 +10,7 @@ public class Card {
     protected ArrayList<Integer> cardIntegers = new ArrayList<Integer>();
 
     public Card(String n) {
-        if ("".equals(n)||(n==null))
-        {
+        if ("".equals(n) || (n == null)) {
             throw new IllegalArgumentException("No empty names allowed");
         }
         this.name = n;
@@ -24,33 +23,27 @@ public class Card {
 
     public int getValue(Attribute givenAttribute) {
         String givenAttributeName = givenAttribute.getName();
-        for(Attribute attribute: cardList) {
-            if(attribute.getName().equals(givenAttributeName)) {
+        for (Attribute attribute : cardList) {
+            if (attribute.getName().equals(givenAttributeName)) {
                 return attribute.getValue();
             }
         }
         return 0;
     }
 
-    public void add(Attribute a){
+    public void add(Attribute a) {
         this.cardList.add(a);
     }
-    public Attribute getAttribute(int i){
+
+    public Attribute getAttribute(int i) {
         return this.cardList.get(i);
     }
 
-    public ArrayList<Attribute> getAttributes(){
+    public ArrayList<Attribute> getAttributes() {
         return this.cardList;
     }
 
-    public ArrayList<Integer> getCategoryValues(){
-        for (int i=0; i<cardList.size(); i++){
-            cardIntegers.add(this.cardList.get(i).getValue());
-        }
-        return cardIntegers;
-    }
-
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
