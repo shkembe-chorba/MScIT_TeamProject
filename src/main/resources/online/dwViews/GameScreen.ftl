@@ -82,6 +82,7 @@
 
 			// Game Over Modal:
 			const GAME_OVER_MODAL = "#gameOverModal";
+			const GAME_OVER_AUTOCOMPLETE_TEXT = "#tt-auto-finish-text";
 			const GAME_OVER_RESTART = "#tt-restartGame";
 			const GAME_OVER_STATS = "#tt-showStatistics";
 			const GAME_OVER_GAME_WINNER = "#winnerName";
@@ -269,13 +270,20 @@
 
 				// Destructure apiResponse into variables
 				const {
-					gameWinnerName
+					gameWinnerName,
+					gameAutoCompleted
 				} = apiResponse;
 
+				const didAutocompleteText = gameAutoCompleted ? "Game autocompleted without the user" : "";
+				const winnerText = gameWinnerName === "USER" ? "YOU!!" : gameWinnerName;
+
+				// Tell the user if the game autocompleted without the player.
+				$(GAME_OVER_AUTOCOMPLETE_TEXT).text(didAutocompleteText);
+				// Set the winning player text
+				$(GAME_OVER_GAME_WINNER).text(winnerText);
 				initializeGameOverModal();
 
-				const winnerText = gameWinnerName === "USER" ? "YOU" : gameWinnerName;
-				$(GAME_OVER_GAME_WINNER).text(winnerText);
+				"tt-auto-finish-text"
 			}
 		</script>
 
