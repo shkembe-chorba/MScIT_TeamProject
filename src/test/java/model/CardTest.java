@@ -9,21 +9,23 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
+/**
+ * Card tests
+ */
 public class CardTest {
 
-    protected static final Attribute a0 = new Attribute("Strength", 1);
-    protected static final Attribute a1 = new Attribute("Stamina", 11);
-    protected static final Attribute a2 = new Attribute("Money", 4);
-
-    public static void addAttributesToCard(Card card) {
-        card.add(a0);
-        card.add(a1);
-        card.add(a2);
-    }
+    protected static final Attribute ATTRIBUTE_STRENGTH_1 = new Attribute("Strength", 1);
+    protected static final Attribute ATTRIBUTE_STRENGTH_5 = new Attribute("Strength", 5);
+    protected static final Attribute ATTRIBUTE_STAMINA_11 = new Attribute("Stamina", 11);
+    protected static final Attribute ATTRIBUTE_MONEY_4 = new Attribute("Money", 4);
 
     @Nested
+    @DisplayName("Card Constructor")
     class Constructor {
+
+        /*
+         * Defect Test
+         */
 
         @DisplayName("Throws if passed no name")
         @Test
@@ -34,52 +36,86 @@ public class CardTest {
         }
     }
 
+    /*
+     * Validation Tests
+     */
+
+    @DisplayName("getName()")
     @Test
     public void canGetName() {
         Card testCard = new Card("Strength");
-        String expectedString = "Strength";
-        String actualString = testCard.getName();
-        assertEquals(expectedString, actualString);
+        assertEquals("Strength", testCard.getName());
     }
 
-    @Nested
-    class AddAndGet {
-        @Test
-        public void canAddAttribute() {
-            Card testCard = new Card("Test");
-            CardTest.addAttributesToCard(testCard);
-            Attribute expectedAttribute = testCard.getAttribute(0);
-            Attribute actualAttribute = CardTest.a0;
-            assertEquals(actualAttribute, expectedAttribute);
-        }
+    @DisplayName("add() and getAttribute()")
+    @Test
+    public void canAddAttribute() {
+        Card testCard = new Card("Test");
+        testCard.add(ATTRIBUTE_STRENGTH_1);
+        assertEquals(ATTRIBUTE_STRENGTH_1, testCard.getAttribute(0));
     }
 
 
     @Nested
+    @DisplayName("getAttributes()")
     class GetAttributes {
+
+        /*
+         * Validation Tests
+         */
+
         @DisplayName("Returns an attribute list")
         @Test
         public void getsAttributeList() {
             Card testCard = new Card("Test");
-            CardTest.addAttributesToCard(testCard);
 
-            ArrayList<Attribute> expectedAttributeList = testCard.getAttributes();
-            ArrayList<Attribute> actualAttributeList = new ArrayList<Attribute>();
-            actualAttributeList.add(CardTest.a0);
-            actualAttributeList.add(CardTest.a1);
-            actualAttributeList.add(CardTest.a2);
-            assertEquals(expectedAttributeList, actualAttributeList);
+            testCard.add(ATTRIBUTE_STRENGTH_1);
+            testCard.add(ATTRIBUTE_STAMINA_11);
+            testCard.add(ATTRIBUTE_MONEY_4);
+
+            ArrayList<Attribute> expectedAttributeList = new ArrayList<Attribute>();
+            expectedAttributeList.add(ATTRIBUTE_STRENGTH_1);
+            expectedAttributeList.add(ATTRIBUTE_STAMINA_11);
+            expectedAttributeList.add(ATTRIBUTE_MONEY_4);
+
+            assertEquals(expectedAttributeList, testCard.getAttributes());
         }
 
+
+        @DisplayName("Can get attribute by index")
         @Test
         public void canGetAttributeByIndex() {
-            Card testCard = new Card("Spaceship");
-            CardTest.addAttributesToCard(testCard);
-            assertEquals(CardTest.a0, testCard.getAttribute(0));
-            assertEquals(CardTest.a2, testCard.getAttribute(2));
+            Card testCard = new Card("Test");
+
+            testCard.add(ATTRIBUTE_STRENGTH_1);
+            testCard.add(ATTRIBUTE_STAMINA_11);
+            testCard.add(ATTRIBUTE_MONEY_4);
+
+            assertEquals(CardTest.ATTRIBUTE_STRENGTH_1, testCard.getAttribute(0));
+            assertEquals(CardTest.ATTRIBUTE_MONEY_4, testCard.getAttribute(2));
         }
     }
 
+    @Nested
+    @DisplayName("getValue()")
+    class GetValue {
+
+        /*
+         * Validation Tests
+         */
+
+        @Test
+        @DisplayName("Gets the value of the card attribute which shares the name of that passed")
+        public void getsValueOfAttributeWhichHasSameNameAsParameter() {
+            Card testCard = new Card("Test");
+
+            testCard.add(ATTRIBUTE_STRENGTH_1);
+            testCard.add(ATTRIBUTE_STAMINA_11);
+            testCard.add(ATTRIBUTE_MONEY_4);
+
+            assertEquals(1, testCard.getValue(ATTRIBUTE_STRENGTH_5));
+        }
+    }
 }
 
 
