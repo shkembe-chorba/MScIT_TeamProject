@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body modal-lg">
                 <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="select1" name="newGameModal-aiPlayers" value="1">
+                    <input type="radio" class="custom-control-input" id="select1" name="newGameModal-aiPlayers" value="1" checked>
                     <label class="custom-control-label" for="select1">1</label>
                 </div>
                 <div class="custom-control custom-radio">
