@@ -125,6 +125,16 @@ class PileTest {
         assertEquals(0, list.get(4).size());
     }
 
+    @DisplayName("Tests the toString")
+    @Test
+    public void toStringWorking() {
+        Pile pile = new Pile();
+        addCardHelper(pile, 10);
+        String toString = pile.toString();
+        assertTrue(toString.startsWith("-------- START OF PILE -------- \n")
+                && toString.endsWith("-------- END OF PILE -------- \n"));
+    }
+
     @DisplayName("Shuffle")
     @Test
     public void shuffleReturnsADifferentOrder() {
@@ -136,16 +146,6 @@ class PileTest {
         // Check the new order doesn't equal the original
         assertNotEquals(initialOrder, pile.getCards());
 
-    }
-
-    @DisplayName("Tests the toString")
-    @Test
-    public void toStringWorking() {
-        Pile pile = new Pile();
-        addCardHelper(pile, 10);
-        String toString = pile.toString();
-        assertTrue(toString.startsWith("-------- START OF PILE -------- \n")
-                && toString.endsWith("-------- END OF PILE -------- \n"));
     }
 
     @Nested
