@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CardTest {
 
     protected static final Attribute ATTRIBUTE_STRENGTH_1 = new Attribute("Strength", 1);
+    protected static final Attribute ATTRIBUTE_STRENGTH_5 = new Attribute("Strength", 5);
     protected static final Attribute ATTRIBUTE_STAMINA_11 = new Attribute("Stamina", 11);
     protected static final Attribute ATTRIBUTE_MONEY_4 = new Attribute("Money", 4);
 
@@ -58,6 +59,11 @@ public class CardTest {
     @Nested
     @DisplayName("getAttributes()")
     class GetAttributes {
+
+        /*
+         * Validation Tests
+         */
+
         @DisplayName("Returns an attribute list")
         @Test
         public void getsAttributeList() {
@@ -75,6 +81,7 @@ public class CardTest {
             assertEquals(expectedAttributeList, testCard.getAttributes());
         }
 
+
         @DisplayName("Can get attribute by index")
         @Test
         public void canGetAttributeByIndex() {
@@ -89,6 +96,26 @@ public class CardTest {
         }
     }
 
+    @Nested
+    @DisplayName("getValue()")
+    class GetValue {
+
+        /*
+         * Validation Tests
+         */
+
+        @Test
+        @DisplayName("Gets the value of the card attribute which shares the name of that passed")
+        public void getsValueOfAttributeWhichHasSameNameAsParameter() {
+            Card testCard = new Card("Test");
+
+            testCard.add(ATTRIBUTE_STRENGTH_1);
+            testCard.add(ATTRIBUTE_STAMINA_11);
+            testCard.add(ATTRIBUTE_MONEY_4);
+
+            assertEquals(1, testCard.getValue(ATTRIBUTE_STRENGTH_5));
+        }
+    }
 }
 
 
