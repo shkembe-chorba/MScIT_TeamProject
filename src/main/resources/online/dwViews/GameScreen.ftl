@@ -65,7 +65,6 @@
 			let ROUND_NUMBER = "#tt-round-number";
 			// This does not:
 			const PLAY_BUTTON = PlayButtonFactory();
-
 			// DOM Element ID References
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
@@ -80,6 +79,9 @@
 
 			// Game Over Modal:
 			const GAME_OVER_MODAL = "#gameOverModal";
+			const GAME_OVER_RESTART = "#tt-restartGame";
+			const GAME_OVER_STATS = "#tt-showStatistics";
+			const GAME_OVER_GAME_WINNER = "#winnerName";
 
 			// INITIALISE GAME PHASE
 			// ---------------------
@@ -132,10 +134,21 @@
 				});
 				PLAY_BUTTON.onGameOverClick(() => {
 					apiGetGameOverScores(gameOverScores);
-					$(GAME_OVER_MODAL).modal('show');
 				})
 			}
 
+			function initializeGameOverModal() {
+				$(GAME_OVER_MODAL).modal('show');
+
+				$(GAME_OVER_RESTART).click(() => {
+					window.location.href = "../toptrumps/game";
+				})
+
+				$(GAME_OVER_STATS).click(() => {
+					window.location.href = "../toptrumps/stats";
+				})
+
+			}
 
 			// NEW ROUND PHASE
 			// ---------------
@@ -232,7 +245,8 @@
 			// ----------------
 			function gameOverScores(apiResponse) {
 				PLAY_BUTTON.onGameOverClick();
-				$("#winnerName").text(apiResponse.gameWinnerName);
+				initializeGameOverModal();
+				$(GAME_OVER_GAME_WINNER).text(apiResponse.gameWinnerName);
 
 				}
 
