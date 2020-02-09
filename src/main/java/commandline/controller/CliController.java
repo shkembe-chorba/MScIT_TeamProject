@@ -22,9 +22,7 @@ public class CliController {
     }
 
     /**
-     * 1. Display option to view stats or start game
-     * 2. Take user input
-     * 3. Act based on input;
+     * 1. Display option to view stats or start game 2. Take user input 3. Act based on input;
      */
 
     public void run() throws SQLException {
@@ -33,8 +31,8 @@ public class CliController {
 
         view.displayLogo();
 
-        while(true) {
-            //Prompt for statistics choice
+        while (true) {
+            // Prompt for statistics choice
             int choice = view.displayMenu();
             switch (choice) {
                 case 0:
@@ -48,10 +46,11 @@ public class CliController {
                         playRound();
                         Player winner = model.checkForWinner();
                         if (winner != null) {
-                            //display game end
+                            // display game end
                             view.displayGameOver(winner.toString(), model.getPlayers());
-                            //upload statistics to database
-                            database.uploadGameStats(model.getDraws(),model.getRoundNumber(),winner.toString(),model.getPlayers());
+                            // upload statistics to database
+                            database.uploadGameStats(model.getDraws(), model.getRoundNumber(),
+                                    winner.toString(), model.getPlayers());
                             break;
                         }
                     }
@@ -66,18 +65,18 @@ public class CliController {
         }
     }
 
-    private void setUpNewGame(){
+    private void setUpNewGame() {
         view.displayGameStartMessage();
         model.reset(NUM_AI_PLAYERS);
     }
 
-    private void playRound(){
+    private void playRound() {
         Player activePlayer = model.getActivePlayer();
 
         view.displayRoundNumber(model.getRoundNumber());
 
         // Is human player still in game
-        if(model.userStillInGame()){
+        if (model.userStillInGame()) {
             view.displayUserHand(model.getHumanPlayer());
         }
 
@@ -86,9 +85,9 @@ public class CliController {
 
         Attribute selectedAttribute = null;
         // Category choice: AI or human
-        if(isPlayerAI(model.getActivePlayer())) {
+        if (isPlayerAI(model.getActivePlayer())) {
             view.displayAiPlayerHand(activePlayer);
-            // ai needs to select  getAttribute(chooseIndexOfAttribute)
+            // ai needs to select getAttribute(chooseIndexOfAttribute)
             selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
         } else {
             selectedAttribute = view.getUserAttribute(activePlayer.peekCard().getAttributes());
@@ -96,18 +95,18 @@ public class CliController {
         view.displayChosenCategory(selectedAttribute);
 
         Player winningPlayer = model.playRoundWithAttribute(selectedAttribute);
-        if (winningPlayer == null){
-            //Draw case
+        if (winningPlayer == null) {
+            // Draw case
             view.displayDrawnRound(model.getRoundNumber(), model.getCommunalPileSize());
         } else {
-            //Winner case
+            // Winner case
             view.displayRoundWinner(winningPlayer.toString(), model.getRoundNumber());
             view.displayWinningCard(model.getWinningCard());
         }
 
-        //Check for eliminations
+        // Check for eliminations
         ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
-        for(Player player: eliminatedPlayers) {
+        for (Player player : eliminatedPlayers) {
             view.displayEliminatedPlayer(player.toString());
         }
     }
@@ -117,7 +116,7 @@ public class CliController {
     }
 
 
-    public void quit(){
+    public void quit() {
         database.disconnect();
         System.exit(0);
     }

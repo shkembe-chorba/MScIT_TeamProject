@@ -35,6 +35,8 @@ public class TopTrumpsRESTAPI {
 	private static final String CWD = System.getProperty("user.dir");
 	private Database database = new Database();
 	private GameModel model;
+	private String gameWinnerName = null;
+	private boolean gameAutoCompleted = false;
 
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
@@ -71,28 +73,24 @@ public class TopTrumpsRESTAPI {
 	/**
 	 * Plays a round with the chosen attribute and auto completes the game if the user is eliminated
 	 * and there is no winner. If there is a winner in the round or the game is auto completed this
-	 * will be reflected in gameWinnerName and the database will be updated. Returns a JSON string
-	 * with information for playing a round with an attribute and possible game over information.
+	 * will be reflected in the gameWinnerName and gameAutoCompleted fields and the database will be
+	 * updated. Returns a JSON string with information for playing a round with an attribute and
+	 * possible game over information.
 	 *
 	 * Must be called after initRound().
 	 *
 	 * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to
 	 * information about the last round before the autocompletion, not the last round overall.
 	 *
-	 * userEliminated corresponding to true does not always mean that the game was auto completed,
-	 * the check for that must be done via gameAutoCompleted.
-	 *
 	 * roundWinnerName corresponds to null if there was a draw and it corresponds to the name of the
 	 * round winner otherwise.
 	 *
-	 * gameWinnerName corresponds to null if there was no game winner and it corresponds to the name
-	 * of the winner otherwise.
+	 * gameOver being true does not necessarily mean that the game ended in the current round, the
+	 * game could have been auto completed. That must be checked via gameAutoCompleted in
+	 * getGameOverScores().
 	 *
-	 * gameWinnerName not being null does not necessarily mean that the game ended in the current
-	 * round, the game could have been auto completed. That must be checked via gameAutoCompleted.
-	 *
-	 * EXAMPLE: { "roundWinnerName": "USER"/null, "userEliminated": true, "gameWinnerName":
-	 * "USER"/null, "gameAutoCompleted": false, "eliminatedPlayersNames": [ "AI1", "AI2"] }
+	 * EXAMPLE: { "roundWinnerName": "USER"/null, "gameOver": true, "eliminatedPlayersNames": [
+	 * "AI1", "AI2"] }
 	 *
 	 * @param attributeName
 	 * @return
@@ -122,34 +120,37 @@ public class TopTrumpsRESTAPI {
 		map.put("eliminatedPlayersNames", eliminatedPlayersNames);
 
 		boolean userInGame = model.userStillInGame();
-		map.put("userEliminated", !userInGame);
 
 		Player gameWinner = model.checkForWinner();
 		if (gameWinner == null) {
 			if (userInGame) {
-				map.put("gameWinnerName", null);
-				map.put("gameAutoCompleted", false);
+				map.put("gameOver", false);
 			} else {
 				gameWinner = autoCompleteGame();
 				gameOver(map, gameWinner);
-				map.put("gameAutoCompleted", true);
+				gameAutoCompleted = true;
 			}
 		} else {
 			gameOver(map, gameWinner);
-			map.put("gameAutoCompleted", false);
+			gameAutoCompleted = false;
 		}
 		String mapAsJSONString = oWriter.writeValueAsString(map);
 		return mapAsJSONString;
 	}
 
 	/**
-	 * Returns the won rounds for every player during the game.
+	 * Returns the won rounds for every player during the game, the game winner name and whether the
+	 * game auto completed.
 	 *
 	 * Must be called when a game has ended, i.e. there is a winner.
 	 *
-	 * EXAMPLE: [ { "name": "USER", "score": 15, }, { name: "AI1", "score", 10 } ... ]
 	 *
-	 * @return json string with names and rounds won
+	 * 
+	 * EXAMPLE: { "playerScores": [ { "name": "USER", "score": 15}, { name: "AI1", "score": 10}, ...
+	 * ], "gameWinnerName": "USER", "gameAutoCompleted": true }
+	 * 
+	 * @return json string with playerScores, gameWinnerName and gameAutoCompleted as shown in the
+	 *         example
 	 * @throws JsonProcessingException
 	 */
 	@GET
@@ -163,8 +164,12 @@ public class TopTrumpsRESTAPI {
 			playerMap.put("score", player.getRoundsWon());
 			playerList.add(playerMap);
 		}
-		String listAsJSONString = oWriter.writeValueAsString(playerList);
-		return listAsJSONString;
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("playerScores", playerList);
+		map.put("gameWinnerName", gameWinnerName);
+		map.put("gameAutoCompleted", gameAutoCompleted);
+		String mapAsJSONString = oWriter.writeValueAsString(map);
+		return mapAsJSONString;
 	}
 
 	/**
@@ -277,7 +282,7 @@ public class TopTrumpsRESTAPI {
 				playerMap.put("isActive", false);
 			}
 			playerMap.put("name", player.toString());
-			playerMap.put("deckSize", player.getDeckSize());
+			playerMap.put("deckSize", player.getRemainingDeckSize());
 			playerMap.put("topCard", topCardToMap(player));
 
 			playersInGameMaps.add(playerMap);
@@ -303,14 +308,15 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Helper method. Takes a map and adds to it winner information. Uploads Game Statistics to
-	 * database. EXAMPLE: { "hasGameWinner": true "gameWinnerName": AI1 }
+	 * Helper method. Takes a map and adds to it {"gameOver": true}, uploads Game Statistics to the
+	 * database and sets the gameWinnerName field to the name of the game winner.
 	 *
 	 * @param map
 	 * @param gameWinner
 	 */
 	private void gameOver(HashMap<String, Object> map, Player gameWinner) {
-		map.put("gameWinnerName", gameWinner.toString());
+		map.put("gameOver", true);
+		gameWinnerName = gameWinner.toString();
 		uploadGameStats(gameWinner);
 	}
 

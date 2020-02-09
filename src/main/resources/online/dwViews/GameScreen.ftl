@@ -1,217 +1,272 @@
 <html>
 
-<!-- HEAD HTML -->
+<!-- HEAD -->
 <#include "./assets/ftl-templates/Head.ftl">
 
-	<!-- BODY HTML-->
+	<body onload="initialize()">
 
-	<body onload="initalize()">
-
-		<!-- INCLUDE MODAL FROM TEMPLATE -->
-		<#include "./assets/ftl-templates/Modal.ftl">
-
-			<div class="container">
-
-				<!-- INCLUDE NAV FROM TEMPLATE -->
+		<!-- HTML -->
+		<div class="container">
+			<#include "./assets/ftl-templates/Modal.ftl">
 				<#include "./assets/ftl-templates/Nav.ftl">
-
-					<div class="container pt-3">
-						<div class="row">
-							<div class="col">
-								<h4>Game round X</h4>
+					<#include "./assets/ftl-templates/GameOverModal.ftl">
+					<!-- mt-3 = margin between nav and game-->
+					<div class="container mt-3">
+						<!-- ROUND DISPLAY -->
+						<!-- #tt-round-number -->
+						<h4>Game round <span id="tt-round-number"></span></h4>
+						<!-- Responsive design for smaller screens (see row / col values) -->
+						<div class="row justify-content-center align-items-center">
+							<div class="col-sm-12 col-md-6 col-lg-3 text-center mb-3">
+								<!-- PLAY BUTTON -->
+								<!-- #tt-button-wrapper -->
+								<div id="tt-button-wrapper"></div>
 							</div>
-						</div>
-						<div class="row justify-content-center">
-							<div class="col-3">
-								<div class="row">
-									<button type="button" id="buttonRound" class="btn btn-primary">
-									</button>
-
-									<div class="dropdown">
-										<button class="btn btn-primary dropdown-toggle" type="button"
-											id="buttonAttribute" data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="false" aria-hidden="true">
-										</button>
-										<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-											<a class="dropdown-item" id="att1">Attribute 1</a>
-											<a class="dropdown-item" id="att2">Attribute 2</a>
-											<a class="dropdown-item" id="att3">Attribute 3</a>
-											<a class="dropdown-item" id="att4">Attribute 4</a>
-											<a class="dropdown-item" id="att5">Attribute 5</a>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<h6> Communal Pile Size: <span> 10 </span> </h6>
-								</div>
-							</div>
-							<div class="col-9">
-								<div class="card">
-									<div class="card-body">
+							<div class="col-sm-12 col-md-6 col-lg-9 text-center">
+								<!-- MESSAGE BOARD -->
+								<div class="card ">
+									<div class="tt-message-display card-body">
+										<!-- #tt-message-display -->
 										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
 										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
 									</div>
 								</div>
 							</div>
-							<br>
-
-							<!-- DOM_CARD_WRAPPER -->
-							<div id="card-decks" class="card-deck">
-							</div>
 						</div>
 					</div>
 
-
-					<!-- Import our Pseudo Player class and style sheet -->
-					<link rel="stylesheet" href="assets/components/Player/player.css" />
-					<script type="text/javascript" src="./assets/components/Player/player.js"> </script>
-
-					<!-- Import API -->
-					<script type="text/javascript" src="./assets/api/api.js"> </script>
+					<!-- PLAYER CARD DISPLAYS -->
+					<!-- #tt-card-decks -->
+					<div id="tt-card-decks" class="card-deck"></div>
+		</div>
 
 
-					<script type="text/javascript">
-						// Global JS Components
-						let PLAYER_CARDS;
-						let USER_CARD;
-						let AI_CARDS;
-						let CHOSEN_ATTRIBUTE;
+		<!-- JS etc. IMPORTS -->
 
-						// DOM Element ID References
-						const DOM_CARD_WRAPPER = "#card-decks";
+		<!-- Import our Pseudo Player class and style sheet -->
+		<link rel="stylesheet" href="assets/components/Player/player.css" />
+		<script type="text/javascript" src="./assets/components/Player/Player.js"> </script>
+		<!-- Import our Pseudo PlayButton class -->
+		<script type="text/javascript" src="./assets/components/PlayButton/PlayButton.js"> </script>
+		<!-- Import API -->
+		<script type="text/javascript" src="./assets/api/api.js"> </script>
 
-						// CALL ALL SETUP FUNCTIONS HERE
-						function initalize() {
-							// Setup event handlers
-							setupNewGameModal();
-							setUpRoundButton();
-							// Show the new game modal
-							$(NEW_GAME_MODAL).modal('show');
 
-						}
+		<!-- JS VIEW LOGIC -->
 
-						// New Game Modal:
-						const NEW_GAME_MODAL = "#newGameModal";
-						const NEW_GAME_MODAL_PLAY = '#newGameModal-play';
-						const NEW_GAME_MODAL_PLAYERS = '#newGameModal-players';
-						const NEW_GAME_MODAL_CLOSERS = '#newGameModal-abort';
-						const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
+		<script type="text/javascript">
+			// Global JS Components
+			// --------------------
+			// These change:
+			let PLAYER_CARDS;
+			let USER_CARD;
+			let AI_CARDS;
+			let CHOSEN_ATTRIBUTE;
 
-						function setupNewGameModal() {
-							// Redirect if the user aborts
-							$(NEW_GAME_MODAL_CLOSERS).click(() => {
-								window.location.href = "../toptrumps";
-							})
-							// Setup game on click
-							$(NEW_GAME_MODAL_PLAY).click(() => {
-								// Get value from the radio boxes
-								let numAiPlayers = 0;
-								numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
-								// Call the api
-								apiInitGame(numAiPlayers, (response) => {
-									if (response.loaded) {
-										// If we get a good response, initialise the round
-										apiInitRound(setupRound)
-									}
-								})
-								$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
-							});
-						}
+			// This does not:
+			const PLAY_BUTTON = PlayButtonFactory();
 
-						function setupRound(apiResponse) {
+			// DOM Element ID References
+			// -------------------------
+			const DOM_CARD_WRAPPER = "#tt-card-decks";
+			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+			let  DOM_ROUND_NUMBER = "#tt-round-number";
 
-							// Destructure apiResponse fields into variables
-							const {
-								playersInGame,
-								chosenAttributeName
-							} = apiResponse;
+			// New Game Modal:
+			const NEW_GAME_MODAL = "#newGameModal";
+			const NEW_GAME_MODAL_PLAY = '#newGameModal-play';
+			const NEW_GAME_MODAL_PLAYERS = '#newGameModal-players';
+			const NEW_GAME_MODAL_CLOSERS = '#newGameModal-abort';
+			const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
 
-							setupPlayerCards(playersInGame);
-							setupPlayButton(chosenAttributeName);
-							// Empty
-							setupMessageBoard();
+			// Game Over Modal:
+			const GAME_OVER_MODAL = "#gameOverModal";
+			const GAME_OVER_RESTART = "#tt-restartGame";
+			const GAME_OVER_STATS = "#tt-showStatistics";
+			const GAME_OVER_GAME_WINNER = "#winnerName";
 
-						}
+			// INITIALISE GAME PHASE
+			// ---------------------
 
-						function setupPlayerCards(players) {
-							// Clear the cards from the wrapper
-							$(DOM_CARD_WRAPPER).empty();
-							// Create player objects.
-							PLAYERS = players.map(p => {
-								return PlayerFactory(p);
-							})
-							// Get User
-							USER = PLAYERS.filter(p => p.isUser())[0];
-							// Get AI Player array
-							AIS = PLAYERS.filter(p => !p.isUser());
-							// Hide the ais cards.
-							AIS.forEach(ai => ai.hideCard());
-							// Attach the cards to the screen.
-							PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
-						}
+			function initialize() {
+				// Setup event handlers
+				initialiseNewGameModal();
+				initialisePlayButton();
 
-						function setupPlayButton(chosenAttributeName) {
-							// If it is the AI who plays next
-							if (resultApi.chosenAttributeName !== null) {
-								setUpRoundButton();
+				// Show the new game modal
+				$(NEW_GAME_MODAL).modal('show');
+			}
+
+			function initialiseNewGameModal() {
+
+				// Redirect if the user aborts
+				$(NEW_GAME_MODAL_CLOSERS).click(() => {
+					window.location.href = "../toptrumps";
+				})
+
+				// The modal does not close when clicked outside
+				$(NEW_GAME_MODAL).modal({
+					backdrop: 'static' });
+
+				// Setup game on click
+				$(NEW_GAME_MODAL_PLAY).click(() => {
+					// Get value from the radio boxes
+					let numAiPlayers = 0;
+					numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
+					// Call the api
+					apiInitGame(numAiPlayers, (response) => {
+						if (response.loaded) {
+							// If we get a good response, initialise the round
+							apiInitRound(setupRound)
 							}
-							// if it is human who needs to choose attribute
-							else {
-								setupAttributeButton();
-								$("#att1").text();
-								$("#att2").text();
-								$("#att3").text();
-								$("#att4").text();
-								$("#att5").text();
-							}
-						}
+						})
 
-						function playRound(apiResponse) {
-							const {
-								eliminatedPlayersNames,
-								roundWinnerName
-							} = apiResponse;
+					 // hide when selected number of players
+					$(NEW_GAME_MODAL).modal('hide');
+					});
 
-							// CARDS
-							// -----
-							// Show all players' cards
-							PLAYERS.forEach(p => p.showCard());
-							// Display all players in 'loser' state (for draw)
-							PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
-							// Display winner if exists
-							PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
-							// Display eliminated players
-							PLAYERS.filter(p => eliminatedPlayersNames.contains(p.getName())).forEach(p => p.eliminate());
+				}
+				function initialisePlayButton() {
+					// Add button to dom
+					PLAY_BUTTON.attach(DOM_BUTTON_WRAPPER);
+					// Attach callback if a dropdown attribute is chosen
+					PLAY_BUTTON.onAttributeClick((attributeName) => {
+						CHOSEN_ATTRIBUTE = attributeName;
+						apiPlayRoundWithAttribute(attributeName, playRound);
+					});
+					// Attach callback if no dropdown attribute is availible (AI turn)
+					PLAY_BUTTON.onPlayRoundClick(() => {
+						apiPlayRoundWithAttribute(CHOSEN_ATTRIBUTE, playRound);
+					});
+					// Attach callback for next round click
+					PLAY_BUTTON.onNextRoundClick(() => {
+						apiInitRound(setupRound);
+					});
+					PLAY_BUTTON.onGameOverClick(() => {
+						apiGetGameOverScores(gameOverScores);
+					})
+				}
 
-							// SET BUTTON TO 'NEXT ROUND'
-							// --------------------------
+				function initializeGameOverModal() {
+					$(GAME_OVER_MODAL).modal('show');
 
-							// DISPLAY WINNER MESSAGES
-							// -----------------------
-						}
+					$(GAME_OVER_RESTART).click(() => {
+						window.location.href = "/toptrumps/game";
+					})
+
+					$(GAME_OVER_STATS).click(() => {
+						window.location.href = "/toptrumps/stats";
+					})
+
+				}
+
+				// NEW ROUND PHASE
+				// ---------------
+
+				function setupRound(apiResponse) {
+					// Destructure apiResponse fields into variables
+					const {
+						playersInGame,
+						chosenAttributeName,
+						round
+					} = apiResponse;
+					const attributes = playersInGame[0].topCard.attributes;
+
+					//Set the round number
+					$(DOM_ROUND_NUMBER).text(round);
+
+					// Set the chosen attribute (if an AI player has already called it)
+					CHOSEN_ATTRIBUTE = chosenAttributeName;
+
+					setupPlayerCards(playersInGame);
+					// Set the button to the correct type - human can choose only when they are the active player
+					setupButtonView(chosenAttributeName, attributes);
 
 
-						// Sets round button to display text and
-						const ROUND_BUTTON = "#buttonRound";
-						const ATTRIBUTE_BUTTON = "#buttonAttribute";
+					// Empty
+					// setupMessageBoard();
+				}
 
-						function setUpRoundButton() {
-							$(ATTRIBUTE_BUTTON).hide();
-							$(ROUND_BUTTON).show();
-							$(ROUND_BUTTON).text("Play round");
-							$(ROUND_BUTTON).click(() => {
-								// returns null to api to play the round with attribute function
-								// will call a function that is responsible for getting game logic
-								//	playRoundWithAttribute(null) function - once it is done
-							})
-						}
+				function setupPlayerCards(players) {
+					// Clear the cards from the wrapper
+					$(DOM_CARD_WRAPPER).empty();
+					// Create player objects.
+					PLAYERS = players.map(p => {
+						return PlayerFactory(p);
+					})
+					// Get User
+					USER = PLAYERS.filter(p => p.isUser())[0];
+					// Get AI Player array
+					AIS = PLAYERS.filter(p => !p.isUser());
+					// Hide the ais cards.
+					AIS.forEach(ai => ai.hideCard());
+					// Attach the cards to the screen.
+					PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
+				}
 
-						function setupAttributeButton() {
-							$(ROUND_BUTTON).hide();
-							$(ATTRIBUTE_BUTTON).text("Play round with attribute");
-							$(ATTRIBUTE_BUTTON).show();
-						}
-					</script>
+				// If the AI returned a chosen attribute, there is the next round button displayed
+
+				function setupButtonView(chosenAttributeName, attributes) {
+					if (chosenAttributeName !== null) {
+						PLAY_BUTTON.setPlayRoundButton();
+					}
+					// if it is human who needs to choose attribute
+					else {
+						PLAY_BUTTON.clearAttributes();
+						PLAY_BUTTON.setAttributeButton();
+						attributes.forEach(a => {
+							PLAY_BUTTON.addAttribute(a.name);
+						})
+					}
+				}
+
+				// PLAY ROUND PHASE
+				// ----------------
+
+				function playRound(apiResponse) {
+
+					// Get these variables out of apiResponse by destructuring js object
+					const {
+						eliminatedPlayersNames,
+						roundWinnerName,
+						gameOver,
+					} = apiResponse;
+
+					// CARDS
+					// Show all players' cards
+					PLAYERS.forEach(p => p.showCard());
+					// Display all players in 'loser' state (for draw)
+					PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
+					// Display winner if exists
+					PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
+					// Display eliminated players
+					PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
+
+					// DISPLAY WINNER MESSAGES
+					// ----------------
+
+					// SET BUTTON
+					// ----------------
+					if (gameOver) {
+						PLAY_BUTTON.setGameOverButton();
+
+					} else {
+						PLAY_BUTTON.setNextRoundButton();
+					}
+				}
+
+				// GAME OVER PHASE
+				// ----------------
+				function gameOverScores(apiResponse) {
+					initializeGameOverModal();
+					if (apiResponse.gameWinnerName.localeCompare("USER")) {
+						$(GAME_OVER_GAME_WINNER).text("YOU!");
+					} else {
+						$(GAME_OVER_GAME_WINNER).text(apiResponse.gameWinnerName);
+					}
+				}
+
+		</script>
 
 	</body>
 
