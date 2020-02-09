@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class Card {
     protected String name;
     protected ArrayList<Attribute> cardList = new ArrayList<Attribute>();
-    protected ArrayList<Integer> cardIntegers = new ArrayList<Integer>();
 
     public Card(String n) {
         if ("".equals(n) || (n == null)) {
