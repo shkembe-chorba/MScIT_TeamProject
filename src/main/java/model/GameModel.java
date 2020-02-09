@@ -19,7 +19,7 @@ import commandline.utils.Logger;
 
 public class GameModel {
     private GameState gameState;
-    private int roundNumber;
+    private int roundNumber = 1;
     private Player[] players;
     private ArrayList<Player> playersInGame = null; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
@@ -68,7 +68,7 @@ public class GameModel {
         winningCard = null;
         roundWinner = null;
 
-        roundNumber = 0;
+        roundNumber = 1;
         drawRound = 0;
     }
 
@@ -124,9 +124,6 @@ public class GameModel {
      */
 
     public Player playRoundWithAttribute(Attribute chosenAttribute) {
-
-        // increases round number
-        roundNumber++;
 
         // --- DEBUG LOG ---
         // The contents of the current cards in play
@@ -207,6 +204,10 @@ public class GameModel {
                 .map(p -> String.format("%s's DECK:\n\n%s\n\n", p, p.getDeck()))
                 .collect(Collectors.joining());
         Logger.log("PLAYERS DECKS AT END OF THE ROUND: ", playerDeckStrings);
+
+
+        // increases round number
+        roundNumber++;
 
         return roundWinner;
     }
@@ -328,7 +329,9 @@ public class GameModel {
     public Player[] getPlayers() {
         return players;
     }
-  
-    public ArrayList<Player> getPlayersInGame() {return playersInGame;}
+
+    public ArrayList<Player> getPlayersInGame() {
+        return playersInGame;
+    }
 
 }
