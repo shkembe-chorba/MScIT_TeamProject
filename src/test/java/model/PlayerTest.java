@@ -5,8 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * Player tests
+ */
 public class PlayerTest {
+
+    /*
+     * Validation Test
+     */
+
     @DisplayName("The name is correctly print")
     @Test
     public void testGetName() {
@@ -15,8 +22,9 @@ public class PlayerTest {
         String actualString = testPlayer.toString();
         assertEquals(expectedString, actualString);
     }
+
     @DisplayName("The won rounds should be incremented when method is called")
-     @Test
+    @Test
     public void testIncrementingRounds() {
         Player testPlayer = new Player("USER");
         testPlayer.wonRound();
@@ -24,6 +32,10 @@ public class PlayerTest {
         int actualNumber = testPlayer.getRoundsWon();
         assertEquals(expectedNumber, actualNumber);
     }
+
+    /*
+     * Defect Test
+     */
 
     @DisplayName("No cards should be returned when initialising with a blank deck")
     @Test

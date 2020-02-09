@@ -35,6 +35,10 @@ class PileTest {
         }
     }
 
+    /*
+     * Validation Tests
+     */
+
     @DisplayName("Initialises with an empty pile")
     @Test
     void initialiseWithEmptyPile() {
@@ -49,8 +53,6 @@ class PileTest {
         addCardHelper(pile, 40);
         assertEquals(40, pile.size());
     }
-
-    // No need to test shuffle method as this is built in
 
     @DisplayName("Shows correct card when peeked")
     @Test
