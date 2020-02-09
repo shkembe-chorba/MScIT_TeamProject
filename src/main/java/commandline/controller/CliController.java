@@ -6,7 +6,7 @@ import model.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CliController implements CliControllerInterface {
+public class CliController {
 
     private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
