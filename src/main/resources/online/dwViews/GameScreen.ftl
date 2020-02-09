@@ -283,7 +283,7 @@
 				$(GAME_OVER_GAME_WINNER).text(winnerText);
 				initializeGameOverModal();
 
-				"tt-auto-finish-text"
+
 			}
 		</script>
 
