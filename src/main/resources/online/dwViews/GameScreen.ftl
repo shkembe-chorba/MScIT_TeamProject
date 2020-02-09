@@ -1,127 +1,232 @@
 <html>
 
-	<head>
-		<!-- Web page title -->
-    	<title>Top Trumps</title>
-    	
-    	<!-- Import JQuery, as it provides functions you will probably find useful (see https://jquery.com/) -->
-    	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
-    	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-    	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
+<!-- HEAD -->
+<#include "./assets/ftl-templates/Head.ftl">
 
-		<!-- Optional Styling of the Website, for the demo I used Bootstrap (see https://getbootstrap.com/docs/4.0/getting-started/introduction/) -->
-		<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/TREC_IS/bootstrap.min.css">
-    	<script src="http://dcs.gla.ac.uk/~richardm/vex.combined.min.js"></script>
-    	<script>vex.defaultOptions.className = 'vex-theme-os';</script>
-    	<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/assets/stylesheets/vex.css"/>
-    	<link rel="stylesheet" href="http://dcs.gla.ac.uk/~richardm/assets/stylesheets/vex-theme-os.css"/>
-    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<body onload="initalize()">
 
-	</head>
+		<!-- HTML -->
+		<div class="container">
+			<#include "./assets/ftl-templates/Modal.ftl">
+				<#include "./assets/ftl-templates/Nav.ftl">
 
-    <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
-    	
-    	<div class="container">
+					<!-- mt-3 = margin between nav and game-->
+					<div class="container mt-3">
+						<!-- ROUND DISPLAY -->
+						<!-- #tt-round-number -->
+						<h4>Game round <span id="tt-round-number">X</span></h4>
 
-			<!-- Add your HTML Here -->
-		
+						<!-- Responsive design for smaller screens (see row / col values) -->
+						<div class="row justify-content-center align-items-center">
+							<div class="col-sm-12 col-md-6 col-lg-3 text-center mb-3">
+								<!-- PLAY BUTTON -->
+								<!-- #tt-button-wrapper -->
+								<div id="tt-button-wrapper"></div>
+							</div>
+							<div class="col-sm-12 col-md-6 col-lg-9 text-center">
+								<!-- MESSAGE BOARD -->
+								<div class="card ">
+									<div class="tt-message-display card-body">
+										<!-- #tt-message-display -->
+										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
+										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- PLAYER CARD DISPLAYS -->
+					<!-- #tt-card-decks -->
+					<div id="tt-card-decks" class="card-deck"></div>
 		</div>
-		
+
+
+		<!-- JS etc. IMPORTS -->
+
+		<!-- Import our Pseudo Player class and style sheet -->
+		<link rel="stylesheet" href="assets/components/Player/player.css" />
+		<script type="text/javascript" src="./assets/components/Player/Player.js"> </script>
+		<!-- Import our Pseudo PlayButton class -->
+		<script type="text/javascript" src="./assets/components/PlayButton/PlayButton.js"> </script>
+		<!-- Import API -->
+		<script type="text/javascript" src="./assets/api/api.js"> </script>
+
+
+		<!-- JS VIEW LOGIC -->
+
 		<script type="text/javascript">
-		
-			// Method that is called on page load
+			// Global JS Components
+			// --------------------
+			// These change:
+			let PLAYER_CARDS;
+			let USER_CARD;
+			let AI_CARDS;
+			let CHOSEN_ATTRIBUTE;
+			// This does not:
+			const PLAY_BUTTON = PlayButtonFactory();
+
+			// DOM Element ID References
+			// -------------------------
+			const DOM_CARD_WRAPPER = "#tt-card-decks";
+			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+
+			// New Game Modal:
+			const NEW_GAME_MODAL = "#newGameModal";
+			const NEW_GAME_MODAL_PLAY = '#newGameModal-play';
+			const NEW_GAME_MODAL_PLAYERS = '#newGameModal-players';
+			const NEW_GAME_MODAL_CLOSERS = '#newGameModal-abort';
+			const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
+
+
+			// INITIALISE GAME PHASE
+			// ---------------------
+
 			function initalize() {
-			
-				// --------------------------------------------------------------------------
-				// You can call other methods you want to run when the page first loads here
-				// --------------------------------------------------------------------------
-				
-				// For example, lets call our sample methods
-				helloJSONList();
-				helloWord("Student");
-				
+				// Setup event handlers
+				initialiseNewGameModal();
+				initialisePlayButton();
+				// setupPlayButton();
+				// Show the new game modal
+				$(NEW_GAME_MODAL).modal('show');
 			}
-			
-			// -----------------------------------------
-			// Add your other Javascript methods Here
-			// -----------------------------------------
-		
-			// This is a reusable method for creating a CORS request. Do not edit this.
-			function createCORSRequest(method, url) {
-  				var xhr = new XMLHttpRequest();
-  				if ("withCredentials" in xhr) {
 
-    				// Check if the XMLHttpRequest object has a "withCredentials" property.
-    				// "withCredentials" only exists on XMLHTTPRequest2 objects.
-    				xhr.open(method, url, true);
-
-  				} else if (typeof XDomainRequest != "undefined") {
-
-    				// Otherwise, check if XDomainRequest.
-    				// XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    				xhr = new XDomainRequest();
-    				xhr.open(method, url);
-
- 				 } else {
-
-    				// Otherwise, CORS is not supported by the browser.
-    				xhr = null;
-
-  				 }
-  				 return xhr;
+			function initialiseNewGameModal() {
+				// Redirect if the user aborts
+				$(NEW_GAME_MODAL_CLOSERS).click(() => {
+					window.location.href = "../toptrumps";
+				})
+				// Setup game on click
+				$(NEW_GAME_MODAL_PLAY).click(() => {
+					// Get value from the radio boxes
+					let numAiPlayers = 0;
+					numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
+					// Call the api
+					apiInitGame(numAiPlayers, (response) => {
+						if (response.loaded) {
+							// If we get a good response, initialise the round
+							apiInitRound(setupRound)
+						}
+					})
+					$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
+				});
 			}
-		
-		</script>
-		
-		<!-- Here are examples of how to call REST API Methods -->
-		<script type="text/javascript">
-		
-			// This calls the helloJSONList REST method from TopTrumpsRESTAPI
-			function helloJSONList() {
-			
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloJSONList"); // Request type and URL
-				
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-  					alert("CORS not supported");
+
+			function initialisePlayButton() {
+				// Add button to dom
+				PLAY_BUTTON.attach(DOM_BUTTON_WRAPPER);
+				// Attach callback if a dropdown attribute is chosen
+				PLAY_BUTTON.onAttributeClick((attributeName) => {
+					CHOSEN_ATTRIBUTE = attributeName;
+					apiPlayRoundWithAttribute(attributeName, playRound);
+				});
+				// Attach callback if no dropdown attribute is availible (AI turn)
+				PLAY_BUTTON.onPlayRoundClick(() => {
+					apiPlayRoundWithAttribute(CHOSEN_ATTRIBUTE, playRound);
+				});
+				// Attach callback for next round click
+				PLAY_BUTTON.onNextRoundClick(() => {
+					apiInitRound(setupRound);
+				});
+
+				PLAY_BUTTON.onGameOverClick(() => {
+					apiGetGameOverScores(gameOver)
+				})
+			}
+
+
+			// NEW ROUND PHASE
+			// ---------------
+
+			function setupRound(apiResponse) {
+				// Destructure apiResponse fields into variables
+				const {
+					playersInGame,
+					chosenAttributeName
+				} = apiResponse;
+
+				// Set the chosen attribute (if an AI player has already called it)
+				CHOSEN_ATTRIBUTE = chosenAttributeName;
+
+				setupPlayerCards(playersInGame);
+
+				if (chosenAttributeName !== null) {
+					PLAY_BUTTON.setPlayRoundButton();
 				}
-
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives 
-				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
-				};
-				
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();		
-			}
-			
-			// This calls the helloJSONList REST method from TopTrumpsRESTAPI
-			function helloWord(word) {
-			
-				// First create a CORS request, this is the message we are going to send (a get request in this case)
-				var xhr = createCORSRequest('GET', "http://localhost:7777/toptrumps/helloWord?Word="+word); // Request type and URL+parameters
-				
-				// Message is not sent yet, but we can check that the browser supports CORS
-				if (!xhr) {
-  					alert("CORS not supported");
+				// if it is human who needs to choose attribute
+				else {
+					PLAY_BUTTON.clearAttributes();
+					PLAY_BUTTON.setAttributeButton();
+					apiResponse.playersInGame[0].topCard.attributes.forEach(a => {
+						PLAY_BUTTON.addAttribute(a.name);
+					})
 				}
-
-				// CORS requests are Asynchronous, i.e. we do not wait for a response, instead we define an action
-				// to do when the response arrives 
-				xhr.onload = function(e) {
- 					var responseText = xhr.response; // the text of the response
-					alert(responseText); // lets produce an alert
-				};
-				
-				// We have done everything we need to prepare the CORS request, so send it
-				xhr.send();		
+				// Empty
+				// setupMessageBoard();
 			}
 
+			function setupPlayerCards(players) {
+				// Clear the cards from the wrapper
+				$(DOM_CARD_WRAPPER).empty();
+				// Create player objects.
+				PLAYERS = players.map(p => {
+					return PlayerFactory(p);
+				})
+				// Get User
+				USER = PLAYERS.filter(p => p.isUser())[0];
+				// Get AI Player array
+				AIS = PLAYERS.filter(p => !p.isUser());
+				// Hide the ais cards.
+				AIS.forEach(ai => ai.hideCard());
+				// Attach the cards to the screen.
+				PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
+			}
+
+			// PLAY ROUND PHASE
+			// ----------------
+
+			function playRound(apiResponse) {
+
+				// Get these variables out of apiResponse by destructuring js object
+				const {
+					eliminatedPlayersNames,
+					roundWinnerName,
+					userEliminated,
+					gameWinnerName
+				} = apiResponse;
+
+				// CARDS
+				// -----
+				// Show all players' cards
+				PLAYERS.forEach(p => p.showCard());
+				// Display all players in 'loser' state (for draw)
+				PLAYERS.forEach(p => p.setLoser(CHOSEN_ATTRIBUTE));
+				// Display winner if exists
+				PLAYERS.filter(p => p.getName() === roundWinnerName).forEach(p => p.setWinner(CHOSEN_ATTRIBUTE));
+				// Display eliminated players
+				PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
+
+				// DISPLAY WINNER MESSAGES
+				// -----------------------
+
+				// SET BUTTON
+				// ----------
+				if (userEliminated || gameWinnerName) {
+					PLAY_BUTTON.setGameOverButton();
+				} else {
+					PLAY_BUTTON.setNextRoundButton();
+				}
+			}
+
+			// GAME OVER PHASE
+			// ---------------
+
+			function gameOver() {
+
+				// Include Game Over Logic here
+			}
 		</script>
-		
-		</body>
+
+	</body>
+
 </html>

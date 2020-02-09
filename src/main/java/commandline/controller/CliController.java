@@ -88,7 +88,7 @@ public class CliController implements TopTrumpsControllerInterface {
         if (isPlayerAI(model.getActivePlayer())) {
             view.displayAiPlayerHand(activePlayer);
             // ai needs to select getAttribute(chooseIndexOfAttribute)
-            selectedAttribute = ((AIPlayer) (activePlayer)).chooseAttribute();
+            selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
         } else {
             selectedAttribute = view.getUserAttribute(activePlayer.peekCard().getAttributes());
         }
