@@ -2,14 +2,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Statistics for this game: </h5>
+                <h5 class="modal-title">Statistics for this game</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-               <h4>The overall winner is <div id ="winnerName"></div> </h4>
-                <p> The were <div id=""> draws</div> in the game.</p>
+               <h4>The overall winner is <div span id ="winnerName"></div> </h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="tt-restartGame">Start a new game</button>
+                <button type="button" class="btn btn-secondary" id="tt-showStatistics">Show statistics</button>
             </div>
         </div>
     </div>

@@ -78,6 +78,8 @@
 			const NEW_GAME_MODAL_CLOSERS = '#newGameModal-abort';
 			const NEW_GAME_MODAL_SELECTION = 'input[name=newGameModal-aiPlayers]:checked';
 
+			// Game Over Modal:
+			const GAME_OVER_MODAL = "#gameOverModal";
 
 			// INITIALISE GAME PHASE
 			// ---------------------
@@ -129,8 +131,8 @@
 					apiInitRound(setupRound);
 				});
 				PLAY_BUTTON.onGameOverClick(() => {
-					apiGetGameOverScores(gameOver);
-					gameOverModal.modal('show');
+					apiGetGameOverScores(gameOverScores);
+					$(GAME_OVER_MODAL).modal('show');
 				})
 			}
 
@@ -200,8 +202,7 @@
 					const {
 						eliminatedPlayersNames,
 						roundWinnerName,
-						userEliminated,
-						gameWinnerName
+							gameOver,
 					} = apiResponse;
 
 					// CARDS
@@ -219,7 +220,7 @@
 
 					// SET BUTTON
 					// ----------------
-					if (userEliminated || gameWinnerName) {
+					if (gameOver) {
 						PLAY_BUTTON.setGameOverButton();
 
 					} else {
@@ -229,8 +230,10 @@
 
 			// GAME OVER PHASE
 			// ----------------
-			function gameOver(apiResponse) {
+			function gameOverScores(apiResponse) {
 				PLAY_BUTTON.onGameOverClick();
+				$("#winnerName").text(apiResponse.gameWinnerName);
+
 				}
 
 		</script>
