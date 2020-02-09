@@ -24,7 +24,7 @@ public class CommandLineViewTest extends IOStreamTest {
         public void displayMessageOutputsNewLine() {
             CommandLineView view = new CommandLineView();
             view.displayMessage("Output message");
-            assertEquals("Output message\n", getOutput());
+            assertEquals("Output message\n", getOut());
         }
 
         @DisplayName("display...List finishes with just one new line")
@@ -35,10 +35,10 @@ public class CommandLineViewTest extends IOStreamTest {
             List<String> testList = Arrays.asList(new String[] {"a", "b", "c"});
 
             view.displayBulletList(testList);
-            assertFalse(getOutput().endsWith("\n\n"));
+            assertFalse(getOut().endsWith("\n\n"));
 
             view.displayIndentedList(testList);
-            assertFalse(getOutput().endsWith("\n\n"));
+            assertFalse(getOut().endsWith("\n\n"));
 
         }
 
@@ -51,7 +51,7 @@ public class CommandLineViewTest extends IOStreamTest {
             view.displayMessage("first");
             view.displayDivider();
             view.displayMessage("second");
-            assertEquals(expectedOutput, getOutput());
+            assertEquals(expectedOutput, getOut());
         }
     }
 
@@ -105,7 +105,7 @@ public class CommandLineViewTest extends IOStreamTest {
             CommandLineView view = new CommandLineView();
             // Lambda function checks for 'one word'
             view.getUserInput(x -> x.matches("^\\w+$"), "Does not match one word.");
-            assertTrue(getOutput().contains("Does not match one word.\n"));
+            assertTrue(getOut().contains("Does not match one word.\n"));
         }
     }
     @DisplayName("getUserSelection() / getUserSelectionIndex()")
@@ -154,7 +154,7 @@ public class CommandLineViewTest extends IOStreamTest {
 
             CommandLineView view = new CommandLineView();
             view.getUserSelectionIndex(Arrays.asList(input)); // Convert array to list.
-            assertTrue(getOutput().contains(expectedErrorMessage));
+            assertTrue(getOut().contains(expectedErrorMessage));
         }
     }
 
