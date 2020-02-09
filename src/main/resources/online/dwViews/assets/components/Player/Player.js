@@ -174,7 +174,6 @@ const PlayerFactory = (playerObj) => {
       // Set deck size to red for emphasis on that fat 0.
       $deckSize.removeClass("badge-light").addClass("badge-danger");
       // when the game ends for the player does not show his deck anymore
-      $deckSize.empty();
     },
 
   };

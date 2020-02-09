@@ -62,13 +62,15 @@
 			let USER_CARD;
 			let AI_CARDS;
 			let CHOSEN_ATTRIBUTE;
-			let ROUND_NUMBER = "#tt-round-number";
+
 			// This does not:
 			const PLAY_BUTTON = PlayButtonFactory();
+
 			// DOM Element ID References
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
 			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+			let  DOM_ROUND_NUMBER = "#tt-round-number";
 
 			// New Game Modal:
 			const NEW_GAME_MODAL = "#newGameModal";
@@ -96,24 +98,31 @@
 			}
 
 			function initialiseNewGameModal() {
+				// Disable start game button for initialization of the modal
+				// $(NEW_GAME_MODAL_PLAY).disable = true;
+
 				// Redirect if the user aborts
 				$(NEW_GAME_MODAL_CLOSERS).click(() => {
 					window.location.href = "../toptrumps";
 				})
+
+				// if there are players selected, enable the new game button
+
 				// Setup game on click
 				$(NEW_GAME_MODAL_PLAY).click(() => {
-					// Get value from the radio boxes
-					let numAiPlayers = 0;
-					numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
-					// Call the api
-					apiInitGame(numAiPlayers, (response) => {
-						if (response.loaded) {
-							// If we get a good response, initialise the round
-							apiInitRound(setupRound)
-						}
-					})
-					$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
-				});
+						// Get value from the radio boxes
+						let numAiPlayers = 0;
+						numAiPlayers = $(NEW_GAME_MODAL_SELECTION).val();
+						// Call the api
+						apiInitGame(numAiPlayers, (response) => {
+							if (response.loaded) {
+								// If we get a good response, initialise the round
+								apiInitRound(setupRound)
+							}
+						})
+						$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
+					});
+
 			}
 
 			function initialisePlayButton() {
@@ -141,11 +150,11 @@
 				$(GAME_OVER_MODAL).modal('show');
 
 				$(GAME_OVER_RESTART).click(() => {
-					window.location.href = "../toptrumps/game";
+					window.location.href = "/toptrumps/game";
 				})
 
 				$(GAME_OVER_STATS).click(() => {
-					window.location.href = "../toptrumps/stats";
+					window.location.href = "/toptrumps/stats";
 				})
 
 			}
@@ -157,12 +166,13 @@
 				// Destructure apiResponse fields into variables
 				const {
 					playersInGame,
-					chosenAttributeName
+					chosenAttributeName,
+					round
 				} = apiResponse;
-				const attributes = apiResponse.playersInGame[0].topCard.attributes;
+				const attributes = playersInGame[0].topCard.attributes;
 
 				//Set the round number
-				$(ROUND_NUMBER).text(apiResponse.round);
+				$(DOM_ROUND_NUMBER).text(round);
 
 				// Set the chosen attribute (if an AI player has already called it)
 				CHOSEN_ATTRIBUTE = chosenAttributeName;
@@ -192,6 +202,7 @@
 				PLAYERS.forEach(p => p.attach(DOM_CARD_WRAPPER));
 			}
 			// If the AI returned a chosen attribute, there is the next round button displayed
+
 			function setupButtonView(chosenAttributeName, attributes) {
 				if (chosenAttributeName !== null) {
 					PLAY_BUTTON.setPlayRoundButton();
@@ -244,12 +255,13 @@
 			// GAME OVER PHASE
 			// ----------------
 			function gameOverScores(apiResponse) {
-				PLAY_BUTTON.onGameOverClick();
 				initializeGameOverModal();
-				$(GAME_OVER_GAME_WINNER).text(apiResponse.gameWinnerName);
-
+				if (apiResponse.gameWinnerName.localeCompare("USER")) {
+					$(GAME_OVER_GAME_WINNER).text("YOU!");
+				} else {
+					$(GAME_OVER_GAME_WINNER).text(apiResponse.gameWinnerName);
 				}
-
+			}
 		</script>
 
 	</body>
