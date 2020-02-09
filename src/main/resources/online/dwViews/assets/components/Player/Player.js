@@ -66,7 +66,7 @@ const PlayerFactory = (playerObj) => {
                   <div class="col-12 d-flex justify-content-center">
                       <div class="col text-center">
                           <span class="${DECK_SIZE} badge badge-light">
-                              Cards in deck:
+                              Deck remaining:
                               <span class="badge badge-primary badge-pill">${
                                 player.deckSize
                               }</span>
@@ -173,7 +173,6 @@ const PlayerFactory = (playerObj) => {
 
       // Set deck size to red for emphasis on that fat 0.
       $deckSize.removeClass("badge-light").addClass("badge-danger");
-      // when the game ends for the player does not show his deck anymore
     },
 
   };

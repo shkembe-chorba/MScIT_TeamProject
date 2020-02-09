@@ -22,7 +22,7 @@ public class Player {
     /**
      * Used in the beginning of a game to assign a pile to a player in the game used to transfer
      * cards from community pile to Player
-     * 
+     *
      * @param addedPile pile of cards
      */
     public void addToDeck(Pile addedPile) {
@@ -73,9 +73,9 @@ public class Player {
         return name;
     }
 
-
-    public int getDeckSize() {
-        return playerDeck.size();
+    // Returns the
+    public int getRemainingDeckSize() {
+        return playerDeck.size() - 1;
     }
 
     public Pile getDeck() {

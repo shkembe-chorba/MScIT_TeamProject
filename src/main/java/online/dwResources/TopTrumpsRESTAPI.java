@@ -73,8 +73,9 @@ public class TopTrumpsRESTAPI {
 	/**
 	 * Plays a round with the chosen attribute and auto completes the game if the user is eliminated
 	 * and there is no winner. If there is a winner in the round or the game is auto completed this
-	 * will be reflected in the gameWinnerName and gameAutoCompleted fields and the database will be updated.
-	 * Returns a JSON string with information for playing a round with an attribute and possible game over information.
+	 * will be reflected in the gameWinnerName and gameAutoCompleted fields and the database will be
+	 * updated. Returns a JSON string with information for playing a round with an attribute and
+	 * possible game over information.
 	 *
 	 * Must be called after initRound().
 	 *
@@ -84,15 +85,12 @@ public class TopTrumpsRESTAPI {
 	 * roundWinnerName corresponds to null if there was a draw and it corresponds to the name of the
 	 * round winner otherwise.
 	 *
-	 * gameOver being true does not necessarily mean that the game ended in the current
-	 * round, the game could have been auto completed. That must be checked via
-	 * gameAutoCompleted in getGameOverScores().
+	 * gameOver being true does not necessarily mean that the game ended in the current round, the
+	 * game could have been auto completed. That must be checked via gameAutoCompleted in
+	 * getGameOverScores().
 	 *
-	 * EXAMPLE:
-	 * {
-	 * "roundWinnerName": "USER"/null,
-	 * "gameOver": true,
-	 * "eliminatedPlayersNames": [ "AI1", "AI2"] }
+	 * EXAMPLE: { "roundWinnerName": "USER"/null, "gameOver": true, "eliminatedPlayersNames": [
+	 * "AI1", "AI2"] }
 	 *
 	 * @param attributeName
 	 * @return
@@ -141,21 +139,18 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Returns the won rounds for every player during the game,
-	 * the game winner name and whether the game auto completed.
+	 * Returns the won rounds for every player during the game, the game winner name and whether the
+	 * game auto completed.
 	 *
 	 * Must be called when a game has ended, i.e. there is a winner.
 	 *
-
 	 *
-	 * EXAMPLE:
-	 * {
-	 * 		"playerScores": [ { "name": "USER", "score": 15}, { name: "AI1", "score": 10}, ... ],
-	 * 		"gameWinnerName": "USER",
-	 * 		"gameAutoCompleted": true
-	 * }
-	 * @return json string with playerScores, gameWinnerName and gameAutoCompleted
-	 * as shown in the example
+	 * 
+	 * EXAMPLE: { "playerScores": [ { "name": "USER", "score": 15}, { name: "AI1", "score": 10}, ...
+	 * ], "gameWinnerName": "USER", "gameAutoCompleted": true }
+	 * 
+	 * @return json string with playerScores, gameWinnerName and gameAutoCompleted as shown in the
+	 *         example
 	 * @throws JsonProcessingException
 	 */
 	@GET
@@ -287,7 +282,7 @@ public class TopTrumpsRESTAPI {
 				playerMap.put("isActive", false);
 			}
 			playerMap.put("name", player.toString());
-			playerMap.put("deckSize", player.getDeckSize());
+			playerMap.put("deckSize", player.getRemainingDeckSize());
 			playerMap.put("topCard", topCardToMap(player));
 
 			playersInGameMaps.add(playerMap);
@@ -313,8 +308,8 @@ public class TopTrumpsRESTAPI {
 	}
 
 	/**
-	 * Helper method. Takes a map and adds to it {"gameOver": true}, uploads Game Statistics to
-	 * the database and sets the gameWinnerName field to the name of the game winner.
+	 * Helper method. Takes a map and adds to it {"gameOver": true}, uploads Game Statistics to the
+	 * database and sets the gameWinnerName field to the name of the game winner.
 	 *
 	 * @param map
 	 * @param gameWinner

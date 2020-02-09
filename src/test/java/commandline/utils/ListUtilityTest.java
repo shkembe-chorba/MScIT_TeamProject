@@ -1,19 +1,27 @@
 package commandline.utils;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
+/**
+ * ListUtility tests
+ */
 public class ListUtilityTest {
 
+    // Mock list for testing
     private final String[] stringArray = {"List Item 1", "List Item 2", "List Item 3"};
-    private final List<String> iterableStringArray = Arrays.asList(stringArray);
+    private final List<String> testList = Arrays.asList(stringArray);
+
+    /*
+     * Validation Tests
+     */
 
     @DisplayName("Works on empty iterator")
     @Test
@@ -37,7 +45,7 @@ public class ListUtilityTest {
             String expectedOutput = tab + "List Item 1" + sel + "\n" + tab + "List Item 2\n" + tab
                     + "List Item 3\n";
 
-            ListUtility list = new ListUtility(iterableStringArray);
+            ListUtility list = new ListUtility(testList);
             assertEquals(expectedOutput, list.getList(1, x -> "", 0));
         }
     }
@@ -53,7 +61,7 @@ public class ListUtilityTest {
             String expectedOutput =
                     tab + "1: List Item 1\n" + tab + "2: List Item 2\n" + tab + "3: List Item 3\n";
 
-            ListUtility list = new ListUtility(iterableStringArray);
+            ListUtility list = new ListUtility(testList);
             assertEquals(expectedOutput, list.getEnumeratedList());
         }
     }
@@ -69,7 +77,7 @@ public class ListUtilityTest {
             String expectedOutput =
                     tab + "> List Item 1\n" + tab + "> List Item 2\n" + tab + "> List Item 3\n";
 
-            ListUtility list = new ListUtility(iterableStringArray);
+            ListUtility list = new ListUtility(testList);
             assertEquals(expectedOutput, list.getBulletList());
         }
     }
@@ -85,7 +93,7 @@ public class ListUtilityTest {
             String expectedOutput =
                     tab + "List Item 1\n" + tab + "List Item 2\n" + tab + "List Item 3\n";
 
-            ListUtility list = new ListUtility(iterableStringArray);
+            ListUtility list = new ListUtility(testList);
             assertEquals(expectedOutput, list.getIndentedList());
         }
     }

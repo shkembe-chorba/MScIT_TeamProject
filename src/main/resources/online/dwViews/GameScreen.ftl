@@ -120,14 +120,12 @@
 							apiInitRound(setupRound)
 							}
 						})
+
 					 // hide when selected number of players
 					$(NEW_GAME_MODAL).modal('hide');
 					});
 
 				}
-
-
-
 				function initialisePlayButton() {
 					// Add button to dom
 					PLAY_BUTTON.attach(DOM_BUTTON_WRAPPER);
@@ -183,6 +181,36 @@
 					setupPlayerCards(playersInGame);
 					// Set the button to the correct type - human can choose only when they are the active player
 					setupButtonView(chosenAttributeName, attributes);
+
+
+					$(GAME_OVER_STATS).click(() => {
+						window.location.href = "/toptrumps/stats";
+					})
+
+				}
+
+				// NEW ROUND PHASE
+				// ---------------
+
+				function setupRound(apiResponse) {
+					// Destructure apiResponse fields into variables
+					const {
+						playersInGame,
+						chosenAttributeName,
+						round
+					} = apiResponse;
+					const attributes = playersInGame[0].topCard.attributes;
+
+					//Set the round number
+					$(DOM_ROUND_NUMBER).text(round);
+
+					// Set the chosen attribute (if an AI player has already called it)
+					CHOSEN_ATTRIBUTE = chosenAttributeName;
+
+					setupPlayerCards(playersInGame);
+					// Set the button to the correct type - human can choose only when they are the active player
+					setupButtonView(chosenAttributeName, attributes);
+
 
 					// Empty
 					// setupMessageBoard();
