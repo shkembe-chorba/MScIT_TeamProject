@@ -1,36 +1,71 @@
 package model;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+/**
+ * AIPlayer tests
+ */
 public class AIPlayerTest {
-    @Test
-    @DisplayName("AIPlayer makes the best choice and returns attribute")
-    public void chooseCorrectAttribute() {
 
-        // initiates new pile with one card with three attributes
-        Attribute a0 = new Attribute("Strength", 1);
-        Attribute a1 = new Attribute("Stamina", 20);
-        Attribute a2 = new Attribute("Money", 4);
-        Card testCard = new Card("Test");
-        testCard.add(a0);
-        testCard.add(a1);
-        testCard.add(a2);
-        Pile testPile = new Pile();
-        testPile.add(testCard);
+    // Define potential attributes
+    final Attribute ATTRIBUTE_LOW_VALUE = new Attribute("Strength", 1);
+    final Attribute ATTRIBUTE_HIGH_VALUE = new Attribute("Stamina", 20);
+    final Attribute ATTRIBUTE_MID_VALUE = new Attribute("Money", 4);
 
-        //creates new AIPlayer
-        AIPlayer testAIPlayer = new AIPlayer("ai");
-        //adds the card to pile of the AI Player
-        testAIPlayer.addToDeck(testPile);
+    final Attribute[] ATTRIBUTE_ARRAY =
+            {ATTRIBUTE_HIGH_VALUE, ATTRIBUTE_MID_VALUE, ATTRIBUTE_LOW_VALUE};
 
-        //expects attribute with highest associated value
-        Attribute expectedAttribute = a1;
-        Attribute actualAttribute = testAIPlayer.chooseAttribute();
-        assertEquals(expectedAttribute, actualAttribute);
+    // The pile for testing
+    Pile testPile;
 
+    /**
+     * Sets up the TEST_PILE
+     */
+    @BeforeAll
+    void setupTestItems() {
+        // Create a test card
+        Card card = new Card("Test");
+
+        for (Attribute attribute : ATTRIBUTE_ARRAY) {
+            card.add(attribute);
+        }
+
+        // Create a test pile with the card
+        Pile pile = new Pile();
+        pile.add(card);
+
+        // Set the test pile
+        testPile = pile;
+    }
+
+
+    @Nested
+    @DisplayName("chooseAttribute()")
+    class ChooseAttribute {
+
+        /*
+         * Validation Tests
+         */
+
+        @Test
+        @DisplayName("AIPlayer makes the best choice and returns attribute")
+        public void chooseCorrectAttribute() {
+
+            // creates new AIPlayer
+            AIPlayer testAIPlayer = new AIPlayer("ai");
+
+            // adds the card to pile of the AI Player
+            testAIPlayer.addToDeck(testPile);
+
+            // expects attribute with highest associated value
+            assertEquals(ATTRIBUTE_HIGH_VALUE, testAIPlayer.chooseAttribute());
+
+        }
     }
 
 }
