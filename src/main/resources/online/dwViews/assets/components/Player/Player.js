@@ -66,7 +66,7 @@ const PlayerFactory = (playerObj) => {
                   <div class="col-12 d-flex justify-content-center">
                       <div class="col text-center">
                           <span class="${DECK_SIZE} badge badge-light">
-                              Cards in deck:
+                              Deck remaining:
                               <span class="badge badge-primary badge-pill">${
                                 player.deckSize
                               }</span>
@@ -156,7 +156,6 @@ const PlayerFactory = (playerObj) => {
         .addClass("badge-danger");
     },
 
-
     // As above, but a lot more violent. Sets the whole header red
     // and displays an IS OUT message in the name badge
     eliminate: () => {
@@ -175,6 +174,5 @@ const PlayerFactory = (playerObj) => {
       $deckSize.removeClass("badge-light").addClass("badge-danger");
       // when the game ends for the player does not show his deck anymore
     },
-
   };
 };
