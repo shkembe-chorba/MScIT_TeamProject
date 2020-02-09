@@ -146,7 +146,7 @@ public class GameModel {
         for (Player player : playersInGame) {
             // assigns top card for a player that is still in game as activeCard
             Card activeCard = player.peekCard();
-            int playersAttributeValue = activeCard.getAttribute(chosenAttribute).getValue();
+            int playersAttributeValue = activeCard.getValue(chosenAttribute);
 
             if (maxValue < playersAttributeValue) {
                 maxValue = playersAttributeValue;
@@ -328,9 +328,7 @@ public class GameModel {
     public Player[] getPlayers() {
         return players;
     }
-
-    public ArrayList<Player> getPlayersInGame() {
-        return playersInGame;
-    }
+  
+    public ArrayList<Player> getPlayersInGame() {return playersInGame;}
 
 }
