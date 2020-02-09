@@ -14,16 +14,20 @@ public abstract class IOStreamTest {
 
     private final InputStream originalIn = System.in;
     private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
     @BeforeEach
     protected void setUpStreams() {
         System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(outContent));
     }
 
     @AfterEach
     protected void restoreStreams() {
         System.setOut(originalOut);
+        System.setErr(originalErr);
         System.setIn(originalIn);
     }
 
@@ -32,7 +36,11 @@ public abstract class IOStreamTest {
         System.setIn(new ByteArrayInputStream(data.getBytes()));
     }
 
-    protected String getOutput() {
+    protected String getOut() {
         return outContent.toString();
+    }
+
+    protected String getErr() {
+        return errContent.toString();
     }
 }
