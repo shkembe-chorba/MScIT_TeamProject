@@ -104,6 +104,10 @@
 					window.location.href = "../toptrumps";
 				})
 
+				// The modal does not close when clicked outside
+				$(NEW_GAME_MODAL).modal({
+					backdrop: 'static' });
+
 				// Setup game on click
 				$(NEW_GAME_MODAL_PLAY).click(() => {
 					// Get value from the radio boxes
@@ -116,10 +120,12 @@
 							apiInitRound(setupRound)
 							}
 						})
-						$(NEW_GAME_MODAL).modal('hide'); // hide when selected number of players
+					 // hide when selected number of players
+					$(NEW_GAME_MODAL).modal('hide');
 					});
 
 				}
+
 
 
 				function initialisePlayButton() {
