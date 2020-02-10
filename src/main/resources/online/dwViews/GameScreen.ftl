@@ -25,10 +25,9 @@
 							<div class="col-sm-12 col-md-6 col-lg-9 text-center">
 								<!-- MESSAGE BOARD -->
 								<div class="card ">
-									<div class="tt-message-display card-body">
+									<div id="tt-message-display" class=" card-body">
 										<!-- #tt-message-display -->
-										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+
 									</div>
 								</div>
 							</div>
@@ -70,7 +69,10 @@
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
 			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+			const DOM_MESSAGE_WRAPPER = "#tt-message-display"
 			let  DOM_ROUND_NUMBER = "#tt-round-number";
+
+
 
 			// New Game Modal:
 			const NEW_GAME_MODAL = "#newGameModal";
@@ -184,7 +186,7 @@
 
 
 					// Empty
-					// setupMessageBoard();
+					$(DOM_ROUND_NUMBER).text(playersInGame.filter(p => p.isActive)[0].name + " is the active player.");
 				}
 
 				function setupPlayerCards(players) {
@@ -243,7 +245,15 @@
 					PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
 
 					// DISPLAY WINNER MESSAGES
-					// ----------------
+					if (roundWinnerName) {
+						$(DOM_ROUND_NUMBER).text("The round winner is " + roundWinnerName + " with attribute " + CHOSEN_ATTRIBUTE);
+					}
+					else {
+						$(DOM_ROUND_NUMBER).text("The round was a draw");
+					}
+
+
+
 
 					// SET BUTTON
 					// ----------------
