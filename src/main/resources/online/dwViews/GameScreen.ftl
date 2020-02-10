@@ -5,44 +5,44 @@
 
 	<body onload="initialize()">
 
-			<!-- HTML -->
-			<div class="container">
-				<#include "./assets/ftl-templates/Modal.ftl">
-					<#include "./assets/ftl-templates/Nav.ftl">
-						<#include "./assets/ftl-templates/GameOverModal.ftl">
-						<!-- mt-3 = margin between nav and game-->
-						<div class="container mt-3">
-							<!-- ROUND DISPLAY -->
-							<!-- #tt-round-number -->
-							<h4>Game round <span id="tt-round-number"></span></h4>
-							<!-- Responsive design for smaller screens (see row / col values) -->
-							<div class="row justify-content-center align-items-center">
-								<div class="col-sm-12 col-md-6 col-lg-3 text-center mb-3">
-									<!-- PLAY BUTTON -->
-									<!-- #tt-button-wrapper -->
-									<div id="tt-button-wrapper"></div>
-								</div>
-								<div class="col-sm-12 col-md-6 col-lg-9 text-center">
-									<!-- MESSAGE BOARD -->
-									<div class="card ">
-										<div class="tt-message-display card-body">
-											<!-- #tt-message-display -->
-												<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-												<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
-										</div>
+		<!-- HTML -->
+		<div class="container">
+			<#include "./assets/ftl-templates/Modal.ftl">
+				<#include "./assets/ftl-templates/Nav.ftl">
+					<#include "./assets/ftl-templates/GameOverModal.ftl">
+					<!-- mt-3 = margin between nav and game-->
+					<div class="container mt-3">
+						<!-- ROUND DISPLAY -->
+						<!-- #tt-round-number -->
+						<h4>Game round <span id="tt-round-number"></span></h4>
+						<!-- Responsive design for smaller screens (see row / col values) -->
+						<div class="row justify-content-center align-items-center">
+							<div class="col-sm-12 col-md-6 col-lg-3 text-center mb-3">
+								<!-- PLAY BUTTON -->
+								<!-- #tt-button-wrapper -->
+								<div id="tt-button-wrapper"></div>
+							</div>
+							<div class="col-sm-12 col-md-6 col-lg-9 text-center">
+								<!-- MESSAGE BOARD -->
+								<div class="card ">
+									<div class="tt-message-display card-body">
+										<!-- #tt-message-display -->
+										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
+										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
 									</div>
 								</div>
 							</div>
-								<!-- COMMUNAL PILE DISPLAY-->
-								<!-- #tt-communal-pile -->
-								<div class="row justify-content-left align-items-left">
-									<h5> <i class="fa fa-exchange" aria-hidden="true"></i> Communal deck: <span id="tt-communal-pile"></span> cards</h5>
-								</div>
-							</div>
-						<!-- PLAYER CARD DISPLAYS -->
-						<!-- #tt-card-decks -->
-						<div id="tt-card-decks" class="card-deck"></div>
-			</div>
+						</div>
+						<!-- COMMUNAL PILE DISPLAY-->
+						<!-- #tt-communal-pile -->
+						<div class="row justify-content-left align-items-left">
+							<h5> <i class="fa fa-exchange" aria-hidden="true"></i> Communal deck: <span id="tt-communal-pile"></span> cards</h5>
+						</div>
+					</div>
+					<!-- PLAYER CARD DISPLAYS -->
+					<!-- #tt-card-decks -->
+					<div id="tt-card-decks" class="card-deck"></div>
+		</div>
 
 
 		<!-- JS etc. IMPORTS -->
