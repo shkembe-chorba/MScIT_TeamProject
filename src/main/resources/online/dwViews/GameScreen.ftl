@@ -36,11 +36,17 @@
 							</div>
 						</div>
 
-						<!-- PLAYER CARD DISPLAYS -->
-						<!-- #tt-card-decks -->
-						<div id="tt-card-decks" class="card-deck"></div>
-		</div>
+						<!-- COMMUNAL PILE DISPLAY-->
+						<!-- #tt-communal-pile -->
+						<div class="row justify-content-left align-items-left">
+							<h5> <i class="fa fa-exchange" aria-hidden="true"></i> Communal deck: <span id="tt-communal-pile"></span> cards</h5>
+						</div>
 
+					<!-- PLAYER CARD DISPLAYS -->
+					<!-- #tt-card-decks -->
+					<div id="tt-card-decks" class="card-deck"></div>
+			</div>
+		</div>
 
 		<!-- JS etc. IMPORTS -->
 
@@ -71,7 +77,8 @@
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
 			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
-			let DOM_ROUND_NUMBER = "#tt-round-number";
+			let  DOM_ROUND_NUMBER = "#tt-round-number";
+			let DOM_COMMUNAL_PILE_SIZE = "#tt-communal-pile";
 
 			// New Game Modal:
 			const NEW_GAME_MODAL = "#newGameModal";
@@ -169,15 +176,14 @@
 
 			}
 
-			// NEW ROUND PHASE
-			// ---------------
 
 			function setupRound(apiResponse) {
 				// Destructure apiResponse fields into variables
 				const {
 					playersInGame,
 					chosenAttributeName,
-					round
+					round,
+					communalPileSize,
 				} = apiResponse;
 				const attributes = playersInGame[0].topCard.attributes;
 
@@ -187,10 +193,12 @@
 				// Set the chosen attribute (if an AI player has already called it)
 				CHOSEN_ATTRIBUTE = chosenAttributeName;
 
+				//Update the communal pile size
+				$(DOM_COMMUNAL_PILE_SIZE).text(communalPileSize);
+
 				setupPlayerCards(playersInGame);
 				// Set the button to the correct type - human can choose only when they are the active player
 				setupButtonView(chosenAttributeName, attributes);
-
 
 				// Empty
 				// setupMessageBoard();
