@@ -25,7 +25,8 @@
 							<div class="col-sm-12 col-md-6 col-lg-9 text-center">
 								<!-- MESSAGE BOARD -->
 								<div class="card ">
-									<div id="tt-message-display" class=" card-body">
+									<div class="tt-message-display card-body">
+										<h4><div  id="tt-message-display"></div></h4>
 										<!-- #tt-message-display -->
 
 									</div>
@@ -186,7 +187,7 @@
 
 
 					// Empty
-					$(DOM_ROUND_NUMBER).text(playersInGame.filter(p => p.isActive)[0].name + " is the active player.");
+					$(DOM_MESSAGE_WRAPPER).text(playersInGame.filter(p => p.isActive)[0].name + " is the active player");
 				}
 
 				function setupPlayerCards(players) {
@@ -246,10 +247,10 @@
 
 					// DISPLAY WINNER MESSAGES
 					if (roundWinnerName) {
-						$(DOM_ROUND_NUMBER).text("The round winner is " + roundWinnerName + " with attribute " + CHOSEN_ATTRIBUTE);
+						$(DOM_MESSAGE_WRAPPER).text("The round winner is " + roundWinnerName + " with attribute " + CHOSEN_ATTRIBUTE);
 					}
 					else {
-						$(DOM_ROUND_NUMBER).text("The round was a draw");
+						$(DOM_MESSAGE_WRAPPER).text("The round was a draw");
 					}
 
 
