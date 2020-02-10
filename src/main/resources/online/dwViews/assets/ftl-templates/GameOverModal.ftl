@@ -1,17 +1,18 @@
-
-
 <div class="modal" tabindex="-1" role="dialog" id="gameOverModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Statistics for this game</h5>
+                <h5 class="modal-title">Game Over - Scores</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
                 <div class="row justify-content-md-center">
-                <h4>The overall winner is&nbsp</h4>
-                <h4 id ="winnerName"></h4>
+                    <h5 id="tt-auto-finish-text"></h5>
+                </div>
+                <div class="row justify-content-md-center">
+                    <h4>The overall winner was&nbsp</h4>
+                    <h4 id="winnerName"></h4>
                 </div>
             </div>
             <div class="modal-footer">
@@ -21,4 +22,3 @@
         </div>
     </div>
 </div>
-
