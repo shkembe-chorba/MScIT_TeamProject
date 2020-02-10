@@ -27,8 +27,8 @@
 								<div class="card ">
 									<div class="tt-message-display card-body">
 										<!-- #tt-message-display -->
-										<h5 class="card-title">The chosen attribute was <strong>strength.</strong></h5>
-										<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+										<div id="tt-play-round-attribute"></div>
+										<div id="tt-play-round-winner"></div>
 									</div>
 								</div>
 							</div>
@@ -66,10 +66,12 @@
 			// This does not:
 			const PLAY_BUTTON = PlayButtonFactory();
 
+
 			// DOM Element ID References
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
 			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+			const DOM_MESSAGE_WRAPPER = "#tt-message-wrapper";
 			let  DOM_ROUND_NUMBER = "#tt-round-number";
 
 			// New Game Modal:
@@ -146,6 +148,8 @@
 						apiGetGameOverScores(gameOverScores);
 					})
 				}
+
+
 
 				function initializeGameOverModal() {
 					$(GAME_OVER_MODAL).modal('show');
@@ -243,7 +247,9 @@
 					PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
 
 					// DISPLAY WINNER MESSAGES
-					// ----------------
+					if (PLAY_BUTTON.onPlayRoundClick())
+						MESSAGE_FIELD.setMessage();
+
 
 					// SET BUTTON
 					// ----------------
