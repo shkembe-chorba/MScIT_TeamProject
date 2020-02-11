@@ -140,30 +140,7 @@ class PileTest {
     @Nested
     public class Eliminations {
 
-        // @DisplayName("For each player with no cards, the next round’s players do no include those
-        // players.")
-        // @Test
-        // void eliminationRemovesActiveplayers() {
-        // int numAIPlayers = 4;
-        // GameModel model = new GameModel(CARD_DECK_40, numAIPlayers);
 
-        // // copy the initial players
-        // List<Player> players = new LinkedList<Player>(model.getPlayersInGame());
-
-        // // PLAY THE GAME OVER AND OVER UNTIL A DRAW OCCURS
-        // Player activePlayer;
-        // Attribute chosenAttribute;
-
-        // // Continue playing until there is an elimination
-        // while (model.getPlayersInGame().size() != 5) {
-        // activePlayer = model.getActivePlayer();
-        // chosenAttribute = activePlayer.peekCard().getAttribute(0);
-        // model.playRoundWithAttribute(chosenAttribute);
-        // }
-
-        // List<Player> eliminatedPlayers = model.c
-
-        // }
     }
 
 }
