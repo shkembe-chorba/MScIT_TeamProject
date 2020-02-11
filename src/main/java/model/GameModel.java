@@ -32,7 +32,7 @@ public class GameModel {
 
     /**
      * Reads the pile from the provided .txt path and sets up a game with n AI players.
-     * 
+     *
      * @param deckFilePath The path to the deck.txt
      * @param numAIPlayers The number of AI players
      */
@@ -223,7 +223,7 @@ public class GameModel {
             // shuffles the communalPile
             communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
-            transferCommunalPile(roundWinner);
+            transferCommunalPile();
 
             // --- DEBUG LOG ---
             // The contents of the communal pile when cards are removed from it
@@ -318,7 +318,7 @@ public class GameModel {
     /**
      * Transfers communal pile to winner of the round
      */
-    private void transferCommunalPile(Player roundWinner) {
+    private void transferCommunalPile() {
         this.roundWinner.addToDeck(communalPile);
         communalPile = new Pile();
     }
