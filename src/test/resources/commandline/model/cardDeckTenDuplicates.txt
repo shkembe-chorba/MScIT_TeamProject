@@ -1,0 +1,11 @@
+Description Size Speed Range Firepower Cargo
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0
+350r 1 9 2 3 0

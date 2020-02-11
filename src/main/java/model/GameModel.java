@@ -31,7 +31,10 @@ public class GameModel {
     private Player humanPlayer;
 
     /**
-     * Reads the pile from the reader and initializes it
+     * Reads the pile from the provided .txt path and sets up a game with n AI players.
+     * 
+     * @param deckFilePath The path to the deck.txt
+     * @param numAIPlayers The number of AI players
      */
     public GameModel(String deckFilePath, int numAIPlayers) {
         try {
@@ -52,8 +55,6 @@ public class GameModel {
     /**
      * Resets and initializes the game with setting up players sets the round number, winning card
      * and roundWinner to null
-     *
-     * @param numAIPlayers
      */
     public void reset() {
 
