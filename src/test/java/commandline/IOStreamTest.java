@@ -37,10 +37,12 @@ public abstract class IOStreamTest {
     }
 
     protected String getOut() {
-        return outContent.toString();
+        // Replace Windows return carriages with unix equivilents.
+        return outContent.toString().replace("\r", "");
     }
 
     protected String getErr() {
-        return errContent.toString();
+        // Replace Windows return carriages with unix equivilents.
+        return errContent.toString().replace("\r", "");
     }
 }
