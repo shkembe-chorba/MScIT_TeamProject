@@ -70,15 +70,15 @@ public class TopTrumpsCLIApplication {
 		// Get deck file from json config
 		// ----------
 
-		final String CWD = System.getProperty("user.dir");
-		final File configPath = new File(CWD, JSON_CONFIG_NAME);
+		// final String CWD = System.getProperty("user.dir");
+		// final File configPath = new File(CWD, JSON_CONFIG_NAME);
 
 		JsonObject jsonConfig = null;
 		String deckFile = null;
 		int numAIPlayers = 4;
 
 		try {
-			jsonConfig = JsonUtility.getJsonObjectFromFile(configPath);
+			jsonConfig = JsonUtility.getJsonObjectFromFile(JSON_CONFIG_NAME);
 			deckFile = jsonConfig.get("deckFile").getAsString();
 			numAIPlayers = jsonConfig.get("numAIPlayers").getAsInt();
 

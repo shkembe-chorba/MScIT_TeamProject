@@ -16,14 +16,16 @@ public class JsonUtility {
     /**
      * Returns a JsonObject from a file path.
      *
-     * @param path the path to the .json file
+     * @param file the path to the .json file
      * @throws IllegalArgumentException if the file is not a .json file
      * @return a JsonObject
      */
-    public static JsonObject getJsonObjectFromFile(File path) throws IOException {
+    public static JsonObject getJsonObjectFromFile(String path) throws IOException {
+
+        File file = new File(path);
         // Check if is valid file, otherwise throw
-        if (path.isFile() && getExtension(path).equals("json")) {
-            FileReader fileReader = new FileReader(path);
+        if (file.isFile() && getExtension(file).equals("json")) {
+            FileReader fileReader = new FileReader(file);
             JsonReader jsonReader = new JsonReader(fileReader);
             return JsonParser.parseReader(jsonReader).getAsJsonObject();
         } else {
