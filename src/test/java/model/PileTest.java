@@ -183,7 +183,7 @@ class PileTest {
             card2.add(new Attribute("Size", 2));
             card2.add(new Attribute("Speed", 5));
             card2.add(new Attribute("Range", 4));
-            card2.add(new Attribute("Firepower", 3));
+            card2.add(new Attribute("Firepower", 5));
             card2.add(new Attribute("Cargo", 2));
 
 

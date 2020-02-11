@@ -13,7 +13,7 @@ import java.util.List;
  * Pile tests
  */
 @Nested
-class PileTest {
+class GameModelTest {
 
     private static final String TEST_RESOURCE_DIRECTORY = "src/test/resources/commandline/model";
 
