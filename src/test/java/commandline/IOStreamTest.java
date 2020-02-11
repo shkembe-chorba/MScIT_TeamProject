@@ -21,7 +21,7 @@ public abstract class IOStreamTest {
     @BeforeEach
     protected void setUpStreams() {
         System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
     }
 
     @AfterEach
