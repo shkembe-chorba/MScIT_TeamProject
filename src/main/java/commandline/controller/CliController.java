@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public class CliController {
 
-    private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
     private TopTrumpsView view;
     private Database database;
@@ -67,7 +66,7 @@ public class CliController {
 
     private void setUpNewGame() {
         view.displayGameStartMessage();
-        model.reset(NUM_AI_PLAYERS);
+        model.reset();
     }
 
     private void playRound() {

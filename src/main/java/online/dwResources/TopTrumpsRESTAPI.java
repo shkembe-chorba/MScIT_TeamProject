@@ -32,11 +32,12 @@ public class TopTrumpsRESTAPI {
 	 * A Jackson Object writer. It allows us to turn Java objects into JSON strings easily.
 	 */
 	private ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-	private static final String CWD = System.getProperty("user.dir");
+	// private static final String CWD = System.getProperty("user.dir");
 	private Database database = new Database();
 	private GameModel model;
 	private String gameWinnerName = null;
 	private boolean gameAutoCompleted = false;
+	private String deckFile = null;
 
 	/**
 	 * Contructor method for the REST API. This is called first. It provides a
@@ -46,9 +47,9 @@ public class TopTrumpsRESTAPI {
 	 * @param conf
 	 */
 	public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {
-		String deckFileName = conf.getDeckFile();
-		File deckFile = new File(CWD, deckFileName);
-		model = new GameModel(deckFile.toString());
+		deckFile = conf.getDeckFile();
+		// File deckFile = new File(CWD, deckFileName);
+
 	}
 
 	// ----------------------------------------------------
@@ -66,7 +67,7 @@ public class TopTrumpsRESTAPI {
 	@GET
 	@Path("/initGame")
 	public String initGame(@QueryParam("NumAiPlayers") String numAiPlayers) {
-		model.reset(Integer.parseInt(numAiPlayers));
+		model = new GameModel(deckFile, Integer.parseInt(numAiPlayers));
 		return "{\"loaded\":true}";
 	}
 
@@ -145,10 +146,10 @@ public class TopTrumpsRESTAPI {
 	 * Must be called when a game has ended, i.e. there is a winner.
 	 *
 	 *
-	 * 
+	 *
 	 * EXAMPLE: { "playerScores": [ { "name": "USER", "score": 15}, { name: "AI1", "score": 10}, ...
 	 * ], "gameWinnerName": "USER", "gameAutoCompleted": true }
-	 * 
+	 *
 	 * @return json string with playerScores, gameWinnerName and gameAutoCompleted as shown in the
 	 *         example
 	 * @throws JsonProcessingException

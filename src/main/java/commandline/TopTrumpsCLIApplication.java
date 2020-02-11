@@ -17,7 +17,8 @@ import java.sql.SQLException;
 public class TopTrumpsCLIApplication {
 
 	private static final String JSON_CONFIG_NAME = "TopTrumps.json";
-	private static final String DECK_READ_ERROR = "Could not load deck from file, please place in working directory.";
+	private static final String DECK_READ_ERROR =
+			"Could not load deck from file, please place in working directory.";
 	private static final int DECK_READ_ERROR_CODE = 2;
 	private static final int DATABASE_CONNECTION_ERROR_CODE = 3;
 
@@ -71,23 +72,32 @@ public class TopTrumpsCLIApplication {
 
 		final String CWD = System.getProperty("user.dir");
 		final File configPath = new File(CWD, JSON_CONFIG_NAME);
-		File deckFile = null;
+
+		JsonObject jsonConfig = null;
+		String deckFile = null;
+		int numAIPlayers = 4;
+
 		try {
-			JsonObject jsonConfig = JsonUtility.getJsonObjectFromFile(configPath);
-			String deckFileName = jsonConfig.get("deckFile").getAsString();
-			deckFile = new File(CWD, deckFileName);
+			jsonConfig = JsonUtility.getJsonObjectFromFile(configPath);
+			deckFile = jsonConfig.get("deckFile").getAsString();
+			numAIPlayers = jsonConfig.get("numAIPlayers").getAsInt();
+
+			// Don't think we need to append cwd...
+			// deckFile = new File(CWD, deckFileName).toString();
+
 		} catch (IOException e) {
 			System.err.println(DECK_READ_ERROR);
 			System.exit(DECK_READ_ERROR_CODE);
 		}
 
-		GameModel model = new GameModel(deckFile.toString());
+
+		GameModel model = new GameModel(deckFile, numAIPlayers);
 		CliController controller = new CliController(model);
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.setView(view);
 		try {
 			controller.run();
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			System.err.println("Database connection failure.");
 			e.printStackTrace();
 			System.exit(DATABASE_CONNECTION_ERROR_CODE);

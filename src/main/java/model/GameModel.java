@@ -19,6 +19,7 @@ import commandline.utils.Logger;
 
 public class GameModel {
     private int roundNumber = 1;
+    private int numAIPlayers = 4;
     private Player[] players;
     private ArrayList<Player> playersInGame = null; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
@@ -32,16 +33,20 @@ public class GameModel {
     /**
      * Reads the pile from the reader and initializes it
      */
-    public GameModel(String deckFilePath) {
+    public GameModel(String deckFilePath, int numAIPlayers) {
         try {
             wholeDeck = Pile.reader(deckFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        this.numAIPlayers = numAIPlayers;
+
         // --- DEBUG LOG ---
         // The contents of the complete deck once it has been read in and constructed
         Logger.log("COMPLETE GAME DECK AFTER LOAD:", wholeDeck.toString());
+
+        reset();
     }
 
     /**
@@ -50,7 +55,7 @@ public class GameModel {
      *
      * @param numAIPlayers
      */
-    public void reset(int numAIPlayers) {
+    public void reset() {
 
         players = new Player[numAIPlayers + 1];
         createHumanPlayer();
