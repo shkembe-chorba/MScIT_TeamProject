@@ -8,7 +8,6 @@ import online.configuration.TopTrumpsJSONConfiguration;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
