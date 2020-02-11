@@ -7,7 +7,6 @@ import commandline.utils.Logger;
 import commandline.view.TopTrumpsView;
 import model.GameModel;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -90,11 +89,11 @@ public class TopTrumpsCLIApplication {
 			System.exit(DECK_READ_ERROR_CODE);
 		}
 
-
 		GameModel model = new GameModel(deckFile, numAIPlayers);
 		CliController controller = new CliController(model);
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.setView(view);
+
 		try {
 			controller.run();
 		} catch (SQLException e) {
