@@ -26,12 +26,10 @@
 									<!-- MESSAGE BOARD -->
 									<div class="card ">
 										<div class="tt-message-display card-body">
+											<h4><div  id="tt-message-display"></div></h4>
 											<!-- #tt-message-display -->
-											<h5 class="card-title">The chosen attribute was <strong>strength.</strong>
-											</h5>
-											<h5 class="card-title">The winner of the round is <strong>A6</strong>.</h5>
+
 										</div>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -77,6 +75,7 @@
 			// -------------------------
 			const DOM_CARD_WRAPPER = "#tt-card-decks";
 			const DOM_BUTTON_WRAPPER = "#tt-button-wrapper";
+			const DOM_MESSAGE_WRAPPER = "#tt-message-display"
 			let  DOM_ROUND_NUMBER = "#tt-round-number";
 			let DOM_COMMUNAL_PILE_SIZE = "#tt-communal-pile";
 
@@ -200,8 +199,7 @@
 				// Set the button to the correct type - human can choose only when they are the active player
 				setupButtonView(chosenAttributeName, attributes);
 
-				// Empty
-				// setupMessageBoard();
+				$(DOM_MESSAGE_WRAPPER).text(playersInGame.filter(p => p.isActive)[0].name + " is the active player");
 			}
 
 			function setupPlayerCards(players) {
@@ -260,7 +258,12 @@
 				PLAYERS.filter(p => eliminatedPlayersNames.includes(p.getName())).forEach(p => p.eliminate());
 
 				// DISPLAY WINNER MESSAGES
-				// ----------------
+				if (roundWinnerName) {
+					$(DOM_MESSAGE_WRAPPER).text("The round winner is " + roundWinnerName + " with attribute " + CHOSEN_ATTRIBUTE);
+				}
+				else {
+					$(DOM_MESSAGE_WRAPPER).text("The round was a draw");
+				}
 
 				// SET BUTTON
 				// ----------------
