@@ -109,15 +109,17 @@ class GameModelTest {
 
             // PLAY THE GAME OVER AND OVER UNTIL A DRAW OCCURS
             Player activePlayer;
+            Card activeCard;
             Attribute chosenAttribute;
 
             // Continue playing until there is a draw
-            while (model.getDraws() != 1) {
+            while (model.getDraws() < 1) {
                 activePlayer = model.getActivePlayer();
-                chosenAttribute = activePlayer.peekCard().getAttribute(0);
+                activeCard = activePlayer.peekCard();
+                chosenAttribute = activeCard.getAttribute(0);
                 model.playRoundWithAttribute(chosenAttribute);
 
-                if (model.checkForWinner() != null) {
+                if (model.getPlayersInGame().size() < 2) {
                     model.reset();
                 }
             }
