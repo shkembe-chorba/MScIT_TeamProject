@@ -4,6 +4,8 @@ import java.sql.*;
 
 /**
  * This class holds the database functionality for the TopTrumpsGame.
+ * It has methods to connect/disconnect to/from a PostgreSQL database and
+ * upload/download game statistics to/from it.
  */
 public class Database {
 

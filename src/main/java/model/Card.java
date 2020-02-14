@@ -4,25 +4,54 @@ import commandline.utils.ListUtility;
 
 import java.util.ArrayList;
 
+/**
+ * Represents the cards in the game.
+ */
 public class Card {
-    protected String name;
-    protected ArrayList<Attribute> cardList = new ArrayList<Attribute>();
 
-    public Card(String n) {
-        if ("".equals(n) || (n == null)) {
+    //Fields.
+    protected String name;
+    protected ArrayList<Attribute> attributeList = new ArrayList<Attribute>();
+
+    /**
+     * Constructor.
+     * @param name name of card
+     */
+    public Card(String name) {
+        if ("".equals(name) || (name == null)) {
             throw new IllegalArgumentException("No empty names allowed");
         }
-        this.name = n;
+        this.name = name;
     }
 
+    /**
+     * Adds an attribute to the card.
+     * @param attribute
+     */
+    public void add(Attribute attribute) {
+        this.attributeList.add(attribute);
+    }
+
+    /**
+     * toString
+     * @return Card name: name
+     *         bullet list of attributes
+     */
+    @Override
     public String toString() {
-        String attributeString = new ListUtility(cardList).getBulletList();
+        String attributeString = new ListUtility(attributeList).getBulletList();
         return String.format("Card name: %s\n%s", name, attributeString);
     }
 
+    /**
+     * Return the value of the attribute in the card
+     * with the same name as the name of the passed attribute.
+     * @param givenAttribute
+     * @return value of attribute of the same type
+     */
     public int getValue(Attribute givenAttribute) {
         String givenAttributeName = givenAttribute.getName();
-        for (Attribute attribute : cardList) {
+        for (Attribute attribute : attributeList) {
             if (attribute.getName().equals(givenAttributeName)) {
                 return attribute.getValue();
             }
@@ -30,16 +59,19 @@ public class Card {
         return 0;
     }
 
-    public void add(Attribute a) {
-        this.cardList.add(a);
+    /**
+     * Return the i'th attribute
+     * @param i
+     * @return
+     */
+    public Attribute getAttribute(int i) {
+        return this.attributeList.get(i);
     }
 
-    public Attribute getAttribute(int i) {
-        return this.cardList.get(i);
-    }
+    //Getters.
 
     public ArrayList<Attribute> getAttributes() {
-        return this.cardList;
+        return this.attributeList;
     }
 
     public String getName() {

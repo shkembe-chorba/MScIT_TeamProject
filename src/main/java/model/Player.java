@@ -6,8 +6,8 @@ package model;
  * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
  * 2200528b: Tereza Buckova 2493194s:Gareth Sears
  *
- * Player class that represents human player and is a superclass to AIPlayer class. It allows
- * assigning Player a pile of cards, creating new players and retrieving them
+ * Player class that represents the human player and is a superclass of the AIPlayer class. It allows
+ * assigning a pile of cards to the Player, creating new players and retrieving them.
  */
 
 public class Player {
@@ -46,13 +46,13 @@ public class Player {
     }
 
     /**
-     * Method that takes the following card in the player's hand
+     * Method that returns the top card of the player
      *
-     * @return nextCard
+     * @return topCard
      */
     public Card peekCard() {
-        Card nextCard = playerDeck.peek();
-        return nextCard;
+        Card topCard = playerDeck.peek();
+        return topCard;
     }
 
     /**
@@ -73,11 +73,15 @@ public class Player {
         return name;
     }
 
-    // Returns the
+    /**
+     * Returns the size of the deck of the player without their top card.
+     * @return
+     */
     public int getRemainingDeckSize() {
         return playerDeck.size() - 1;
     }
 
+    //Getter.
     public Pile getDeck() {
         return playerDeck;
     }

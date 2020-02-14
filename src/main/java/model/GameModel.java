@@ -13,12 +13,11 @@ import commandline.utils.Logger;
  * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
  * 2200528b: Tereza Buckova 2493194s:Gareth Sears
  *
- * Class that represents the game model, initiliazes the game with players and distributing the deck
- * between players and communal pile.
+ * Class that represents the game model, initiliazes the game with players, distributes the deck
+ * between players and communal pile and handles the progression of each round.
  */
 
 public class GameModel {
-    private GameState gameState;
     private int roundNumber = 1;
     private Player[] players;
     private ArrayList<Player> playersInGame = null; // players still left in the game
@@ -31,7 +30,8 @@ public class GameModel {
     private Player humanPlayer;
 
     /**
-     * Reads the pile from the reader and initializes it
+     *  Constructor that reads the deck from the jsonConfigFile.
+     * @param jsonConfigFile
      */
     public GameModel(String jsonConfigFile) {
         try {
@@ -46,10 +46,11 @@ public class GameModel {
     }
 
     /**
-     * Resets and initializes the game with setting up players sets the round number, winning card
-     * and roundWinner to null
+     * Resets and initializes the game by setting up players,
+     * setting the round number to 1 and winning card
+     * and roundWinner to null.
      *
-     * @param numAIPlayers
+     * @param numAIPlayers number of AI players in game
      */
     public void reset(int numAIPlayers) {
 
@@ -73,7 +74,7 @@ public class GameModel {
     }
 
     /**
-     * Creates human player always called 'USER'
+     * Creates human player always called 'USER'.
      */
     public void createHumanPlayer() {
         humanPlayer = new Player("USER");
@@ -81,8 +82,8 @@ public class GameModel {
     }
 
     /**
-     * Creates expected number of AIPlayers and adds them to players in the game with the correct
-     * name
+     * Creates expected number of AI Players and adds them to players in the game with the correct
+     * name.
      */
     public void createAIPlayers(int numOfAIPlayers) {
         // starts with 1 because HumanPlayer is in index 0
@@ -92,8 +93,8 @@ public class GameModel {
     }
 
     /**
-     * Splits the whole deck of 40 cards and assigns it to players it assigns the reminder of cards
-     * to communal pile
+     * Splits the whole deck of 40 cards and assigns it to players. It assigns the remainder of cards
+     * to the communal pile.
      */
 
     public void assignCards(Pile wholeDeck, Player[] players) {
@@ -118,11 +119,13 @@ public class GameModel {
         Logger.log("INITIAL COMMUNAL DECK CONTENTS", communalPile.toString());
     }
 
-    /**
-     * Takes in attribute and compares values of the peek card from all players on the chosen
-     * attribute
-     */
 
+    /**
+     * Takes in attribute and compares the values of the top card of all players in the given
+     * attribute to play a round.
+     * @param chosenAttribute
+     * @return the round winner or null if there is a draw.
+     */
     public Player playRoundWithAttribute(Attribute chosenAttribute) {
 
         // --- DEBUG LOG ---
@@ -194,8 +197,6 @@ public class GameModel {
 
             setActivePlayer(roundWinner);
 
-            // returns winner to the controller
-
         }
 
         // --- DEBUG LOG ---
@@ -209,6 +210,7 @@ public class GameModel {
         // increases round number
         roundNumber++;
 
+        // returns winner to the controller
         return roundWinner;
     }
 
@@ -222,7 +224,7 @@ public class GameModel {
     }
 
     /**
-     * Checks whether human player is still in game
+     * Checks whether the human player is still in game
      */
     public boolean userStillInGame() {
         return playersInGame.contains(humanPlayer);
@@ -286,10 +288,6 @@ public class GameModel {
 
 
     // getters and setters
-    public GameState getGameState() {
-        return gameState;
-    }
-
     public Player getHumanPlayer() {
         return humanPlayer;
     }
