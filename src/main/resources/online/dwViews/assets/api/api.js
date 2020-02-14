@@ -17,7 +17,7 @@ const URL_PLAY_ROUND_WITH_ATTRIBUTE = "http://localhost:7777/toptrumps/playRound
 // -----------------------------
 
 function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
+  let xhr = new XMLHttpRequest();
   if ("withCredentials" in xhr) {
     // Check if the XMLHttpRequest object has a "withCredentials" property.
     // "withCredentials" only exists on XMLHTTPRequest2 objects.
@@ -94,7 +94,7 @@ function apiGetStatistics(callback) {
  *
  * Must be called at the beginning of a round.
  *
- * chosenAttributeName corresponds to "NA"
+ * chosenAttributeName corresponds to null
  * if the user is active and it corresponds to the
  * attribute that the AI chooses otherwise.
  *
@@ -128,7 +128,7 @@ function apiInitRound(callback) {
 
 /**
  * Initialises the game with the chosen number of AI players.
- * Returns the String "OK".
+ * Returns {loaded: true}.
  *
  * Must be called before a game begins.
  * @param numAiPlayers chosen number of AI players
@@ -139,39 +139,27 @@ function apiInitGame(numPlayers, callback) {
   });
 }
 /**
- * Plays a round with the chosen attribute and auto completes the game if the
- * user is eliminated and there is no winner. If there is a winner in the round
- * or the game is auto completed this will be reflected in gameWinnerName and
- * the database will be updated.
- * Returns a JavaScript object/dictionary with information for playing a round with an attribute
- * and possible game over information.
+ * Plays a round with the chosen attribute and auto completes the game if the user is eliminated
+ * and there is no winner. If there is a winner in the round or the game is auto completed this
+ * will be reflected in the gameWinnerName and gameAutoCompleted fields and the database will be
+ * updated. Returns a JavaScript object/dictionary with information for playing a round with an attribute and
+ * possible game over information.
  *
  * Must be called after initRound().
  *
- * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to information
- * about the last round before the autocompletion, not the last round overall.
+ * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to
+ * information about the last round before the autocompletion, not the last round overall.
  *
- * userEliminated corresponding to true does not always mean that the game was
- * auto completed, the check for that must be done via gameAutoCompleted.
+ * roundWinnerName corresponds to null if there was a draw and it corresponds to the name of the
+ * round winner otherwise.
  *
- * roundWinnerName corresponds to null if there was a draw and it
- * corresponds to the name of the round winner otherwise.
+ * gameOver being true does not necessarily mean that the game ended in the current round, the
+ * game could have been auto completed. That must be checked via gameAutoCompleted in
+ * getGameOverScores().
  *
- * gameWinnerName corresponds to null if there was no game winner and it
- * corresponds to the name of the winner otherwise.
- *
- * gameWinnerName not being null does not necessarily mean that the game ended
- * in the current round, the game could have been auto completed.
- * That must be checked via gameAutoCompleted.
- *
- * EXAMPLE:
- * 	{
- * 	    "roundWinnerName": "USER"/null,
- * 	    "userEliminated": true,
- * 	    "gameWinnerName": "USER"/null,
- * 	    "gameAutoCompleted": false,
- * 	    "eliminatedPlayersNames": [ "AI1", "AI2"]
- * 	}
+ * EXAMPLE: { "roundWinnerName": "USER"/null,
+ *            "gameOver": true,
+ *            "eliminatedPlayersNames": ["AI1", "AI2"] }
  */
 
 function apiPlayRoundWithAttribute(attributeName, callback) {
@@ -181,23 +169,16 @@ function apiPlayRoundWithAttribute(attributeName, callback) {
 }
 
 /**
- * Returns the won rounds for every player during the game
- * as a JavaScript array of objects/dictionaries.
+ * Returns the won rounds for every player during the game, the game winner name and whether the
+ * game auto completed.
  *
  * Must be called when a game has ended, i.e. there is a winner.
  *
- * EXAMPLE:
- * [
- *     {
- *     	"name": "USER",
- *      "score": 15,
- *      },
- *      {
- *      name: "AI1",
- *      "score", 10
- *      }
- *      ...
- * ]
+ *
+ *
+ * EXAMPLE: { "playerScores": [ { "name": "USER", "score": 15}, { name: "AI1", "score": 10}, ...],
+ *            "gameWinnerName": "USER",
+ *            "gameAutoCompleted": true }
  */
 
 function apiGetGameOverScores(callback) {

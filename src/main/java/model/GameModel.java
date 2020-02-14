@@ -13,8 +13,8 @@ import commandline.utils.Logger;
  * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
  * 2200528b: Tereza Buckova 2493194s:Gareth Sears
  *
- * Class that represents the game model, initiliazes the game with players and distributing the deck
- * between players and communal pile.
+ * Class that represents the game model, initiliazes the game with players, distributes the deck
+ * between players and communal pile and handles the progression of each round.
  */
 
 public class GameModel {
@@ -53,8 +53,8 @@ public class GameModel {
     }
 
     /**
-     * Resets and initializes the game with setting up players sets the round number, winning card
-     * and roundWinner to null
+     * Resets and initializes the game by setting up players, setting the round number to 1 and
+     * winning card and roundWinner to null.
      */
     public void reset() {
 
@@ -156,10 +156,12 @@ public class GameModel {
 
 
     /**
-     * Takes in attribute and compares values of the peek card from all players on the chosen
-     * attribute
+     * Takes in attribute and compares the values of the top card of all players in the given
+     * attribute to play a round.
+     * 
+     * @param chosenAttribute
+     * @return the round winner or null if there is a draw.
      */
-
     public Player playRoundWithAttribute(Attribute chosenAttribute) {
 
         // --- DEBUG LOG ---
@@ -232,8 +234,6 @@ public class GameModel {
             // Set the next active player
             activePlayer = roundWinner;
 
-            // returns winner to the controller
-
         }
 
         // --- DEBUG LOG ---
@@ -247,6 +247,7 @@ public class GameModel {
         // increases round number
         roundNumber++;
 
+        // returns winner to the controller
         return roundWinner;
     }
 

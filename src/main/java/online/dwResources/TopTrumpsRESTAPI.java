@@ -39,7 +39,7 @@ public class TopTrumpsRESTAPI {
 	private String deckFile = null;
 
 	/**
-	 * Contructor method for the REST API. This is called first. It provides a
+	 * Constructor method for the REST API. This is called first. It provides a
 	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
 	 * number of AI players.
 	 *
@@ -56,12 +56,12 @@ public class TopTrumpsRESTAPI {
 	// ----------------------------------------------------
 
 	/**
-	 * Initialises the game with the chosen number of AI players. Returns the String "OK".
+	 * Initialises the game with the chosen number of AI players. Returns {loaded: true}.
 	 *
 	 * Must be called before a game begins.
 	 *
 	 * @param numAiPlayers chosen number of AI players.
-	 * @return "OK"
+	 * @return {loaded: true}
 	 */
 	@GET
 	@Path("/initGame")
@@ -178,10 +178,10 @@ public class TopTrumpsRESTAPI {
 	 *
 	 * Must be called at the beginning of a round.
 	 *
-	 * chosenAttributeName corresponds to "NA" if the user is active and it corresponds to the
+	 * chosenAttributeName corresponds to null if the user is active and it corresponds to the
 	 * attribute that the AI chooses otherwise.
 	 *
-	 * EXAMPLE: { "round": 1, "communalPileSize": 4, "chosenAttributeName": "strength"/"NA",
+	 * EXAMPLE: { "round": 1, "communalPileSize": 4, "chosenAttributeName": "strength"/null,
 	 * "playersInGame" : [ { "name": "USER", "isAI": false, "isActive": true, "deckSize": 10,
 	 * "topCard": { "name": "TRex", "attributes": [ { "name": "strength", "value": 5 } ] } } ] }
 	 *

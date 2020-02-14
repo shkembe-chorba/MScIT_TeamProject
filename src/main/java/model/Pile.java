@@ -4,46 +4,72 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * Represents a pile of cards in the game,
+ * e.g. deck, player deck, communal pile.
+ */
 public class Pile {
 
     private LinkedList<Card> cardList = new LinkedList<Card>();
 
-    public Pile() {
-    }
-
-    public LinkedList<Card> getCards() {
-        return cardList;
-    }
-
+    /**
+     * Shuffle the pile.
+     */
     public void shuffle() {
         Collections.shuffle(cardList);
     }
 
+    /**
+     * Return the top card of the pile.
+     * @return top card
+     */
     public Card peek() {
         return cardList.peek();
     }
 
+    /**
+     * Remove the top card from the pile and return it.
+     * @return top card
+     */
     public Card pop() {
         return cardList.pollFirst();
     }
 
-    public void add(Pile pile) {
-        cardList.addAll(pile.getCards());
+    /**
+     * Add another pile to the current's bottom.
+     * @param anotherPile
+     */
+    public void add(Pile anotherPile) {
+        cardList.addAll(anotherPile.getCards());
     }
 
+    /**
+     * Add card to top of pile.
+     * @param card
+     */
     public void add(Card card) {
         cardList.add(card);
     }
 
+    /**
+     * Return size of pile.
+     * @return size of pile
+     */
     public int size() {
         return cardList.size();
     }
 
-
-
     // returns an Arraylist of all the piles to start the game with split equally to player piles
     // and an extra pile with remained cards
+
+    /**
+     * Returns an ArrayList of piles:
+     * the last one will become the communal pile
+     * and the rest will become player decks
+     * at the beginning of the game
+     * @param numberOfPlayers
+     * @return list of card piles
+     */
     public ArrayList<Pile> split(int numberOfPlayers) {
         // This is based on the number of players and cards
         int cards = cardList.size();
@@ -65,6 +91,12 @@ public class Pile {
         return setOfDecks;
     }
 
+    /**
+     * Returns a pile of cards from a deck file with the given path(deckPath).
+     * @param deckPath
+     * @return
+     * @throws IOException
+     */
     public static Pile reader(String deckPath) throws IOException {
 
         Scanner scanner = new Scanner(new FileReader(deckPath));
@@ -87,6 +119,12 @@ public class Pile {
         return pile;
     }
 
+    /**
+     * toString
+     * @return appended String of the toStrings of the cards in the pile,
+     * separated by new lines, starting with -------- START OF PILE --------
+     * and ending with -------- END OF PILE --------
+     */
     @Override
     public String toString() {
         String output = "-------- START OF PILE -------- \n";
@@ -98,6 +136,11 @@ public class Pile {
         output += "-------- END OF PILE -------- \n";
 
         return output;
+    }
+
+    //Getter
+    public LinkedList<Card> getCards() {
+        return cardList;
     }
 }
 

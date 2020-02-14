@@ -6,50 +6,70 @@ import model.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * The Controller of the CLI version of the Top Trumps Game.
+ */
 public class CliController {
 
+    // Fields.
+    private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
     private TopTrumpsView view;
     private Database database;
 
+    /**
+     * Constructor.
+     * 
+     * @param model the game model
+     */
     public CliController(GameModel model) {
         this.model = model;
     }
 
+    /**
+     * Sets the game view.
+     * 
+     * @param view
+     */
     public void setView(TopTrumpsView view) {
         this.view = view;
     }
 
     /**
-     * 1. Display option to view stats or start game 2. Take user input 3. Act based on input;
+     * Runs the controller and begins the game.
+     * 
+     * @throws SQLException when the database cannot be connected to
      */
-
     public void run() throws SQLException {
+
+        // Initialize and connect to database.
         database = new Database();
         database.connect();
 
-        view.displayLogo();
-
+        // Infinite loop for main menu.
         while (true) {
-            // Prompt for statistics choice
+            // Prompt for choice between statistics and a new game.
             int choice = view.displayMenu();
             switch (choice) {
                 case 0:
+                    // Display game statistics.
                     RetrievedGameStatistics statistics = database.retrieveGameStats();
                     view.displayStatistics(statistics);
                     break;
 
                 case 1:
+                    // Start new game.
                     setUpNewGame();
+                    // Loop for the game rounds that ends when the game has a winner.
                     while (true) {
                         playRound();
-                        Player winner = model.checkForWinner();
-                        if (winner != null) {
-                            // display game end
-                            view.displayGameOver(winner.toString(), model.getPlayers());
-                            // upload statistics to database
+                        Player gameWinner = model.checkForWinner();
+                        if (gameWinner != null) {
+                            // Display end of game.
+                            view.displayGameOver(gameWinner.toString(), model.getPlayers());
+                            // Upload statistics to the database.
                             database.uploadGameStats(model.getDraws(), model.getRoundNumber(),
-                                    winner.toString(), model.getPlayers());
+                                    gameWinner.toString(), model.getPlayers());
                             break;
                         }
                     }
@@ -59,62 +79,77 @@ public class CliController {
                     continue;
             }
 
-
-
         }
     }
 
+    /**
+     * Sets up a new game by displaying the message for the beginning of a game and resetting the
+     * game model.
+     */
     private void setUpNewGame() {
         view.displayGameStartMessage();
         model.reset();
     }
 
+    /**
+     * Plays a round.
+     */
     private void playRound() {
         Player activePlayer = model.getActivePlayer();
 
         view.displayRoundNumber(model.getRoundNumber());
 
-        // Is human player still in game
+        // Is human player still in game.
         if (model.userStillInGame()) {
             view.displayUserHand(model.getHumanPlayer());
         }
 
-        // Player X is the active player!
+        // Display "Player X is the active player!".
         view.displayActivePlayer(activePlayer);
 
         Attribute selectedAttribute = null;
-        // Category choice: AI or human
+        // Category choice: AI or human.
         if (isPlayerAI(model.getActivePlayer())) {
             view.displayAiPlayerHand(activePlayer);
-            // ai needs to select getAttribute(chooseIndexOfAttribute)
+            // AI selects an attribute if it is active.
             selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();
         } else {
+            // The User selects an attribute if he is active.
             selectedAttribute = view.getUserAttribute(activePlayer.peekCard().getAttributes());
         }
         view.displayChosenCategory(selectedAttribute);
 
-        Player winningPlayer = model.playRoundWithAttribute(selectedAttribute);
-        if (winningPlayer == null) {
+        // Play a round and get the round winner.
+        Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
+        if (roundWinner == null) {
             // Draw case
             view.displayDrawnRound(model.getRoundNumber(), model.getCommunalPileSize());
         } else {
             // Winner case
-            view.displayRoundWinner(winningPlayer.toString(), model.getRoundNumber());
+            view.displayRoundWinner(roundWinner.toString(), model.getRoundNumber());
             view.displayWinningCard(model.getWinningCard());
         }
 
-        // Check for eliminations
+        // Check for eliminations.
         ArrayList<Player> eliminatedPlayers = model.checkToEliminate();
         for (Player player : eliminatedPlayers) {
             view.displayEliminatedPlayer(player.toString());
         }
     }
 
+    /**
+     * Checks if a player is an AI player.
+     * 
+     * @param player
+     * @return whether a player is an AI
+     */
     private boolean isPlayerAI(Player player) {
         return (player instanceof AIPlayer);
     }
 
-
+    /**
+     * Disconnects from the database and quits the game.
+     */
     public void quit() {
         database.disconnect();
         System.exit(0);
