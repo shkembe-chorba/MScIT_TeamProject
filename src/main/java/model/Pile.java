@@ -74,7 +74,7 @@ public class Pile {
         // This is based on the number of players and cards
         int cards = cardList.size();
         int cardsPerPlayer = cards / numberOfPlayers;
-        LinkedList<Card> cardListCopy = (LinkedList<Card>) cardList.clone();
+        LinkedList<Card> cardListCopy = new LinkedList<Card>(cardList);
         Pile[] decks = new Pile[numberOfPlayers];
         Pile communalPile = new Pile();
         int startingIndex = 0;

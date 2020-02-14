@@ -19,6 +19,7 @@ import commandline.utils.Logger;
 
 public class GameModel {
     private int roundNumber = 1;
+    private int numAIPlayers = 4;
     private Player[] players;
     private ArrayList<Player> playersInGame = null; // players still left in the game
     private Player activePlayer; // active player that chooses the attribute
@@ -30,29 +31,32 @@ public class GameModel {
     private Player humanPlayer;
 
     /**
-     *  Constructor that reads the deck from the jsonConfigFile.
-     * @param jsonConfigFile
+     * Reads the pile from the provided .txt path and sets up a game with n AI players.
+     *
+     * @param deckFilePath The path to the deck.txt
+     * @param numAIPlayers The number of AI players
      */
-    public GameModel(String jsonConfigFile) {
+    public GameModel(String deckFilePath, int numAIPlayers) {
         try {
-            wholeDeck = Pile.reader(jsonConfigFile);
+            wholeDeck = Pile.reader(deckFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        this.numAIPlayers = numAIPlayers;
+
         // --- DEBUG LOG ---
         // The contents of the complete deck once it has been read in and constructed
         Logger.log("COMPLETE GAME DECK AFTER LOAD:", wholeDeck.toString());
+
+        reset();
     }
 
     /**
-     * Resets and initializes the game by setting up players,
-     * setting the round number to 1 and winning card
-     * and roundWinner to null.
-     *
-     * @param numAIPlayers number of AI players in game
+     * Resets and initializes the game by setting up players, setting the round number to 1 and
+     * winning card and roundWinner to null.
      */
-    public void reset(int numAIPlayers) {
+    public void reset() {
 
         players = new Player[numAIPlayers + 1];
         createHumanPlayer();
@@ -73,56 +77,88 @@ public class GameModel {
         drawRound = 0;
     }
 
-    /**
-     * Creates human player always called 'USER'.
-     */
-    public void createHumanPlayer() {
-        humanPlayer = new Player("USER");
-        players[0] = humanPlayer;
+    public Player getHumanPlayer() {
+        return humanPlayer;
+    }
+
+    public int getRoundNumber() {
+        return roundNumber;
+    }
+
+    public int getDraws() {
+        return drawRound;
+    }
+
+    public int getCommunalPileSize() {
+        return communalPile.size();
+    }
+
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
+
+    public Card getWinningCard() {
+        return winningCard;
+    }
+
+    public Player[] getPlayers() {
+        return players;
+    }
+
+    public ArrayList<Player> getPlayersInGame() {
+        return playersInGame;
     }
 
     /**
-     * Creates expected number of AI Players and adds them to players in the game with the correct
-     * name.
+     * Checks whether human player is still in game
      */
-    public void createAIPlayers(int numOfAIPlayers) {
-        // starts with 1 because HumanPlayer is in index 0
-        for (int i = 1; i <= numOfAIPlayers; i++) {
-            players[i] = new AIPlayer("AI" + i);
-        }
+    public boolean userStillInGame() {
+        return playersInGame.contains(humanPlayer);
     }
 
     /**
-     * Splits the whole deck of 40 cards and assigns it to players. It assigns the remainder of cards
-     * to the communal pile.
+     * Checks for the game winner by checking if there is only one player left in the game
      */
-
-    public void assignCards(Pile wholeDeck, Player[] players) {
-        ArrayList<Pile> setOfDecks = wholeDeck.split(players.length);
-        for (int i = 0; i < players.length; i++) {
-            Player player = players[i];
-            Pile playerDeck = setOfDecks.get(i);
-            player.addToDeck(playerDeck);
+    public Player checkForWinner() {
+        if (playersInGame.size() == 1) {
+            Player winner = playersInGame.get(0);
 
             // --- DEBUG LOG ---
-            // The contents of the user’s deck and the computer’s deck(s) once they have been
-            // allocated.
-            String isAILabel = player instanceof AIPlayer ? "AI" : "USER";
-            Logger.log(String.format("(%s) %s's DECK AFTER ALLOCATION:", isAILabel, player),
-                    playerDeck.toString());
+            // The winner of the game
+            Logger.log("WINNING PLAYER:", winner.toString());
 
+            return winner;
+        } else {
+            return null;
         }
-        communalPile = setOfDecks.get(players.length);
+    }
 
-        // --- DEBUG LOG ---
-        // Initial communal deck contents.
-        Logger.log("INITIAL COMMUNAL DECK CONTENTS", communalPile.toString());
+    /**
+     * Checks whether the player has another card and if not eliminates them from players in game
+     */
+    public ArrayList<Player> checkToEliminate() {
+        ArrayList<Player> eliminated = new ArrayList<Player>();
+
+        // Check which players are to be eliminated
+        for (Player player : playersInGame) {
+            if (player.peekCard() == null) {
+                eliminated.add(player);
+            }
+        }
+
+        // Eliminate players from model
+        for (Player eliminatedPlayer : eliminated) {
+            playersInGame.remove(eliminatedPlayer);
+        }
+
+        return eliminated;
     }
 
 
     /**
      * Takes in attribute and compares the values of the top card of all players in the given
      * attribute to play a round.
+     * 
      * @param chosenAttribute
      * @return the round winner or null if there is a draw.
      */
@@ -189,13 +225,14 @@ public class GameModel {
             // shuffles the communalPile
             communalPile.shuffle();
             // transfers all cards from communal pile to roundWinner
-            transferCommunalPile(roundWinner);
+            transferCommunalPile();
 
             // --- DEBUG LOG ---
             // The contents of the communal pile when cards are removed from it
             Logger.log("COMMUNAL PILE AFTER TRANSFER:", communalPile.toString());
 
-            setActivePlayer(roundWinner);
+            // Set the next active player
+            activePlayer = roundWinner;
 
         }
 
@@ -215,63 +252,64 @@ public class GameModel {
     }
 
     /**
+     * Creates human player always called 'USER'
+     */
+    private void createHumanPlayer() {
+        humanPlayer = new Player("USER");
+        players[0] = humanPlayer;
+    }
+
+    /**
+     * Creates expected number of AIPlayers and adds them to players in the game with the correct
+     * name
+     */
+    private void createAIPlayers(int numOfAIPlayers) {
+        // starts with 1 because HumanPlayer is in index 0
+        for (int i = 1; i <= numOfAIPlayers; i++) {
+            players[i] = new AIPlayer("AI" + i);
+        }
+    }
+
+    /**
+     * Splits the whole deck of 40 cards and assigns it to players it assigns the reminder of cards
+     * to communal pile
+     */
+
+    private void assignCards(Pile wholeDeck, Player[] players) {
+        ArrayList<Pile> setOfDecks = wholeDeck.split(players.length);
+        for (int i = 0; i < players.length; i++) {
+            Player player = players[i];
+            Pile playerDeck = setOfDecks.get(i);
+            player.addToDeck(playerDeck);
+
+            // --- DEBUG LOG ---
+            // The contents of the user’s deck and the computer’s deck(s) once they have been
+            // allocated.
+            String isAILabel = player instanceof AIPlayer ? "AI" : "USER";
+            Logger.log(String.format("(%s) %s's DECK AFTER ALLOCATION:", isAILabel, player),
+                    playerDeck.toString());
+
+        }
+        communalPile = setOfDecks.get(players.length);
+
+        // --- DEBUG LOG ---
+        // Initial communal deck contents.
+        Logger.log("INITIAL COMMUNAL DECK CONTENTS", communalPile.toString());
+    }
+
+    /**
      * Randomly selects first player from the players array
      */
-    public Player randomlySelectFirstPlayer(Player[] players) {
+    private Player randomlySelectFirstPlayer(Player[] players) {
         Random rand = new Random();
         Player firstPlayer = players[rand.nextInt(players.length)];
         return firstPlayer;
     }
 
     /**
-     * Checks whether the human player is still in game
-     */
-    public boolean userStillInGame() {
-        return playersInGame.contains(humanPlayer);
-    }
-
-    /**
-     * Checks for the game winner by checking if there is only one player left in the game
-     */
-    public Player checkForWinner() {
-        if (playersInGame.size() == 1) {
-            Player winner = playersInGame.get(0);
-
-            // --- DEBUG LOG ---
-            // The winner of the game
-            Logger.log("WINNING PLAYER:", winner.toString());
-
-            return winner;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Checks whether the player has another card and if not eliminates them from players in game
-     */
-    public ArrayList<Player> checkToEliminate() {
-        ArrayList<Player> eliminated = new ArrayList<Player>();
-
-        // Check which players are to be eliminated
-        for (Player player : playersInGame) {
-            if (player.peekCard() == null) {
-                eliminated.add(player);
-            }
-        }
-
-        // Eliminate players from model
-        for (Player eliminatedPlayer : eliminated) {
-            playersInGame.remove(eliminatedPlayer);
-        }
-
-        return eliminated;
-    }
-
-    /**
      * Transfers cards to communal pile from all players
      */
-    public void addCardsToCommunalPile() {
+    private void addCardsToCommunalPile() {
         for (int i = 0; i < playersInGame.size(); i++) {
             Player playerToPopCard = playersInGame.get(i);
             communalPile.add(playerToPopCard.popCard());
@@ -281,55 +319,9 @@ public class GameModel {
     /**
      * Transfers communal pile to winner of the round
      */
-    public void transferCommunalPile(Player roundWinner) {
+    private void transferCommunalPile() {
         this.roundWinner.addToDeck(communalPile);
         communalPile = new Pile();
-    }
-
-
-    // getters and setters
-    public Player getHumanPlayer() {
-        return humanPlayer;
-    }
-
-    public int getRoundNumber() {
-        return roundNumber;
-    }
-
-    public int getDraws() {
-        return drawRound;
-    }
-
-    public void increaseRoundNumber() {
-        roundNumber++;
-    }
-
-    public int getCommunalPileSize() {
-        return communalPile.size();
-    }
-
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
-
-    public Player getRoundWinner() {
-        return roundWinner;
-    }
-
-    public Card getWinningCard() {
-        return winningCard;
-    }
-
-    public void setActivePlayer(Player playerActive) {
-        this.activePlayer = playerActive;
-    }
-
-    public Player[] getPlayers() {
-        return players;
-    }
-
-    public ArrayList<Player> getPlayersInGame() {
-        return playersInGame;
     }
 
 }

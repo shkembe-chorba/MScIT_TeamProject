@@ -40,7 +40,7 @@ public class JsonUtilityTest {
 
             JsonObject json = null;
             try {
-                json = JsonUtility.getJsonObjectFromFile(testFilePath);
+                json = JsonUtility.getJsonObjectFromFile(testFilePath.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,7 +60,7 @@ public class JsonUtilityTest {
 
             assertThrows(IllegalArgumentException.class, () -> {
                 try {
-                    JsonUtility.getJsonObjectFromFile(nonExistentFile);
+                    JsonUtility.getJsonObjectFromFile(nonExistentFile.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -75,7 +75,7 @@ public class JsonUtilityTest {
 
             assertThrows(IllegalArgumentException.class, () -> {
                 try {
-                    JsonUtility.getJsonObjectFromFile(testFile);
+                    JsonUtility.getJsonObjectFromFile(testFile.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

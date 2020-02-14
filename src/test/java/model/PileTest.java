@@ -154,18 +154,20 @@ class PileTest {
     @DisplayName("reader()")
     class Reader {
 
-        final String RESOURCE_DIRECTORY_PATH = "src/test/resources/commandline/model";
-        final String TEST_FILE = "testDeck.txt";
+        private final String TEST_RESOURCE_DIRECTORY = "src/test/resources/commandline/model";
+
+        // Our test deck is 2 cards
+        private final String CARD_DECK_2 =
+                new File(TEST_RESOURCE_DIRECTORY, "cardDeckTwo.txt").toString();
 
         @DisplayName("Returns a pile with the same properties as in the text file")
         @Test
         public void readerWorking() {
-            File file = new File(RESOURCE_DIRECTORY_PATH, TEST_FILE);
 
             Pile pile = null;
 
             try {
-                pile = Pile.reader(file.toString());
+                pile = Pile.reader(CARD_DECK_2);
             } catch (IOException e) {
                 fail("IOException in test");
             }
@@ -181,7 +183,7 @@ class PileTest {
             card2.add(new Attribute("Size", 2));
             card2.add(new Attribute("Speed", 5));
             card2.add(new Attribute("Range", 4));
-            card2.add(new Attribute("Firepower", 3));
+            card2.add(new Attribute("Firepower", 5));
             card2.add(new Attribute("Cargo", 2));
 
 

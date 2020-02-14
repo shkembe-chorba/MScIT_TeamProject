@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CliController {
 
-    //Fields.
+    // Fields.
     private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
     private TopTrumpsView view;
@@ -19,6 +19,7 @@ public class CliController {
 
     /**
      * Constructor.
+     * 
      * @param model the game model
      */
     public CliController(GameModel model) {
@@ -27,6 +28,7 @@ public class CliController {
 
     /**
      * Sets the game view.
+     * 
      * @param view
      */
     public void setView(TopTrumpsView view) {
@@ -35,29 +37,30 @@ public class CliController {
 
     /**
      * Runs the controller and begins the game.
+     * 
      * @throws SQLException when the database cannot be connected to
      */
     public void run() throws SQLException {
 
-        //Initialize and connect to database.
+        // Initialize and connect to database.
         database = new Database();
         database.connect();
 
-        //Infinite loop for main menu.
+        // Infinite loop for main menu.
         while (true) {
             // Prompt for choice between statistics and a new game.
             int choice = view.displayMenu();
             switch (choice) {
                 case 0:
-                    //Display game statistics.
+                    // Display game statistics.
                     RetrievedGameStatistics statistics = database.retrieveGameStats();
                     view.displayStatistics(statistics);
                     break;
 
                 case 1:
-                    //Start new game.
+                    // Start new game.
                     setUpNewGame();
-                    //Loop for the game rounds that ends when the game has a winner.
+                    // Loop for the game rounds that ends when the game has a winner.
                     while (true) {
                         playRound();
                         Player gameWinner = model.checkForWinner();
@@ -80,12 +83,12 @@ public class CliController {
     }
 
     /**
-     * Sets up a new game by displaying the message for
-     * the beginning of a game and resetting the game model.
+     * Sets up a new game by displaying the message for the beginning of a game and resetting the
+     * game model.
      */
     private void setUpNewGame() {
         view.displayGameStartMessage();
-        model.reset(NUM_AI_PLAYERS);
+        model.reset();
     }
 
     /**
@@ -116,7 +119,7 @@ public class CliController {
         }
         view.displayChosenCategory(selectedAttribute);
 
-        //Play a round and get the round winner.
+        // Play a round and get the round winner.
         Player roundWinner = model.playRoundWithAttribute(selectedAttribute);
         if (roundWinner == null) {
             // Draw case
@@ -136,6 +139,7 @@ public class CliController {
 
     /**
      * Checks if a player is an AI player.
+     * 
      * @param player
      * @return whether a player is an AI
      */
