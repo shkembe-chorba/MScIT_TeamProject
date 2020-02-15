@@ -21,7 +21,6 @@ class GameModelTest {
     private static final String CARD_DECK_2 =
             new File(TEST_RESOURCE_DIRECTORY, "cardDeckTwo.txt").toString();
 
-
     private static final String CARD_DECK_10 =
             new File(TEST_RESOURCE_DIRECTORY, "cardDeckTen.txt").toString();
 
@@ -30,7 +29,6 @@ class GameModelTest {
 
     private static final String CARD_DECK_40 =
             new File(TEST_RESOURCE_DIRECTORY, "cardDeckForty.txt").toString();
-
 
     @Test
     void test() {
@@ -104,22 +102,14 @@ class GameModelTest {
         @DisplayName("Communal Pile empties after a draw.")
         @Test
         void communalPileResetAfterWin() {
-            int numAIPlayers = 4;
+            int numAIPlayers = 3;
             GameModel model = new GameModel(CARD_DECK_40, numAIPlayers);
 
-            // PLAY THE GAME OVER AND OVER UNTIL A DRAW OCCURS
-            Player activePlayer;
-            Card activeCard;
-            Attribute chosenAttribute;
-
-            // Continue playing until there is a draw
+            // Play rounds until there is a draw
             while (model.getDraws() < 1) {
-                activePlayer = model.getActivePlayer();
-                activeCard = activePlayer.peekCard();
-                chosenAttribute = activeCard.getAttribute(0);
-                model.playRoundWithAttribute(chosenAttribute);
+                playRound(model);
 
-                if (model.getPlayersInGame().size() < 2) {
+                if (model.checkForWinner() != null) {
                     model.reset();
                 }
             }
@@ -129,20 +119,20 @@ class GameModelTest {
 
             // Play until there is a win.
             do {
-                activePlayer = model.getActivePlayer();
-                chosenAttribute = activePlayer.peekCard().getAttribute(0);
-                model.playRoundWithAttribute(chosenAttribute);
+                playRound(model);
             } while (model.getDraws() != 1);
 
             // THEN ASSERT THAT THE COMMUNAL PILE SIZE IS 0
             assertEquals(0, model.getCommunalPileSize());
         }
-    }
 
-    @Nested
-    public class Eliminations {
-
-
+        private void playRound(GameModel model) {
+            Player activePlayer = model.getActivePlayer();
+            Card activeCard = activePlayer.peekCard();
+            Attribute chosenAttribute = activeCard.getAttribute(0);
+            model.playRoundWithAttribute(chosenAttribute);
+            model.checkToEliminate();
+        }
     }
 
 }
