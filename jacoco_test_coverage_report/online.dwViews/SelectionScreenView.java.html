@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectionScreenView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">online.dwViews</a> &gt; <span class="el_source">SelectionScreenView.java</span></div><h1>SelectionScreenView.java</h1><pre class="source lang-java linenums">package online.dwViews;
+
+import io.dropwizard.views.View;
+
+/**
+ * Each HTML page that is specified in GameWebPagesResource first needs a class that extends
+ * View, which is Dropwizard's internal representation of the page. This then points to a
+ * separate file found in the resource directory that contains the actual HTML/Javascript.
+ * 
+ * The HTML/Javascript page for this View can be found in resources/dwViews/SelectionScreen.ftl
+ * 
+ * You do not need to edit this class. You will need to complete SelectionScreen.ftl.
+ * 
+ * Note: The HTML/Javascript file is actially a freemarker file (https://freemarker.apache.org/),
+ * however we do not expect you to use all the additional functionality that freemarker provides.
+ */
+public class SelectionScreenView extends View {
+
+	/**
+	 * Simple Constructor method, it simply specifies where the HTML page is to return.
+	 */
+    public SelectionScreenView() {
+<span class="nc" id="L23">        super(&quot;SelectionScreen.ftl&quot;);</span>
+<span class="nc" id="L24">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

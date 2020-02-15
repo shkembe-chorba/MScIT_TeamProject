@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.view</a> &gt; <span class="el_source">GlobalCommand.java</span></div><h1>GlobalCommand.java</h1><pre class="source lang-java linenums">package commandline.view;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * This class acts like a 'component' which can be added to a CommandLineView, much like a Button
+ * can be added to a Swing Frame. Like a Button, you can attach listeners to it which are notified
+ * when the command is triggered (by typing the command in the CommandLineView prompt).
+ *
+ * This allows certain commands to bypass usual program flow. For example, 'quit' terminating the
+ * application.
+ */
+public class GlobalCommand {
+
+<span class="fc" id="L16">    private Collection&lt;GlobalCommandListener&gt; listeners = new ArrayList&lt;GlobalCommandListener&gt;();</span>
+
+    private String command;
+    private String description;
+
+    /**
+     * Creates a global command.
+     *
+     * @param command     the String which activates a global command
+     * @param description a description of the global command (potentially for help menus etc.)
+     */
+<span class="fc" id="L27">    public GlobalCommand(String command, String description) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (!command.matches(&quot;^\\w+$&quot;)) {</span>
+<span class="fc" id="L29">            throw new IllegalArgumentException(&quot;Global commands must be one word strings&quot;);</span>
+        }
+<span class="fc" id="L31">        this.command = command;</span>
+<span class="fc" id="L32">        this.description = description;</span>
+<span class="fc" id="L33">    }</span>
+
+    public GlobalCommand(String command) {
+<span class="fc" id="L36">        this(command, &quot;&quot;);</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * @return the global command String
+     */
+    public String getCommand() {
+<span class="fc" id="L43">        return command;</span>
+    }
+
+    /**
+     * Compares global commands by the command string.
+     */
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (obj instanceof GlobalCommand) {</span>
+<span class="fc" id="L52">            GlobalCommand gc = (GlobalCommand) obj;</span>
+<span class="fc" id="L53">            return command.equals(gc.getCommand());</span>
+        } else {
+<span class="nc" id="L55">            return false;</span>
+        }
+    }
+
+    /**
+     * The hashcode is determined by the command name (as global commands should not be duplicated
+     * in sets).
+     */
+    @Override
+    public int hashCode() {
+<span class="fc" id="L65">        return command.hashCode();</span>
+    }
+
+    /**
+     * Returns the global command and its description. May be useful for displaying command menu to
+     * a user, like if they type 'help'.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L74">        String output = command;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (!&quot;&quot;.equals(description)) {</span>
+<span class="fc" id="L76">            output += &quot; - &quot; + description;</span>
+        }
+<span class="fc" id="L78">        return output;</span>
+    }
+
+    /**
+     * Registers a listener which is notified when a global command is entered.
+     *
+     * @param gcl a GlobalCommandListener
+     */
+    public void addCommandListener(GlobalCommandListener gcl) {
+<span class="fc" id="L87">        listeners.add(gcl);</span>
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * Removes a global command listener.
+     *
+     * @param gcl a GlobalCommandListener
+     */
+    public void removeCommandListener(GlobalCommandListener gcl) {
+<span class="fc" id="L96">        listeners.remove(gcl);</span>
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * Notify any listeners that a global command has been triggered.
+     */
+    public void notifyCommandListeners() {
+<span class="fc" id="L103">        listeners.forEach(gcl -&gt; gcl.globalCommandReceived(command));</span>
+<span class="fc" id="L104">    }</span>
+
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

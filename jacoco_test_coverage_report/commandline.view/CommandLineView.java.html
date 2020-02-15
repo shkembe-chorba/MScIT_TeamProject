@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandLineView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.view</a> &gt; <span class="el_source">CommandLineView.java</span></div><h1>CommandLineView.java</h1><pre class="source lang-java linenums">package commandline.view;
+
+import commandline.utils.ListUtility;
+
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.function.Predicate;
+
+public class CommandLineView {
+
+    public static final String USER_PROMPT = &quot;&gt;&gt; &quot;;
+    public static final String DEFAULT_MESSAGE_DIVIDER = &quot;---&quot;;
+
+    // A tree set which orders commands alphabetically.
+<span class="fc" id="L19">    private Collection&lt;GlobalCommand&gt; globalCommands = new HashSet&lt;GlobalCommand&gt;();</span>
+
+    private Scanner scanner;
+    private PrintStream printStream;
+
+    /**
+     * An object which allows high level interfacing with the i/o streams.
+     *
+     * @param inputStream
+     * @param printStream
+     */
+<span class="fc" id="L30">    public CommandLineView(InputStream inputStream, PrintStream printStream) {</span>
+<span class="fc" id="L31">        this.printStream = printStream;</span>
+<span class="fc" id="L32">        this.scanner = new Scanner(inputStream);</span>
+<span class="fc" id="L33">    }</span>
+
+    public CommandLineView() {
+<span class="fc" id="L36">        this(System.in, System.out);</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * Outputs a message to the user. Always finishes with a new line.
+     *
+     * @param message
+     */
+    public void displayMessage(String message) {
+<span class="fc" id="L45">        printStream.println(message);</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Outputs a divider for seperating message blocks.
+     */
+    public void displayDivider() {
+<span class="fc" id="L52">        displayMessage(DEFAULT_MESSAGE_DIVIDER);</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Outputs an enumerated list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: &lt;--
+     *
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
+    public &lt;T&gt; void displayEnumeratedSelection(List&lt;T&gt; list, int selectedIndex) {
+<span class="fc" id="L63">        ListUtility lu = new ListUtility(list);</span>
+<span class="fc" id="L64">        printStream.print(lu.getEnumeratedList(selectedIndex));</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Outputs an enumerated list of the .toString() method of each item in 'list'.
+     *
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public &lt;T&gt; void displayEnumeratedList(List&lt;T&gt; list) {
+<span class="fc" id="L73">        displayEnumeratedSelection(list, -1);</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: &lt;--
+     *
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
+    public &lt;T&gt; void displayBulletSelection(List&lt;T&gt; list, int selectedIndex) {
+<span class="fc" id="L84">        ListUtility lu = new ListUtility(list);</span>
+<span class="fc" id="L85">        printStream.print(lu.getBulletList(selectedIndex));</span>
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * Outputs a bullet point list of the .toString() method of each item in 'list'.
+     *
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public &lt;T&gt; void displayBulletList(List&lt;T&gt; list) {
+<span class="fc" id="L94">        displayBulletSelection(list, -1);</span>
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Outputs an indented list of the .toString() method of each item in 'list'. Indicates the
+     * selected index with an arrow: &lt;--
+     *
+     * @param list          the list of items whose .toString() methods will be displayed
+     * @param selectedIndex the index of the selected item in the list
+     */
+    public &lt;T&gt; void displayIndentedSelection(List&lt;T&gt; list, int selectedIndex) {
+<span class="fc" id="L105">        ListUtility lu = new ListUtility(list);</span>
+<span class="fc" id="L106">        printStream.print(lu.getIndentedList(selectedIndex));</span>
+<span class="fc" id="L107">    }</span>
+
+    /**
+     * Outputs an indented point list of the .toString() method of each item in 'list'.
+     *
+     * @param list the list of items whose .toString() methods will be displayed
+     */
+    public &lt;T&gt; void displayIndentedList(List&lt;T&gt; list) {
+<span class="fc" id="L115">        displayIndentedSelection(list, -1);</span>
+<span class="fc" id="L116">    }</span>
+
+    /**
+     * Prompts the user for input. If there are any global commands added (using
+     * {@link #addGlobalCommand(GlobalCommand)}), then the input is checked to see if it matches any
+     * of those commands. If it does, the GlobalCommand listeners are notified. The user is then
+     * reprompted for new input.
+     *
+     * @return The user input, trimmed of whitespace
+     */
+    public String getUserInput() {
+<span class="fc" id="L127">        printStream.print(USER_PROMPT);</span>
+
+<span class="fc" id="L129">        String input = scanner.nextLine().trim();</span>
+
+<span class="fc" id="L131">        GlobalCommand matchingGlobalCommand = getMatchingGlobalCommand(input);</span>
+        // If the input is a global command, notify any listeners.
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        while (matchingGlobalCommand != null) {</span>
+<span class="fc" id="L134">            matchingGlobalCommand.notifyCommandListeners();</span>
+<span class="fc" id="L135">            input = getUserInput();</span>
+<span class="fc" id="L136">            matchingGlobalCommand = getMatchingGlobalCommand(input);</span>
+        }
+
+<span class="fc" id="L139">        return input;</span>
+    }
+
+    /**
+     * Prompts the user for input, displaying the USER_PROMPT (&gt;&gt;). The user's input is passed to
+     * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
+     * displayed an error message and prompted for input again.
+     *
+     * @param errorCheck   A lambda function for acceptable input.
+     * @param errorMessage The error message displayed to the user
+     * @return The user input, trimmed of whitespace
+     *
+     */
+    public String getUserInput(Predicate&lt;String&gt; errorCheck, String errorMessage) {
+<span class="fc" id="L153">        String input = getUserInput();</span>
+
+        // Invalid input
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        while (!errorCheck.test(input)) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">            if (errorMessage != null) {</span>
+<span class="fc" id="L158">                displayMessage(errorMessage);</span>
+            }
+<span class="fc" id="L160">            input = getUserInput();</span>
+        }
+<span class="fc" id="L162">        return input;</span>
+    }
+
+    /**
+     * Prompts the user for input, displaying the USER_PROMPT (&gt;&gt;). The user's input is passed to
+     * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
+     * prompted for input again.
+     *
+     * @param errorCheck
+     * @return The user input.
+     */
+    public String getUserInput(Predicate&lt;String&gt; errorCheck) {
+<span class="fc" id="L174">        return getUserInput(errorCheck, null);</span>
+    }
+
+    /**
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
+     *
+     * @param list The list of possible user choices
+     * @return The list index from the user choice
+     */
+    public &lt;T&gt; int getUserSelectionIndex(List&lt;T&gt; list) {
+<span class="fc" id="L184">        int size = list.size();</span>
+        // Check for valid list
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (size &lt; 1) {</span>
+<span class="fc" id="L187">            throw new IllegalArgumentException(&quot;List must have a size of at least 1&quot;);</span>
+        }
+
+<span class="fc" id="L190">        String userInstruction = &quot;Enter a number between 1-&quot; + size + &quot;.&quot;;</span>
+        // Display list and prompt to the user
+<span class="fc" id="L192">        displayEnumeratedList(list);</span>
+<span class="fc" id="L193">        displayMessage(userInstruction);</span>
+
+<span class="fc" id="L195">        String indexString = getUserInput(str -&gt; {</span>
+            // Check the input to see if it's a valid range.
+            try {
+<span class="fc" id="L198">                int index = Integer.parseInt(str);</span>
+<span class="fc bfc" id="L199" title="All 4 branches covered.">                if (index &gt; 0 &amp;&amp; index &lt;= size) {</span>
+<span class="fc" id="L200">                    return true;</span>
+                } else {
+<span class="fc" id="L202">                    return false;</span>
+                }
+<span class="fc" id="L204">            } catch (NumberFormatException e) {</span>
+<span class="fc" id="L205">                return false;</span>
+            }
+            // Reprint userInstruction and reprompt user if this fails.
+<span class="fc" id="L208">        }, userInstruction);</span>
+
+        // Return the index (the user selection - 1)
+<span class="fc" id="L211">        return Integer.parseInt(indexString) - 1;</span>
+    }
+
+    /**
+     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
+     * A convenience method for directly returning the object
+     *
+     * @param list The list of possible user choices
+     * @return The list object selected
+     */
+    public &lt;T&gt; T getUserSelection(List&lt;T&gt; list) {
+<span class="fc" id="L222">        return list.get(getUserSelectionIndex(list));</span>
+    }
+
+    // Global Command Functionality
+
+    /**
+     * Add a GlobalCommand which can notify its GlobalCommandListeners when it is entered in the
+     * command prompt, for short circuiting game flow.
+     *
+     * @param command
+     * @param description a description of the command's functionality
+     * @throws IllegalArgumentException if the global command already exists
+     */
+    public void addGlobalCommand(GlobalCommand gc) {
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (!globalCommands.add(gc)) {</span>
+<span class="fc" id="L237">            throw new IllegalArgumentException(</span>
+<span class="fc" id="L238">                    &quot;Cannot have two equal global commands. Remove the existing command.&quot;);</span>
+        }
+<span class="fc" id="L240">    }</span>
+
+    /**
+     * Removes a GlobalCommand.
+     *
+     * @param command
+     * @param description a description of the command's functionality
+     * @return
+     */
+    public boolean removeGlobalCommand(GlobalCommand gc) {
+<span class="nc" id="L250">        return globalCommands.remove(gc);</span>
+    }
+
+    /**
+     * Searches the currently held global commands for a command and returns it if it exists,
+     * otherwise it returns null.
+     *
+     * @param command the string of the command to search for
+     * @return the GlobalCommand object, otherwise null
+     */
+    private GlobalCommand getMatchingGlobalCommand(String command) {
+<span class="fc" id="L261">        return globalCommands.stream().filter(gc -&gt; gc.getCommand().equals(command)).findAny()</span>
+<span class="fc" id="L262">                .orElse(null);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Card.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Card.java</span></div><h1>Card.java</h1><pre class="source lang-java linenums">package model;
+
+import commandline.utils.ListUtility;
+
+import java.util.ArrayList;
+
+/**
+ * Represents the cards in the game.
+ */
+public class Card {
+
+    //Fields.
+    protected String name;
+<span class="fc" id="L14">    protected ArrayList&lt;Attribute&gt; attributeList = new ArrayList&lt;Attribute&gt;();</span>
+
+    /**
+     * Constructor.
+     * @param name name of card
+     */
+<span class="fc" id="L20">    public Card(String name) {</span>
+<span class="pc bpc" id="L21" title="1 of 4 branches missed.">        if (&quot;&quot;.equals(name) || (name == null)) {</span>
+<span class="fc" id="L22">            throw new IllegalArgumentException(&quot;No empty names allowed&quot;);</span>
+        }
+<span class="fc" id="L24">        this.name = name;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Adds an attribute to the card.
+     * @param attribute
+     */
+    public void add(Attribute attribute) {
+<span class="fc" id="L32">        this.attributeList.add(attribute);</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * toString
+     * @return Card name: name
+     *         bullet list of attributes
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L42">        String attributeString = new ListUtility(attributeList).getBulletList();</span>
+<span class="fc" id="L43">        return String.format(&quot;Card name: %s\n%s&quot;, name, attributeString);</span>
+    }
+
+    /**
+     * Return the value of the attribute in the card
+     * with the same name as the name of the passed attribute.
+     * @param givenAttribute
+     * @return value of attribute of the same type
+     */
+    public int getValue(Attribute givenAttribute) {
+<span class="fc" id="L53">        String givenAttributeName = givenAttribute.getName();</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        for (Attribute attribute : attributeList) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (attribute.getName().equals(givenAttributeName)) {</span>
+<span class="fc" id="L56">                return attribute.getValue();</span>
+            }
+        }
+<span class="nc" id="L59">        return 0;</span>
+    }
+
+    /**
+     * Return the i'th attribute
+     * @param i
+     * @return
+     */
+    public Attribute getAttribute(int i) {
+<span class="fc" id="L68">        return this.attributeList.get(i);</span>
+    }
+
+    //Getters.
+
+    public ArrayList&lt;Attribute&gt; getAttributes() {
+<span class="fc" id="L74">        return this.attributeList;</span>
+    }
+
+    public String getName() {
+<span class="fc" id="L78">        return this.name;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

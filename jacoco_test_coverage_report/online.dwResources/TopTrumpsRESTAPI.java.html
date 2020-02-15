@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopTrumpsRESTAPI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">online.dwResources</a> &gt; <span class="el_source">TopTrumpsRESTAPI.java</span></div><h1>TopTrumpsRESTAPI.java</h1><pre class="source lang-java linenums">package online.dwResources;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import model.*;
+import online.configuration.TopTrumpsJSONConfiguration;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+@Path(&quot;/toptrumps&quot;) // Resources specified here should be hosted at http://localhost:7777/toptrumps
+@Produces(MediaType.APPLICATION_JSON) // This resource returns JSON content
+@Consumes(MediaType.APPLICATION_JSON) // This resource can take JSON content as input
+/**
+ * This is a Dropwizard Resource that specifies what to provide when a user requests a particular
+ * URL. In this case, the URLs are associated to the different REST API methods that you will need
+ * to expose the game commands to the Web page.
+ *
+ * Below are provided some sample methods that illustrate how to create REST API methods in
+ * Dropwizard. You will need to replace these with methods that allow a TopTrumps game to be
+ * controled from a Web page.
+ */
+public class TopTrumpsRESTAPI {
+
+	/**
+	 * A Jackson Object writer. It allows us to turn Java objects into JSON strings easily.
+	 */
+<span class="nc" id="L33">	private ObjectWriter oWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();</span>
+	// private static final String CWD = System.getProperty(&quot;user.dir&quot;);
+<span class="nc" id="L35">	private Database database = new Database();</span>
+	private GameModel model;
+<span class="nc" id="L37">	private String gameWinnerName = null;</span>
+<span class="nc" id="L38">	private boolean gameAutoCompleted = false;</span>
+<span class="nc" id="L39">	private String deckFile = null;</span>
+
+	/**
+	 * Constructor method for the REST API. This is called first. It provides a
+	 * TopTrumpsJSONConfiguration from which you can get the location of the deck file and the
+	 * number of AI players.
+	 *
+	 * @param conf
+	 */
+<span class="nc" id="L48">	public TopTrumpsRESTAPI(TopTrumpsJSONConfiguration conf) {</span>
+<span class="nc" id="L49">		deckFile = conf.getDeckFile();</span>
+		// File deckFile = new File(CWD, deckFileName);
+
+<span class="nc" id="L52">	}</span>
+
+	// ----------------------------------------------------
+	// API methods
+	// ----------------------------------------------------
+
+	/**
+	 * Initialises the game with the chosen number of AI players. Returns {loaded: true}.
+	 *
+	 * Must be called before a game begins.
+	 *
+	 * @param numAiPlayers chosen number of AI players.
+	 * @return {loaded: true}
+	 */
+	@GET
+	@Path(&quot;/initGame&quot;)
+	public String initGame(@QueryParam(&quot;NumAiPlayers&quot;) String numAiPlayers) {
+<span class="nc" id="L69">		model = new GameModel(deckFile, Integer.parseInt(numAiPlayers));</span>
+<span class="nc" id="L70">		return &quot;{\&quot;loaded\&quot;:true}&quot;;</span>
+	}
+
+	/**
+	 * Plays a round with the chosen attribute and auto completes the game if the user is eliminated
+	 * and there is no winner. If there is a winner in the round or the game is auto completed this
+	 * will be reflected in the gameWinnerName and gameAutoCompleted fields and the database will be
+	 * updated. Returns a JSON string with information for playing a round with an attribute and
+	 * possible game over information.
+	 *
+	 * Must be called after initRound().
+	 *
+	 * If the game is auto completed roundWinnerName and eliminatedPlayersNames correspond to
+	 * information about the last round before the autocompletion, not the last round overall.
+	 *
+	 * roundWinnerName corresponds to null if there was a draw and it corresponds to the name of the
+	 * round winner otherwise.
+	 *
+	 * gameOver being true does not necessarily mean that the game ended in the current round, the
+	 * game could have been auto completed. That must be checked via gameAutoCompleted in
+	 * getGameOverScores().
+	 *
+	 * EXAMPLE: { &quot;roundWinnerName&quot;: &quot;USER&quot;/null, &quot;gameOver&quot;: true, &quot;eliminatedPlayersNames&quot;: [
+	 * &quot;AI1&quot;, &quot;AI2&quot;] }
+	 *
+	 * @param attributeName
+	 * @return
+	 * @throws JsonProcessingException
+	 */
+	@GET
+	@Path(&quot;/playRoundWithAttribute&quot;)
+	public String playRoundWithAttribute(@QueryParam(&quot;AttributeName&quot;) String attributeName)
+			throws JsonProcessingException {
+		// Initialize map that will be returned as a JSON file.
+<span class="nc" id="L104">		HashMap&lt;String, Object&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L105">		Attribute selectedAttribute = new Attribute(attributeName, 0);</span>
+<span class="nc" id="L106">		Player roundWinner = model.playRoundWithAttribute(selectedAttribute);</span>
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">		if (roundWinner != null) {</span>
+<span class="nc" id="L109">			map.put(&quot;roundWinnerName&quot;, roundWinner.toString());</span>
+<span class="nc" id="L110">		} else {</span>
+<span class="nc" id="L111">			map.put(&quot;roundWinnerName&quot;, null);</span>
+		}
+
+
+<span class="nc" id="L115">		ArrayList&lt;Player&gt; eliminatedPlayers = model.checkToEliminate();</span>
+<span class="nc" id="L116">		ArrayList&lt;String&gt; eliminatedPlayersNames = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		for (Player player : eliminatedPlayers) {</span>
+<span class="nc" id="L118">			eliminatedPlayersNames.add(player.toString());</span>
+		}
+<span class="nc" id="L120">		map.put(&quot;eliminatedPlayersNames&quot;, eliminatedPlayersNames);</span>
+
+<span class="nc" id="L122">		boolean userInGame = model.userStillInGame();</span>
+
+<span class="nc" id="L124">		Player gameWinner = model.checkForWinner();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">		if (gameWinner == null) {</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">			if (userInGame) {</span>
+<span class="nc" id="L127">				map.put(&quot;gameOver&quot;, false);</span>
+<span class="nc" id="L128">			} else {</span>
+<span class="nc" id="L129">				gameWinner = autoCompleteGame();</span>
+<span class="nc" id="L130">				gameOver(map, gameWinner);</span>
+<span class="nc" id="L131">				gameAutoCompleted = true;</span>
+			}
+<span class="nc" id="L133">		} else {</span>
+<span class="nc" id="L134">			gameOver(map, gameWinner);</span>
+<span class="nc" id="L135">			gameAutoCompleted = false;</span>
+		}
+<span class="nc" id="L137">		String mapAsJSONString = oWriter.writeValueAsString(map);</span>
+<span class="nc" id="L138">		return mapAsJSONString;</span>
+	}
+
+	/**
+	 * Returns the won rounds for every player during the game, the game winner name and whether the
+	 * game auto completed.
+	 *
+	 * Must be called when a game has ended, i.e. there is a winner.
+	 *
+	 *
+	 *
+	 * EXAMPLE: { &quot;playerScores&quot;: [ { &quot;name&quot;: &quot;USER&quot;, &quot;score&quot;: 15}, { name: &quot;AI1&quot;, &quot;score&quot;: 10}, ...
+	 * ], &quot;gameWinnerName&quot;: &quot;USER&quot;, &quot;gameAutoCompleted&quot;: true }
+	 *
+	 * @return json string with playerScores, gameWinnerName and gameAutoCompleted as shown in the
+	 *         example
+	 * @throws JsonProcessingException
+	 */
+	@GET
+	@Path(&quot;/getGameOverScores&quot;)
+	public String getGameOverScores() throws JsonProcessingException {
+<span class="nc" id="L159">		Player[] players = model.getPlayers();</span>
+<span class="nc" id="L160">		ArrayList&lt;HashMap&lt;String, Object&gt;&gt; playerList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">		for (Player player : players) {</span>
+<span class="nc" id="L162">			HashMap&lt;String, Object&gt; playerMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L163">			playerMap.put(&quot;name&quot;, player.toString());</span>
+<span class="nc" id="L164">			playerMap.put(&quot;score&quot;, player.getRoundsWon());</span>
+<span class="nc" id="L165">			playerList.add(playerMap);</span>
+		}
+<span class="nc" id="L167">		HashMap&lt;String, Object&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L168">		map.put(&quot;playerScores&quot;, playerList);</span>
+<span class="nc" id="L169">		map.put(&quot;gameWinnerName&quot;, gameWinnerName);</span>
+<span class="nc" id="L170">		map.put(&quot;gameAutoCompleted&quot;, gameAutoCompleted);</span>
+<span class="nc" id="L171">		String mapAsJSONString = oWriter.writeValueAsString(map);</span>
+<span class="nc" id="L172">		return mapAsJSONString;</span>
+	}
+
+	/**
+	 * Makes the AI choose an attribute if it is active. Returns the information needed to
+	 * initialise a round.
+	 *
+	 * Must be called at the beginning of a round.
+	 *
+	 * chosenAttributeName corresponds to null if the user is active and it corresponds to the
+	 * attribute that the AI chooses otherwise.
+	 *
+	 * EXAMPLE: { &quot;round&quot;: 1, &quot;communalPileSize&quot;: 4, &quot;chosenAttributeName&quot;: &quot;strength&quot;/null,
+	 * &quot;playersInGame&quot; : [ { &quot;name&quot;: &quot;USER&quot;, &quot;isAI&quot;: false, &quot;isActive&quot;: true, &quot;deckSize&quot;: 10,
+	 * &quot;topCard&quot;: { &quot;name&quot;: &quot;TRex&quot;, &quot;attributes&quot;: [ { &quot;name&quot;: &quot;strength&quot;, &quot;value&quot;: 5 } ] } } ] }
+	 *
+	 * @return JSON string, containing all info needed to initialise a round.
+	 * @throws JsonProcessingException
+	 */
+	@GET
+	@Path(&quot;/initRound&quot;)
+	public String initRound() throws JsonProcessingException {
+		// Map that will contain all relevant info to initialise a round.
+<span class="nc" id="L195">		HashMap&lt;String, Object&gt; roundInfoMap = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L197">		int roundNumber = model.getRoundNumber();</span>
+<span class="nc" id="L198">		int communalPileSize = model.getCommunalPileSize();</span>
+<span class="nc" id="L199">		Player activePlayer = model.getActivePlayer();</span>
+<span class="nc" id="L200">		ArrayList&lt;Player&gt; playersInGame = model.getPlayersInGame();</span>
+<span class="nc" id="L201">		Attribute aiChosenAttribute = null;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">		if (activePlayer instanceof AIPlayer) {</span>
+<span class="nc" id="L203">			aiChosenAttribute = ((AIPlayer) activePlayer).chooseAttribute();</span>
+		}
+
+		// uses playersInGameToMap() helper method that returns a List of Maps with info for all
+		// players in game.
+<span class="nc" id="L208">		roundInfoMap.put(&quot;playersInGame&quot;, playersInGameToMap(playersInGame, activePlayer));</span>
+<span class="nc" id="L209">		roundInfoMap.put(&quot;round&quot;, roundNumber);</span>
+<span class="nc" id="L210">		roundInfoMap.put(&quot;communalPileSize&quot;, communalPileSize);</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">		if (aiChosenAttribute != null) {</span>
+<span class="nc" id="L212">			roundInfoMap.put(&quot;chosenAttributeName&quot;, aiChosenAttribute.getName());</span>
+<span class="nc" id="L213">		} else {</span>
+<span class="nc" id="L214">			roundInfoMap.put(&quot;chosenAttributeName&quot;, null);</span>
+		}
+		// converts the map to a JSON string.
+<span class="nc" id="L217">		String mapAsJSONString = oWriter.writeValueAsString(roundInfoMap);</span>
+<span class="nc" id="L218">		return mapAsJSONString;</span>
+	}
+
+	/**
+	 * Returns the game statistics as a JSON string.
+	 *
+	 * Must be called when a player requests the game statistics.
+	 *
+	 * Format : { &quot;aiWins&quot;: 5, &quot;userWins&quot;: 3, &quot;avgDraws&quot;: 4, &quot;totGamesPlayed&quot;: 7, &quot;maxRounds&quot;: 8 }
+	 *
+	 * @return
+	 * @throws IOException
+	 */
+	@GET
+	@Path(&quot;/retrieveStats&quot;)
+	public String retrieveStats() throws IOException {
+		try {
+<span class="nc" id="L235">			database.connect();</span>
+<span class="nc" id="L236">		} catch (SQLException e) {</span>
+
+		}
+<span class="nc" id="L239">		RetrievedGameStatistics stats = database.retrieveGameStats();</span>
+<span class="nc" id="L240">		HashMap&lt;String, Object&gt; statsMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L241">		statsMap.put(&quot;aiWins&quot;, stats.getGamesWonByAi());</span>
+<span class="nc" id="L242">		statsMap.put(&quot;userWins&quot;, stats.getGamesWonByUser());</span>
+<span class="nc" id="L243">		statsMap.put(&quot;avgDraws&quot;, stats.getAvgDraws());</span>
+<span class="nc" id="L244">		statsMap.put(&quot;totGamesPlayed&quot;, stats.getTotalGamesPlayed());</span>
+<span class="nc" id="L245">		statsMap.put(&quot;maxRounds&quot;, stats.getMaxRounds());</span>
+
+		// We can turn arbatory Java objects directly into JSON strings using
+		// Jackson seralization, assuming that the Java objects are not too complex.
+<span class="nc" id="L249">		String listAsJSONString = oWriter.writeValueAsString(statsMap);</span>
+
+<span class="nc" id="L251">		database.disconnect();</span>
+
+<span class="nc" id="L253">		return listAsJSONString;</span>
+	}
+
+	/**
+	 * Helper method. Returns an list of maps; Each map contains info about 1 player. Used in the
+	 * initRound method.
+	 *
+	 * EXAMPLE with 1 player still in game, the list contains 1 map for the player: &quot;USER&quot;.
+	 * playersInGame : [ { &quot;name&quot;: &quot;USER&quot;, &quot;isAI&quot;: false, &quot;isActive&quot;: true, &quot;deckSize&quot;: 10,
+	 * &quot;topCard&quot;: { &quot;name&quot;: &quot;TRex&quot;, &quot;attributes&quot;: [ { &quot;name&quot;: &quot;strength&quot;, &quot;value&quot;: 5 } ] } } ]
+	 *
+	 * @param playersInGame list of all players still in game (not eliminated)
+	 * @param activePlayer  player who will be playing in this round.
+	 * @return a list of maps. Each map contains info about 1 player.
+	 */
+	private ArrayList&lt;HashMap&lt;String, Object&gt;&gt; playersInGameToMap(ArrayList&lt;Player&gt; playersInGame,
+			Player activePlayer) {
+<span class="nc" id="L270">		ArrayList&lt;HashMap&lt;String, Object&gt;&gt; playersInGameMaps = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L272" title="All 2 branches missed.">		for (Player player : playersInGame) {</span>
+<span class="nc" id="L273">			HashMap&lt;String, Object&gt; playerMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">			if (player instanceof AIPlayer) {</span>
+<span class="nc" id="L275">				playerMap.put(&quot;isAI&quot;, true);</span>
+<span class="nc" id="L276">			} else {</span>
+<span class="nc" id="L277">				playerMap.put(&quot;isAI&quot;, false);</span>
+			}
+<span class="nc bnc" id="L279" title="All 2 branches missed.">			if (player == activePlayer) {</span>
+<span class="nc" id="L280">				playerMap.put(&quot;isActive&quot;, true);</span>
+<span class="nc" id="L281">			} else {</span>
+<span class="nc" id="L282">				playerMap.put(&quot;isActive&quot;, false);</span>
+			}
+<span class="nc" id="L284">			playerMap.put(&quot;name&quot;, player.toString());</span>
+<span class="nc" id="L285">			playerMap.put(&quot;deckSize&quot;, player.getRemainingDeckSize());</span>
+<span class="nc" id="L286">			playerMap.put(&quot;topCard&quot;, topCardToMap(player));</span>
+
+<span class="nc" id="L288">			playersInGameMaps.add(playerMap);</span>
+		}
+<span class="nc" id="L290">		return playersInGameMaps;</span>
+	}
+
+	/**
+	 * Plays the game between AIs until there is a winner.
+	 *
+	 * @return game winner
+	 */
+	private Player autoCompleteGame() {
+<span class="nc" id="L299">		Player gameWinner = null;</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">		while (gameWinner == null) {</span>
+<span class="nc" id="L301">			Player activePlayer = model.getActivePlayer();</span>
+<span class="nc" id="L302">			Attribute selectedAttribute = ((AIPlayer) activePlayer).chooseAttribute();</span>
+<span class="nc" id="L303">			model.playRoundWithAttribute(selectedAttribute);</span>
+<span class="nc" id="L304">			model.checkToEliminate();</span>
+<span class="nc" id="L305">			gameWinner = model.checkForWinner();</span>
+		}
+<span class="nc" id="L307">		return gameWinner;</span>
+	}
+
+	/**
+	 * Helper method. Takes a map and adds to it {&quot;gameOver&quot;: true}, uploads Game Statistics to the
+	 * database and sets the gameWinnerName field to the name of the game winner.
+	 *
+	 * @param map
+	 * @param gameWinner
+	 */
+	private void gameOver(HashMap&lt;String, Object&gt; map, Player gameWinner) {
+<span class="nc" id="L318">		map.put(&quot;gameOver&quot;, true);</span>
+<span class="nc" id="L319">		gameWinnerName = gameWinner.toString();</span>
+<span class="nc" id="L320">		uploadGameStats(gameWinner);</span>
+<span class="nc" id="L321">	}</span>
+
+	/**
+	 * Helper Method. Uploads Game Statistics to the database.
+	 *
+	 * @param gameWinner
+	 */
+	private void uploadGameStats(Player gameWinner) {
+		try {
+<span class="nc" id="L330">			database.connect();</span>
+<span class="nc" id="L331">		} catch (SQLException e) {</span>
+
+		}
+<span class="nc" id="L334">		database.uploadGameStats(model.getDraws(), model.getRoundNumber(), gameWinner.toString(),</span>
+<span class="nc" id="L335">				model.getPlayers());</span>
+<span class="nc" id="L336">		database.disconnect();</span>
+<span class="nc" id="L337">	}</span>
+
+	/**
+	 * Helper method. Takes a Player and returns a map for their topCard contents. Used in
+	 * playersInGameToMap() EXAMPLE CONTENTS: topCard: { &quot;name&quot;: &quot;TRex&quot;, &quot;attributes&quot;: [ { &quot;name&quot;:
+	 * &quot;strength&quot;, &quot;value&quot;: 5 } ] }
+	 *
+	 * @param player
+	 * @return
+	 */
+	private HashMap&lt;String, Object&gt; topCardToMap(Player player) {
+<span class="nc" id="L348">		HashMap&lt;String, Object&gt; topCardMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L349">		topCardMap.put(&quot;name&quot;, player.peekCard().getName());</span>
+
+<span class="nc" id="L351">		ArrayList&lt;HashMap&lt;String, Object&gt;&gt; attributes = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">		for (Attribute attribute : player.peekCard().getAttributes()) {</span>
+<span class="nc" id="L353">			HashMap&lt;String, Object&gt; attributeMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L354">			attributeMap.put(&quot;name&quot;, attribute.getName());</span>
+<span class="nc" id="L355">			attributeMap.put(&quot;value&quot;, attribute.getValue());</span>
+<span class="nc" id="L356">			attributes.add(attributeMap);</span>
+		}
+<span class="nc" id="L358">		topCardMap.put(&quot;attributes&quot;, attributes);</span>
+
+<span class="nc" id="L360">		return topCardMap;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

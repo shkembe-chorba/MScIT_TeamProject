@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListUtility.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.utils</a> &gt; <span class="el_source">ListUtility.java</span></div><h1>ListUtility.java</h1><pre class="source lang-java linenums">package commandline.utils;
+
+import java.util.List;
+import java.util.function.IntFunction;
+
+/**
+ * A utility for returning formatted string lists from Collections. Created because a lot of array
+ * outputs will follow a list format, either with bullet points or enumeration.
+ *
+ * @author Shkembe Chorba
+ */
+public class ListUtility {
+
+    public static final String INDENT_STRING = &quot;    &quot;;
+    public static final String BULLET_STRING = &quot;&gt; &quot;;
+    public static final String SELECTED_STRING = &quot; &lt;--&quot;;
+
+    private List&lt;?&gt; list;
+
+    /**
+     * Takes a list item and creates formatted lists for the .toString() form of its items.
+     *
+     * @param list the target list item
+     */
+<span class="fc" id="L25">    public ListUtility(List&lt;?&gt; list) {</span>
+<span class="fc" id="L26">        this.list = list;</span>
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Returns an enumerated list in the form: &lt;code&gt; {@code
+     *      1: item1
+     *      2: item2
+     *      3: item3 &lt;--
+     * }&lt;code&gt; Where &lt;-- denotes the item given by the selection index.
+     *
+     * @param indent    the indentation amount
+     * @param selection the index of the selected item
+     * @return a string formatted as an enumerated list
+     */
+    public String getEnumeratedList(int indent, int selectionIndex) {
+<span class="fc" id="L41">        return getList(indent, x -&gt; Integer.toString(x + 1) + &quot;: &quot;, selectionIndex);</span>
+    }
+
+    public String getEnumeratedList(int selectionIndex) {
+<span class="fc" id="L45">        return getEnumeratedList(1, selectionIndex);</span>
+    }
+
+    public String getEnumeratedList() {
+<span class="fc" id="L49">        return getEnumeratedList(-1);</span>
+    }
+
+    /**
+     * Returns an bullet list in the form: &lt;code&gt; {@code
+    *      &gt; item1
+    *      &gt; item2
+    *      &gt; item3 &lt;--
+    * }&lt;code&gt; Where &lt;-- denotes the item given by the selection index.
+     *
+     * @param indent    the indentation amount
+     * @param selection the index of the selected item
+     * @return a string formatted as a bullet list
+     */
+    public String getBulletList(int indent, int selectionIndex) {
+<span class="fc" id="L64">        return getList(indent, x -&gt; BULLET_STRING, selectionIndex);</span>
+    }
+
+    public String getBulletList(int selectionIndex) {
+<span class="fc" id="L68">        return getBulletList(1, selectionIndex);</span>
+    }
+
+    public String getBulletList() {
+<span class="fc" id="L72">        return getBulletList(-1);</span>
+    }
+
+    /**
+     * Returns an indented list in the form: &lt;code&gt; {@code
+    *      item1
+    *      item2
+    *      item3 &lt;--
+    * }&lt;code&gt; Where &lt;-- denotes the item given by the selection index.
+     *
+     * @param indent    the indentation amount
+     * @param selection the index of the selected item
+     * @return a string formatted as an indented list
+     */
+    public String getIndentedList(int indent, int selection) {
+<span class="fc" id="L87">        return getList(indent, x -&gt; &quot;&quot;, selection);</span>
+    }
+
+    public String getIndentedList(int selectionIndex) {
+<span class="fc" id="L91">        return getIndentedList(1, selectionIndex);</span>
+    }
+
+    public String getIndentedList() {
+<span class="fc" id="L95">        return getIndentedList(-1);</span>
+    }
+
+    /**
+     * Returns a String with a formatted list. in the form: &lt;code&gt; {@code
+     *      item1
+     *      item2
+     *      item3 &lt;--
+     * }&lt;code&gt; Where &lt;-- denotes the item given by the selection index.
+     *
+     * Each item may be preceded with a string which is given from the indexBulletFunction. The
+     * function is passed an integer which allows for formatting said string based on index.
+     *
+     * @param indent              the indentation amount
+     * @param indexBulletFunction a function which takes the item integer and returns the desired
+     *                            string preceding each list item
+     * @param selectionIndex      the index of the selected item, -1 indicates no selection
+     * @return a string formatted as a list
+     */
+    public String getList(int indent, IntFunction&lt;String&gt; indexBulletFunction, int selectionIndex) {
+<span class="fc" id="L115">        String output = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        for (int i = 0; i &lt; list.size(); i++) {</span>
+<span class="fc" id="L118">            String bullet = indexBulletFunction.apply(i);</span>
+<span class="fc" id="L119">            String itemString = list.get(i).toString();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            boolean isSelected = selectionIndex == i;</span>
+<span class="fc" id="L121">            output += new ListItem(itemString, indent, bullet, isSelected);</span>
+        }
+
+<span class="fc" id="L124">        return output;</span>
+    }
+
+    /**
+     * A helper class used to output inner list Strings.
+     */
+    private class ListItem {
+<span class="fc" id="L131">        private int indent = 0;</span>
+<span class="fc" id="L132">        private String listItemString = &quot;&quot;;</span>
+        private final String text;
+<span class="fc" id="L134">        private boolean isSelected = false;</span>
+
+<span class="fc" id="L136">        public ListItem(String text, int indent, String listItemString, boolean isSelected) {</span>
+<span class="fc" id="L137">            this.text = text;</span>
+<span class="fc" id="L138">            this.indent = indent;</span>
+<span class="fc" id="L139">            this.listItemString = listItemString;</span>
+<span class="fc" id="L140">            this.isSelected = isSelected;</span>
+<span class="fc" id="L141">        }</span>
+
+        @Override
+        public String toString() {
+<span class="fc" id="L145">            String tabString = &quot;&quot;;</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            String selectedString = isSelected ? SELECTED_STRING : &quot;&quot;;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            for (int i = 0; i &lt; indent; i++) {</span>
+<span class="fc" id="L148">                tabString += INDENT_STRING;</span>
+            }
+<span class="fc" id="L150">            return tabString + listItemString + text + selectedString + &quot;\n&quot;;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

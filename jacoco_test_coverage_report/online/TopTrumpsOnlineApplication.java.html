@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopTrumpsOnlineApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">online</a> &gt; <span class="el_source">TopTrumpsOnlineApplication.java</span></div><h1>TopTrumpsOnlineApplication.java</h1><pre class="source lang-java linenums">package online;
+
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
+import online.configuration.TopTrumpsJSONConfiguration;
+import online.dwResources.GameWebPagesResource;
+import online.dwResources.TopTrumpsRESTAPI;
+
+/**
+ * Top Trumps Web Application. This class is complete, you do not need to edit it, you instead need
+ * to complete TopTrumpsRESTAPI and the HTML/Javascript views.
+ */
+<span class="nc" id="L20">public class TopTrumpsOnlineApplication extends Application&lt;TopTrumpsJSONConfiguration&gt; {</span>
+
+	/**
+	 * This is the main class for the Top Trumps Web application. It is called by TopTrumps.java
+	 * when the user specifies that they want to run in online mode.
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+<span class="nc" id="L30">			new TopTrumpsOnlineApplication().run(args); // Create a new online application and run</span>
+														// it
+<span class="nc" id="L32">		} catch (Exception e) {</span>
+<span class="nc" id="L33">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L35">	}</span>
+
+	@Override
+	/**
+	 * This is the Dropwizard run method after argument parsing has happened
+	 */
+	public void run(TopTrumpsJSONConfiguration conf, Environment environment) throws Exception {
+
+		// Enable CORS headers (see https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+<span class="nc" id="L44">		final FilterRegistration.Dynamic cors =</span>
+<span class="nc" id="L45">				environment.servlets().addFilter(&quot;CORS&quot;, CrossOriginFilter.class);</span>
+
+		// Configure CORS parameters
+<span class="nc" id="L48">		cors.setInitParameter(&quot;allowedOrigins&quot;, &quot;*&quot;);</span>
+<span class="nc" id="L49">		cors.setInitParameter(&quot;allowedHeaders&quot;, &quot;X-Requested-With,Content-Type,Accept,Origin&quot;);</span>
+<span class="nc" id="L50">		cors.setInitParameter(&quot;allowedMethods&quot;, &quot;OPTIONS,GET,PUT,POST,DELETE,HEAD&quot;);</span>
+
+		// Add URL mapping
+<span class="nc" id="L53">		cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, &quot;/*&quot;);</span>
+
+		// Dropwizard expresses things that the user can ask for as resources. We have two of
+		// these, the REST api and the HTML/Javascript Webpages
+
+		// REST API
+<span class="nc" id="L59">		TopTrumpsRESTAPI restAPI = new TopTrumpsRESTAPI(conf);</span>
+
+		// HTML/Javascript Webpages
+<span class="nc" id="L62">		GameWebPagesResource gameScreen = new GameWebPagesResource();</span>
+
+		// Registration tells Dropwizard to host a resource
+<span class="nc" id="L65">		environment.jersey().register(restAPI);</span>
+<span class="nc" id="L66">		environment.jersey().register(gameScreen);</span>
+<span class="nc" id="L67">	}</span>
+
+
+	/**
+	 * Get the name of the application
+	 */
+	@Override
+	public String getName() {
+<span class="nc" id="L75">		return &quot;TopTrumps&quot;;</span>
+	}
+
+
+	/**
+	 * An initalization method that attaches the Configuration to the views
+	 */
+	@Override
+	public void initialize(Bootstrap&lt;TopTrumpsJSONConfiguration&gt; bootstrap) {
+<span class="nc" id="L84">		bootstrap.addBundle(new ViewBundle&lt;TopTrumpsJSONConfiguration&gt;());</span>
+		// Add bundle linking to assets folder in dwViews
+<span class="nc" id="L86">		bootstrap.addBundle(</span>
+<span class="nc" id="L87">				new AssetsBundle(&quot;/online/dwViews/assets/&quot;, &quot;/toptrumps/assets&quot;, null, &quot;assets&quot;));</span>
+<span class="nc" id="L88">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

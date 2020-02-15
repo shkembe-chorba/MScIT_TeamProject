@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetrievedGameStatistics.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">RetrievedGameStatistics.java</span></div><h1>RetrievedGameStatistics.java</h1><pre class="source lang-java linenums">package model;
+
+/**
+ * This immutable class contains the overall game stats, passed in the constructor
+ */
+public class RetrievedGameStatistics {
+
+    private final int totalGamesPlayed;
+    private final int gamesWonByAi;
+    private final int gamesWonByUser;
+    private final double avgDraws;
+    private final int maxRounds;
+
+    /**
+     * CONSTRUCTOR
+     *
+     * @param totalGamesPlayed - overall number of games played
+     * @param gamesWonByAi - number of games won by the AIs
+     * @param gamesWonByUser - number of games won by the user
+     * @param avgDraws - number of draws on average
+     * @param maxRounds - maximum number of rounds
+     */
+<span class="fc" id="L23">    public RetrievedGameStatistics(int totalGamesPlayed,</span>
+                                   int gamesWonByAi,
+                                   int gamesWonByUser,
+                                   double avgDraws,
+                                   int maxRounds) {
+<span class="fc" id="L28">        this.totalGamesPlayed = totalGamesPlayed;</span>
+<span class="fc" id="L29">        this.gamesWonByAi = gamesWonByAi;</span>
+<span class="fc" id="L30">        this.gamesWonByUser = gamesWonByUser;</span>
+<span class="fc" id="L31">        this.avgDraws = avgDraws;</span>
+<span class="fc" id="L32">        this.maxRounds = maxRounds;</span>
+<span class="fc" id="L33">    }</span>
+
+    public int getTotalGamesPlayed() {
+<span class="fc" id="L36">        return totalGamesPlayed;</span>
+    }
+
+    public int getGamesWonByAi() {
+<span class="fc" id="L40">        return gamesWonByAi;</span>
+    }
+
+    public int getGamesWonByUser() {
+<span class="fc" id="L44">        return gamesWonByUser;</span>
+    }
+
+    public double getAvgDraws() {
+<span class="fc" id="L48">        return avgDraws;</span>
+    }
+
+    public int getMaxRounds() {
+<span class="fc" id="L52">        return maxRounds;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

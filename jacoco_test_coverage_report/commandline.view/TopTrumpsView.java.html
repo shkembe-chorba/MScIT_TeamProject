@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopTrumpsView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.view</a> &gt; <span class="el_source">TopTrumpsView.java</span></div><h1>TopTrumpsView.java</h1><pre class="source lang-java linenums">package commandline.view;
+
+import commandline.controller.CliController;
+
+import model.Attribute;
+import model.Card;
+import model.Player;
+import model.RetrievedGameStatistics;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+
+/**
+ * The view component of the app. Contains the high level functionality required by the game and
+ * interfaces with lower level components which take care of I/O and general message formatting.
+ */
+public class TopTrumpsView {
+
+    public static final String QUIT_COMMAND = &quot;quit&quot;;
+    public static final String QUIT_COMMAND_DESCRIPTION = &quot;quits the program&quot;;
+
+    private CliController controller;
+<span class="nc" id="L26">    private CommandLineView cli = new CommandLineView();</span>
+
+    /**
+     * Creates the application view component.
+     *
+     * @param controller A controller which implements the TopTrumpsControllerInterface interface.
+     */
+<span class="nc" id="L33">    public TopTrumpsView(CliController controller) {</span>
+<span class="nc" id="L34">        this.controller = controller;</span>
+<span class="nc" id="L35">        setupQuitCommand();</span>
+<span class="nc" id="L36">    }</span>
+
+    // Adds the quit command, much like adding a Button in Swing.
+    private void setupQuitCommand() {
+<span class="nc" id="L40">        GlobalCommand quitCommand = new GlobalCommand(QUIT_COMMAND, QUIT_COMMAND_DESCRIPTION);</span>
+<span class="nc" id="L41">        quitCommand.addCommandListener(new GlobalCommandListener() {</span>
+            // Calls the controller's quit method when the user types the QUIT_COMMAND
+            @Override
+            public void globalCommandReceived(String globalCommand) {
+<span class="nc" id="L45">                controller.quit();</span>
+<span class="nc" id="L46">            }</span>
+        });
+
+<span class="nc" id="L49">        cli.addGlobalCommand(quitCommand);</span>
+<span class="nc" id="L50">    }</span>
+
+    /**
+     * Displays Game Start
+     */
+    public void displayGameStartMessage() {
+<span class="nc" id="L56">        cli.displayMessage(&quot;Game Start&quot;);</span>
+<span class="nc" id="L57">    }</span>
+
+    /**
+     * Displays the round number
+     */
+    public void displayRoundNumber(int roundNumber) {
+<span class="nc" id="L63">        cli.displayMessage(String.format(&quot;Round %d\nPlayers have drawn their cards&quot;, roundNumber));</span>
+<span class="nc" id="L64">        cli.displayDivider();</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Displays the player's name and their current card.
+     *
+     * @param player
+     */
+    public void displayTopCard(Player player) {
+<span class="nc" id="L73">        Card topCard = player.peekCard();</span>
+<span class="nc" id="L74">        cli.displayMessage(String.format(&quot;%s drew '%s':&quot;, player.toString(), topCard.getName()));</span>
+<span class="nc" id="L75">        cli.displayBulletList(topCard.getAttributes());</span>
+<span class="nc" id="L76">    }</span>
+
+    /**
+     * Displays the player's name and their remaining cards.
+     *
+     * @param player
+     */
+    public void displayRemainingCardCount(Player player) {
+<span class="nc" id="L84">        cli.displayMessage(String.format(&quot;%s has %d cards remaining in their deck.&quot;,</span>
+<span class="nc" id="L85">                player.toString(), player.getRemainingDeckSize()));</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * Displays the users current hand and their remaining cards.
+     *
+     * @param user a Player which is user controlled
+     */
+    public void displayUserHand(Player user) {
+<span class="nc" id="L94">        displayTopCard(user);</span>
+<span class="nc" id="L95">        displayRemainingCardCount(user);</span>
+<span class="nc" id="L96">        cli.displayDivider();</span>
+<span class="nc" id="L97">    }</span>
+
+    public int displayMenu() {
+<span class="nc" id="L100">        cli.displayMessage(&quot;Do you want to see past results or play a game?&quot;);</span>
+<span class="nc" id="L101">        List&lt;String&gt; options = Arrays.asList(new String[] {&quot;Print Game Statistics&quot;, &quot;Play game&quot;});</span>
+<span class="nc" id="L102">        return cli.getUserSelectionIndex(options);</span>
+    }
+
+    /**
+     * Displays the active player's name.
+     *
+     * @param player
+     */
+    public void displayActivePlayer(Player player) {
+<span class="nc" id="L111">        cli.displayMessage(player.toString() + &quot; is the active player!&quot;);</span>
+<span class="nc" id="L112">    }</span>
+
+    public void displayLogo() {
+<span class="nc" id="L115">        cli.displayMessage(&quot;\n\n\n--------------------\n&quot; + &quot;--- Top Trumps   ---\n&quot;</span>
+                + &quot;--------------------\n\n&quot; + &quot;To quit type in \&quot;quit\&quot; at any prompt.\n&quot;);
+<span class="nc" id="L117">    }</span>
+
+    public void displayStatistics(RetrievedGameStatistics stats) {
+
+<span class="nc" id="L121">        List&lt;String&gt; statsList = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L122">        statsList.add(String.format(&quot;Total games played: %d&quot;, stats.getTotalGamesPlayed()));</span>
+<span class="nc" id="L123">        statsList.add(String.format(&quot;Games won by AI: %d&quot;, stats.getGamesWonByAi()));</span>
+<span class="nc" id="L124">        statsList.add(String.format(&quot;Games won by user: %d&quot;, stats.getGamesWonByUser()));</span>
+<span class="nc" id="L125">        statsList.add(String.format(&quot;Average number of draws: %.2f&quot;, stats.getAvgDraws()));</span>
+<span class="nc" id="L126">        statsList.add(String.format(&quot;Maximum rounds in a game: %s&quot;, stats.getMaxRounds()));</span>
+
+<span class="nc" id="L128">        cli.displayMessage(&quot;Here are the current statistics:&quot;);</span>
+<span class="nc" id="L129">        cli.displayBulletList(statsList);</span>
+<span class="nc" id="L130">        cli.displayDivider();</span>
+<span class="nc" id="L131">    }</span>
+
+    /**
+     * Prompts the player for their attribute selection.
+     *
+     * @param attributes
+     * @return The selected attribute object
+     */
+    public Attribute getUserAttribute(List&lt;Attribute&gt; attributes) {
+<span class="nc" id="L140">        cli.displayMessage(&quot;Select your category:&quot;);</span>
+<span class="nc" id="L141">        return cli.getUserSelection(attributes);</span>
+    }
+
+    /**
+     * Displays The category chosen is + category attribute name
+     *
+     * @param attribute
+     */
+    public void displayChosenCategory(Attribute attribute) {
+<span class="nc" id="L150">        cli.displayMessage(&quot;The category chosen is: &quot; + attribute.getName());</span>
+<span class="nc" id="L151">    }</span>
+
+    /**
+     * Displays the winner of the round.
+     *
+     * @param playerName
+     * @param roundNumber
+     */
+    public void displayRoundWinner(String playerName, int roundNumber) {
+<span class="nc" id="L160">        cli.displayMessage(String.format(&quot;%s won round %d!&quot;, playerName, roundNumber));</span>
+<span class="nc" id="L161">    }</span>
+
+    public void displayAiPlayerHand(Player ai) {
+<span class="nc" id="L164">        displayTopCard(ai);</span>
+<span class="nc" id="L165">        cli.displayDivider();</span>
+<span class="nc" id="L166">    }</span>
+
+    /**
+     * Displays that the round was a draw and the communal pile count.
+     *
+     * @param roundNumber
+     * @param communalPileCount
+     */
+    public void displayDrawnRound(int roundNumber, int communalPileCount) {
+<span class="nc" id="L175">        cli.displayMessage(String.format(&quot;Round %d was a draw.\nThe communal pile now has %d cards&quot;,</span>
+<span class="nc" id="L176">                roundNumber, communalPileCount));</span>
+<span class="nc" id="L177">    }</span>
+
+    /**
+     * Displays the winning card of the round.
+     *
+     * @param card the winning card
+     */
+    public void displayWinningCard(Card card) {
+<span class="nc" id="L185">        List&lt;Attribute&gt; attributes = card.getAttributes();</span>
+<span class="nc" id="L186">        cli.displayMessage(String.format(&quot;The winning card was '%s':&quot;, card.getName()));</span>
+<span class="nc" id="L187">        cli.displayBulletList(attributes);</span>
+<span class="nc" id="L188">        cli.displayDivider();</span>
+<span class="nc" id="L189">    }</span>
+
+    /**
+     * Displays the eliminated player.
+     *
+     * @param playerName
+     */
+    public void displayEliminatedPlayer(String playerName) {
+<span class="nc" id="L197">        cli.displayMessage(playerName + &quot; has been eliminated!&quot;);</span>
+<span class="nc" id="L198">        cli.displayDivider();</span>
+<span class="nc" id="L199">    }</span>
+
+    /**
+     * Displays the game over
+     */
+    public void displayGameOver(String winningPlayerName, Player[] players) {
+
+<span class="nc" id="L206">        List&lt;String&gt; scores = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        for (Player player : players) {</span>
+<span class="nc" id="L208">            scores.add(player.toString() + &quot;: &quot; + player.getRoundsWon());</span>
+        }
+
+<span class="nc" id="L211">        cli.displayMessage(&quot;Game Over\nThe overall winner was &quot; + winningPlayerName);</span>
+<span class="nc" id="L212">        cli.displayMessage(&quot;Scores:&quot;);</span>
+<span class="nc" id="L213">        cli.displayIndentedList(scores);</span>
+<span class="nc" id="L214">        cli.displayDivider();</span>
+<span class="nc" id="L215">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

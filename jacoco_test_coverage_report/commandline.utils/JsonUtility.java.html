@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonUtility.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.utils</a> &gt; <span class="el_source">JsonUtility.java</span></div><h1>JsonUtility.java</h1><pre class="source lang-java linenums">package commandline.utils;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+/**
+ * A utility for reading JSON files into managable POJOs.
+ */
+<span class="nc" id="L14">public class JsonUtility {</span>
+
+    /**
+     * Returns a JsonObject from a file path.
+     *
+     * @param file the path to the .json file
+     * @throws IllegalArgumentException if the file is not a .json file
+     * @return a JsonObject
+     */
+    public static JsonObject getJsonObjectFromFile(String path) throws IOException {
+
+<span class="fc" id="L25">        File file = new File(path);</span>
+        // Check if is valid file, otherwise throw
+<span class="fc bfc" id="L27" title="All 4 branches covered.">        if (file.isFile() &amp;&amp; getExtension(file).equals(&quot;json&quot;)) {</span>
+<span class="fc" id="L28">            FileReader fileReader = new FileReader(file);</span>
+<span class="fc" id="L29">            JsonReader jsonReader = new JsonReader(fileReader);</span>
+<span class="fc" id="L30">            return JsonParser.parseReader(jsonReader).getAsJsonObject();</span>
+        } else {
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;File is not a valid .json file&quot;);</span>
+        }
+    }
+
+    private static String getExtension(File path) {
+<span class="fc" id="L37">        String extension = &quot;&quot;;</span>
+<span class="fc" id="L38">        String pathString = path.toString();</span>
+
+<span class="fc" id="L40">        int extensionIndex = pathString.indexOf('.');</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (extensionIndex &gt; 0) {</span>
+<span class="fc" id="L42">            extension = pathString.substring(extensionIndex + 1);</span>
+        }
+<span class="fc" id="L44">        return extension;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

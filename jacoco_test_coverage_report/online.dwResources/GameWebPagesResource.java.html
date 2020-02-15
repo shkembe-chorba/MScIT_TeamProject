@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameWebPagesResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">online.dwResources</a> &gt; <span class="el_source">GameWebPagesResource.java</span></div><h1>GameWebPagesResource.java</h1><pre class="source lang-java linenums">package online.dwResources;
+
+import online.dwViews.GameScreenView;
+import online.dwViews.SelectionScreenView;
+import online.dwViews.StatisticsView;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path(&quot;/toptrumps&quot;) // Resources specified here should be hosted at http://localhost:7777/toptrumps
+@Produces(MediaType.TEXT_HTML) // This resource returns HTML content
+
+/**
+ * This is a Dropwizard Resource that specifies what to provide when a user
+ * requests a particular URL. In this case, the URLs are associated to the
+ * different HTML/Javascript Web pages for the TopTrumps Application. 
+ * @author richardm
+ *
+ */
+<span class="nc" id="L22">public class GameWebPagesResource {</span>
+
+	@GET
+	@Path(&quot;/&quot;)
+	/**
+	 * The selection screen for choosing whether to see past game statistics or
+	 * play a game. Hosted at 'http://localhost:7777/toptrumps/'
+	 * @return
+	 */
+    public SelectionScreenView getSelectionScreen() {
+<span class="nc" id="L32">        return new SelectionScreenView();</span>
+    }
+	
+	@GET
+	@Path(&quot;/game&quot;)
+	/**
+	 * The Web page within which the user can play a game of TopTrumps.
+	 * Hosted at 'http://localhost:7777/toptrumps/game'
+	 * @return
+	 */
+    public GameScreenView getGameScreen() {
+<span class="nc" id="L43">        return new GameScreenView();</span>
+    }
+	
+	@GET
+	@Path(&quot;/stats&quot;)
+	/**
+	 * The Web page that shows past game statistics
+	 * Hosted at 'http://localhost:7777/toptrumps/stats'
+	 * @return
+	 */
+    public StatisticsView getStatisticsView() {
+<span class="nc" id="L54">        return new StatisticsView();</span>
+    }
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

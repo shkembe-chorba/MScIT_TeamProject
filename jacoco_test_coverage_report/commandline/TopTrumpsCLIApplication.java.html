@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopTrumpsCLIApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline</a> &gt; <span class="el_source">TopTrumpsCLIApplication.java</span></div><h1>TopTrumpsCLIApplication.java</h1><pre class="source lang-java linenums">package commandline;
+
+import com.google.gson.JsonObject;
+import commandline.controller.CliController;
+import commandline.utils.JsonUtility;
+import commandline.utils.Logger;
+import commandline.view.TopTrumpsView;
+import model.GameModel;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+/**
+ * Top Trumps command line application
+ */
+<span class="nc" id="L16">public class TopTrumpsCLIApplication {</span>
+
+	private static final String JSON_CONFIG_NAME = &quot;TopTrumps.json&quot;;
+	private static final String DECK_READ_ERROR =
+			&quot;Could not load deck from file, please place in working directory.&quot;;
+	private static final int DECK_READ_ERROR_CODE = 2;
+	private static final int DATABASE_CONNECTION_ERROR_CODE = 3;
+
+	private static final String LOGGER_DIRECTORY = &quot;./&quot;;
+	private static final String LOGGER_FILENAME = &quot;TopTrumps.log&quot;;
+	private static final String LOGGER_SECURITY_ERROR =
+			&quot;There is a security error with the logger.&quot;;
+	private static final int LOGGER_SECURITY_ERROR_CODE = 1;
+	private static final String LOGGER_IO_ERROR = &quot;There is a file system error with the logger.&quot;;
+	private static final int LOGGER_IO_ERROR_CODE = 1;
+
+	/**
+	 * This main method is called by TopTrumps.java when the user specifies that they want to run in
+	 * command line mode. The contents of args[0] is whether we should write game logs to a file.
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+<span class="nc" id="L40">		boolean writeGameLogsToFile = false; // Should we write game logs to file?</span>
+
+		// -------------
+		// Logger Setup
+		// -------------
+
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (args[0].equalsIgnoreCase(&quot;true&quot;)) {</span>
+<span class="nc" id="L47">			writeGameLogsToFile = true; // Command line selection</span>
+		}
+
+<span class="nc" id="L50">		Logger logger = new Logger(LOGGER_DIRECTORY + LOGGER_FILENAME);</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">		if (writeGameLogsToFile) {</span>
+			try {
+				// Creates a file handler and attaches it to the logger
+<span class="nc" id="L55">				logger.enable();</span>
+<span class="nc" id="L56">			} catch (SecurityException e) { // Exit and Handle security errors gracefully</span>
+<span class="nc" id="L57">				displayLoggerError(LOGGER_SECURITY_ERROR);</span>
+<span class="nc" id="L58">				System.exit(LOGGER_SECURITY_ERROR_CODE);</span>
+<span class="nc" id="L59">			} catch (IOException e) { // Exit and Handle io errors gracefully</span>
+<span class="nc" id="L60">				displayLoggerError(LOGGER_IO_ERROR);</span>
+<span class="nc" id="L61">				System.exit(LOGGER_IO_ERROR_CODE);</span>
+			}
+		}
+
+		// End Logger Setup
+		// ----------------
+
+		// ----------
+		// Get deck file from json config
+		// ----------
+
+		// final String CWD = System.getProperty(&quot;user.dir&quot;);
+		// final File configPath = new File(CWD, JSON_CONFIG_NAME);
+
+<span class="nc" id="L75">		JsonObject jsonConfig = null;</span>
+<span class="nc" id="L76">		String deckFile = null;</span>
+<span class="nc" id="L77">		int numAIPlayers = 4;</span>
+
+		try {
+<span class="nc" id="L80">			jsonConfig = JsonUtility.getJsonObjectFromFile(JSON_CONFIG_NAME);</span>
+<span class="nc" id="L81">			deckFile = jsonConfig.get(&quot;deckFile&quot;).getAsString();</span>
+<span class="nc" id="L82">			numAIPlayers = jsonConfig.get(&quot;numAIPlayers&quot;).getAsInt();</span>
+
+			// Don't think we need to append cwd...
+			// deckFile = new File(CWD, deckFileName).toString();
+
+<span class="nc" id="L87">		} catch (IOException e) {</span>
+<span class="nc" id="L88">			System.err.println(DECK_READ_ERROR);</span>
+<span class="nc" id="L89">			System.exit(DECK_READ_ERROR_CODE);</span>
+		}
+
+<span class="nc" id="L92">		GameModel model = new GameModel(deckFile, numAIPlayers);</span>
+<span class="nc" id="L93">		CliController controller = new CliController(model);</span>
+<span class="nc" id="L94">		TopTrumpsView view = new TopTrumpsView(controller);</span>
+<span class="nc" id="L95">		controller.setView(view);</span>
+
+		try {
+<span class="nc" id="L98">			controller.run();</span>
+<span class="nc" id="L99">		} catch (SQLException e) {</span>
+<span class="nc" id="L100">			System.err.println(&quot;Database connection failure.&quot;);</span>
+<span class="nc" id="L101">			e.printStackTrace();</span>
+<span class="nc" id="L102">			System.exit(DATABASE_CONNECTION_ERROR_CODE);</span>
+		}
+
+<span class="nc" id="L105">	}</span>
+
+	private static void displayLoggerError(String message) {
+<span class="nc" id="L108">		System.out.println(message);</span>
+<span class="nc" id="L109">		System.out.println(&quot;Please try again later or run without logging.&quot;);</span>
+<span class="nc" id="L110">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

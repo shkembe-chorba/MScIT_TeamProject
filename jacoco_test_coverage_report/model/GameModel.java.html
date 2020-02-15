@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">GameModel.java</span></div><h1>GameModel.java</h1><pre class="source lang-java linenums">package model;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.Collectors;
+import commandline.utils.Logger;
+
+/**
+ * Top Trumps game - MSc IT+ Masters Team Project
+ *
+ * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
+ * 2200528b: Tereza Buckova 2493194s:Gareth Sears
+ *
+ * Class that represents the game model, initiliazes the game with players, distributes the deck
+ * between players and communal pile and handles the progression of each round.
+ */
+
+public class GameModel {
+<span class="fc" id="L21">    private int roundNumber = 1;</span>
+<span class="fc" id="L22">    private int numAIPlayers = 4;</span>
+    private Player[] players;
+<span class="fc" id="L24">    private ArrayList&lt;Player&gt; playersInGame = null; // players still left in the game</span>
+    private Player activePlayer; // active player that chooses the attribute
+    private Pile communalPile;
+    private Player roundWinner;
+    private int drawRound;
+    private Card winningCard;
+    private Pile wholeDeck;
+    private Player humanPlayer;
+
+    /**
+     * Reads the pile from the provided .txt path and sets up a game with n AI players.
+     *
+     * @param deckFilePath The path to the deck.txt
+     * @param numAIPlayers The number of AI players
+     */
+<span class="fc" id="L39">    public GameModel(String deckFilePath, int numAIPlayers) {</span>
+        try {
+<span class="fc" id="L41">            wholeDeck = Pile.reader(deckFilePath);</span>
+<span class="pc" id="L42">        } catch (IOException e) {</span>
+<span class="nc" id="L43">            e.printStackTrace();</span>
+        }
+
+<span class="fc" id="L46">        this.numAIPlayers = numAIPlayers;</span>
+
+        // --- DEBUG LOG ---
+        // The contents of the complete deck once it has been read in and constructed
+<span class="fc" id="L50">        Logger.log(&quot;COMPLETE GAME DECK AFTER LOAD:&quot;, wholeDeck.toString());</span>
+
+<span class="fc" id="L52">        reset();</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Resets and initializes the game by setting up players, setting the round number to 1 and
+     * winning card and roundWinner to null.
+     */
+    public void reset() {
+
+<span class="fc" id="L61">        players = new Player[numAIPlayers + 1];</span>
+<span class="fc" id="L62">        createHumanPlayer();</span>
+<span class="fc" id="L63">        createAIPlayers(numAIPlayers);</span>
+<span class="fc" id="L64">        wholeDeck.shuffle();</span>
+
+        // --- DEBUG LOG ---
+        // The contents of the complete deck after it has been shuffled
+<span class="fc" id="L68">        Logger.log(&quot;COMPLETE GAME DECK AFTER SHUFFLE:&quot;, wholeDeck.toString());</span>
+
+<span class="fc" id="L70">        assignCards(wholeDeck, players);</span>
+<span class="fc" id="L71">        activePlayer = randomlySelectFirstPlayer(players);</span>
+<span class="fc" id="L72">        playersInGame = new ArrayList&lt;&gt;(Arrays.asList(players));</span>
+<span class="fc" id="L73">        winningCard = null;</span>
+<span class="fc" id="L74">        roundWinner = null;</span>
+
+<span class="fc" id="L76">        roundNumber = 1;</span>
+<span class="fc" id="L77">        drawRound = 0;</span>
+<span class="fc" id="L78">    }</span>
+
+    public Player getHumanPlayer() {
+<span class="nc" id="L81">        return humanPlayer;</span>
+    }
+
+    public int getRoundNumber() {
+<span class="nc" id="L85">        return roundNumber;</span>
+    }
+
+    public int getDraws() {
+<span class="fc" id="L89">        return drawRound;</span>
+    }
+
+    public int getCommunalPileSize() {
+<span class="fc" id="L93">        return communalPile.size();</span>
+    }
+
+    public Player getActivePlayer() {
+<span class="fc" id="L97">        return activePlayer;</span>
+    }
+
+    public Card getWinningCard() {
+<span class="nc" id="L101">        return winningCard;</span>
+    }
+
+    public Player[] getPlayers() {
+<span class="nc" id="L105">        return players;</span>
+    }
+
+    public ArrayList&lt;Player&gt; getPlayersInGame() {
+<span class="fc" id="L109">        return playersInGame;</span>
+    }
+
+    /**
+     * Checks whether human player is still in game
+     */
+    public boolean userStillInGame() {
+<span class="nc" id="L116">        return playersInGame.contains(humanPlayer);</span>
+    }
+
+    /**
+     * Checks for the game winner by checking if there is only one player left in the game
+     */
+    public Player checkForWinner() {
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (playersInGame.size() == 1) {</span>
+<span class="nc" id="L124">            Player winner = playersInGame.get(0);</span>
+
+            // --- DEBUG LOG ---
+            // The winner of the game
+<span class="nc" id="L128">            Logger.log(&quot;WINNING PLAYER:&quot;, winner.toString());</span>
+
+<span class="nc" id="L130">            return winner;</span>
+        } else {
+<span class="fc" id="L132">            return null;</span>
+        }
+    }
+
+    /**
+     * Checks whether the player has another card and if not eliminates them from players in game
+     */
+    public ArrayList&lt;Player&gt; checkToEliminate() {
+<span class="fc" id="L140">        ArrayList&lt;Player&gt; eliminated = new ArrayList&lt;Player&gt;();</span>
+
+        // Check which players are to be eliminated
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        for (Player player : playersInGame) {</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">            if (player.peekCard() == null) {</span>
+<span class="nc" id="L145">                eliminated.add(player);</span>
+            }
+        }
+
+        // Eliminate players from model
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        for (Player eliminatedPlayer : eliminated) {</span>
+<span class="nc" id="L151">            playersInGame.remove(eliminatedPlayer);</span>
+        }
+
+<span class="fc" id="L154">        return eliminated;</span>
+    }
+
+
+    /**
+     * Takes in attribute and compares the values of the top card of all players in the given
+     * attribute to play a round.
+     * 
+     * @param chosenAttribute
+     * @return the round winner or null if there is a draw.
+     */
+    public Player playRoundWithAttribute(Attribute chosenAttribute) {
+
+        // --- DEBUG LOG ---
+        // The contents of the current cards in play
+<span class="fc" id="L169">        String playerCardStrings = playersInGame.stream()</span>
+<span class="fc" id="L170">                .map(p -&gt; String.format(&quot;%s's CARD:\n\n%s\n\n&quot;, p, p.peekCard()))</span>
+<span class="fc" id="L171">                .collect(Collectors.joining());</span>
+<span class="fc" id="L172">        Logger.log(&quot;CARDS IN PLAY AT ROUND &quot; + roundNumber + &quot; START&quot;, playerCardStrings);</span>
+
+        // --- DEBUG LOG ---
+        // The category selected and corresponding values when a user or computer selects a category
+<span class="fc" id="L176">        Logger.log(String.format(&quot;%s's ATTRIBUTE FOR THE ROUND:&quot;, activePlayer),</span>
+<span class="fc" id="L177">                chosenAttribute.toString());</span>
+
+<span class="fc" id="L179">        int maxValue = 0;</span>
+<span class="fc" id="L180">        int drawMaxValue = 0;</span>
+
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        for (Player player : playersInGame) {</span>
+            // assigns top card for a player that is still in game as activeCard
+<span class="fc" id="L184">            Card activeCard = player.peekCard();</span>
+<span class="fc" id="L185">            int playersAttributeValue = activeCard.getValue(chosenAttribute);</span>
+
+<span class="fc bfc" id="L187" title="All 2 branches covered.">            if (maxValue &lt; playersAttributeValue) {</span>
+<span class="fc" id="L188">                maxValue = playersAttributeValue;</span>
+<span class="fc" id="L189">                roundWinner = player;</span>
+                // if there is a draw, it stores it in the temporary draw value
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            } else if (maxValue == playersAttributeValue) {</span>
+<span class="fc" id="L192">                drawMaxValue = maxValue;</span>
+            }
+        }
+
+        // if maxValue is also the drawMaxValue after going through all the values, it means that
+        // there is no higher value
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (maxValue == drawMaxValue) {</span>
+
+            // pops the card from all the players and transfers them to communal pile
+<span class="fc" id="L201">            addCardsToCommunalPile();</span>
+
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are added or removed from it
+<span class="fc" id="L205">            Logger.log(&quot;ROUND WAS DRAWN - COMMUNAL PILE CONTENTS:&quot;, communalPile.toString());</span>
+
+<span class="fc" id="L207">            drawRound++;</span>
+            // resets the roundWinner
+<span class="fc" id="L209">            roundWinner = null;</span>
+            // returns null to controller
+
+<span class="fc" id="L212">        } else {</span>
+            // increases the won round
+<span class="fc" id="L214">            roundWinner.wonRound();</span>
+<span class="fc" id="L215">            winningCard = roundWinner.peekCard();</span>
+
+            // waits for the popping of the card and adds it to the communal pile
+<span class="fc" id="L218">            addCardsToCommunalPile();</span>
+
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are added to it
+<span class="fc" id="L222">            Logger.log(&quot;ROUND WAS WON - COMMUNAL PILE CONTENTS TO BE TRANSFERED:&quot;,</span>
+<span class="fc" id="L223">                    communalPile.toString());</span>
+
+            // shuffles the communalPile
+<span class="fc" id="L226">            communalPile.shuffle();</span>
+            // transfers all cards from communal pile to roundWinner
+<span class="fc" id="L228">            transferCommunalPile();</span>
+
+            // --- DEBUG LOG ---
+            // The contents of the communal pile when cards are removed from it
+<span class="fc" id="L232">            Logger.log(&quot;COMMUNAL PILE AFTER TRANSFER:&quot;, communalPile.toString());</span>
+
+            // Set the next active player
+<span class="fc" id="L235">            activePlayer = roundWinner;</span>
+
+        }
+
+        // --- DEBUG LOG ---
+        // The contents of each deck after a round
+<span class="fc" id="L241">        String playerDeckStrings = playersInGame.stream()</span>
+<span class="fc" id="L242">                .map(p -&gt; String.format(&quot;%s's DECK:\n\n%s\n\n&quot;, p, p.getDeck()))</span>
+<span class="fc" id="L243">                .collect(Collectors.joining());</span>
+<span class="fc" id="L244">        Logger.log(&quot;PLAYERS DECKS AT END OF THE ROUND: &quot;, playerDeckStrings);</span>
+
+
+        // increases round number
+<span class="fc" id="L248">        roundNumber++;</span>
+
+        // returns winner to the controller
+<span class="fc" id="L251">        return roundWinner;</span>
+    }
+
+    /**
+     * Creates human player always called 'USER'
+     */
+    private void createHumanPlayer() {
+<span class="fc" id="L258">        humanPlayer = new Player(&quot;USER&quot;);</span>
+<span class="fc" id="L259">        players[0] = humanPlayer;</span>
+<span class="fc" id="L260">    }</span>
+
+    /**
+     * Creates expected number of AIPlayers and adds them to players in the game with the correct
+     * name
+     */
+    private void createAIPlayers(int numOfAIPlayers) {
+        // starts with 1 because HumanPlayer is in index 0
+<span class="fc bfc" id="L268" title="All 2 branches covered.">        for (int i = 1; i &lt;= numOfAIPlayers; i++) {</span>
+<span class="fc" id="L269">            players[i] = new AIPlayer(&quot;AI&quot; + i);</span>
+        }
+<span class="fc" id="L271">    }</span>
+
+    /**
+     * Splits the whole deck of 40 cards and assigns it to players it assigns the reminder of cards
+     * to communal pile
+     */
+
+    private void assignCards(Pile wholeDeck, Player[] players) {
+<span class="fc" id="L279">        ArrayList&lt;Pile&gt; setOfDecks = wholeDeck.split(players.length);</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">        for (int i = 0; i &lt; players.length; i++) {</span>
+<span class="fc" id="L281">            Player player = players[i];</span>
+<span class="fc" id="L282">            Pile playerDeck = setOfDecks.get(i);</span>
+<span class="fc" id="L283">            player.addToDeck(playerDeck);</span>
+
+            // --- DEBUG LOG ---
+            // The contents of the user’s deck and the computer’s deck(s) once they have been
+            // allocated.
+<span class="fc bfc" id="L288" title="All 2 branches covered.">            String isAILabel = player instanceof AIPlayer ? &quot;AI&quot; : &quot;USER&quot;;</span>
+<span class="fc" id="L289">            Logger.log(String.format(&quot;(%s) %s's DECK AFTER ALLOCATION:&quot;, isAILabel, player),</span>
+<span class="fc" id="L290">                    playerDeck.toString());</span>
+
+        }
+<span class="fc" id="L293">        communalPile = setOfDecks.get(players.length);</span>
+
+        // --- DEBUG LOG ---
+        // Initial communal deck contents.
+<span class="fc" id="L297">        Logger.log(&quot;INITIAL COMMUNAL DECK CONTENTS&quot;, communalPile.toString());</span>
+<span class="fc" id="L298">    }</span>
+
+    /**
+     * Randomly selects first player from the players array
+     */
+    private Player randomlySelectFirstPlayer(Player[] players) {
+<span class="fc" id="L304">        Random rand = new Random();</span>
+<span class="fc" id="L305">        Player firstPlayer = players[rand.nextInt(players.length)];</span>
+<span class="fc" id="L306">        return firstPlayer;</span>
+    }
+
+    /**
+     * Transfers cards to communal pile from all players
+     */
+    private void addCardsToCommunalPile() {
+<span class="fc bfc" id="L313" title="All 2 branches covered.">        for (int i = 0; i &lt; playersInGame.size(); i++) {</span>
+<span class="fc" id="L314">            Player playerToPopCard = playersInGame.get(i);</span>
+<span class="fc" id="L315">            communalPile.add(playerToPopCard.popCard());</span>
+        }
+<span class="fc" id="L317">    }</span>
+
+    /**
+     * Transfers communal pile to winner of the round
+     */
+    private void transferCommunalPile() {
+<span class="fc" id="L323">        this.roundWinner.addToDeck(communalPile);</span>
+<span class="fc" id="L324">        communalPile = new Pile();</span>
+<span class="fc" id="L325">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

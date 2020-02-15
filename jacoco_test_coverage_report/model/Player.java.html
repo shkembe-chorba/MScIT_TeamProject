@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package model;
+
+/**
+ * Top Trumps game - MSc IT+ Masters Team Project
+ *
+ * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
+ * 2200528b: Tereza Buckova 2493194s:Gareth Sears
+ *
+ * Player class that represents the human player and is a superclass of the AIPlayer class. It allows
+ * assigning a pile of cards to the Player, creating new players and retrieving them.
+ */
+
+public class Player {
+    private String name;
+    private int roundsWon;
+<span class="fc" id="L16">    private Pile playerDeck = new Pile();</span>
+
+<span class="fc" id="L18">    public Player(String name) {</span>
+<span class="fc" id="L19">        this.name = name;</span>
+<span class="fc" id="L20">    }</span>
+
+    /**
+     * Used in the beginning of a game to assign a pile to a player in the game used to transfer
+     * cards from community pile to Player
+     *
+     * @param addedPile pile of cards
+     */
+    public void addToDeck(Pile addedPile) {
+<span class="fc" id="L29">        playerDeck.add(addedPile);</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Method that returns number of rounds that the player won
+     *
+     * @return roundsWon
+     */
+    public int getRoundsWon() {
+<span class="fc" id="L38">        return this.roundsWon;</span>
+    }
+
+    /**
+     * Increase counter of rounds for player Used when player wins a round
+     */
+    public void wonRound() {
+<span class="fc" id="L45">        this.roundsWon++;</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Method that returns the top card of the player
+     *
+     * @return topCard
+     */
+    public Card peekCard() {
+<span class="fc" id="L54">        Card topCard = playerDeck.peek();</span>
+<span class="fc" id="L55">        return topCard;</span>
+    }
+
+    /**
+     * Method that returns the top card of the player and removes it from their deck.
+     *
+     * @return top card of player
+     */
+    public Card popCard() {
+<span class="fc" id="L64">        return playerDeck.pop();</span>
+    }
+
+    /**
+     * Returns name of a player
+     *
+     * @return name of the player
+     */
+    public String toString() {
+<span class="fc" id="L73">        return name;</span>
+    }
+
+    /**
+     * Returns the size of the deck of the player without their top card.
+     * @return
+     */
+    public int getRemainingDeckSize() {
+<span class="fc" id="L81">        return playerDeck.size() - 1;</span>
+    }
+
+    //Getter.
+    public Pile getDeck() {
+<span class="fc" id="L86">        return playerDeck;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

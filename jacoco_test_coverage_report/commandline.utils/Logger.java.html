@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Logger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">commandline.utils</a> &gt; <span class="el_source">Logger.java</span></div><h1>Logger.java</h1><pre class="source lang-java linenums">package commandline.utils;
+
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+
+/**
+ * Sets up a Logger which is enabled as long as the object remains in scope. Usual use will be to
+ * call the static method Logger.log(message), which will output to the target destination file.
+ *
+ * This class aims to encapsulate a lot of the java util Logger setup, though it may not be the most
+ * idiomatic of use...
+ */
+public class Logger {
+
+        public static final String LOGGER_NAME = &quot;commandline&quot;;
+        public static final String LOGGER_DIVIDER_STRING = &quot;--------&quot;;
+
+        private java.util.logging.Logger javaLogger;
+        private String outputFilepath;
+
+        /**
+         * Creates a logger object which will remain active as long as it is in scope. Best used
+         * within the main method to ensure it is not garbage collected.
+         *
+         * @param outputFilepath The target logfile destination path.
+         */
+<span class="fc" id="L31">        public Logger(String outputFilepath) {</span>
+                // Remove default logging behaviour which outputs to System.err
+<span class="fc" id="L33">                LogManager.getLogManager().reset();</span>
+
+                // Store this, so it is inside the object to prevent it being garbage collected
+<span class="fc" id="L36">                javaLogger = java.util.logging.Logger.getLogger(LOGGER_NAME);</span>
+
+<span class="fc" id="L38">                this.outputFilepath = outputFilepath;</span>
+<span class="fc" id="L39">        }</span>
+
+        /**
+         * Creates the target log file.
+         *
+         * @throws SecurityException When there is a security exception while creating the file.
+         * @throws IOException       When there is a filesystem problem while creating the file.
+         */
+        public void enable() throws SecurityException, IOException {
+
+<span class="fc" id="L49">                Handler loggerHandler = new FileHandler(outputFilepath);</span>
+                // The default format for messages is to append LOGGER_DIVIDER_STRING
+<span class="fc" id="L51">                loggerHandler.setFormatter(new Formatter() {</span>
+                        @Override
+                        public String format(LogRecord record) {
+<span class="fc" id="L54">                                return String.format(&quot;%s\n%s\n&quot;, record.getMessage(),</span>
+<span class="fc" id="L55">                                                LOGGER_DIVIDER_STRING);</span>
+                        }
+                });
+<span class="fc" id="L58">                javaLogger.addHandler(loggerHandler);</span>
+<span class="fc" id="L59">                javaLogger.setLevel(java.util.logging.Level.INFO);</span>
+<span class="fc" id="L60">        }</span>
+
+        /**
+         * A static method which outputs a log to the target log file. This is static so it can be
+         * used in many different classes while there is the 'master object' within the application
+         * scope.
+         *
+         * @param logMessage
+         */
+        public static void log(String logMessage) {
+<span class="fc" id="L70">                java.util.logging.Logger.getLogger(LOGGER_NAME).info(logMessage);</span>
+<span class="fc" id="L71">        }</span>
+
+        public static void log(String headerMessage, String logMessage) {
+<span class="fc" id="L74">                log(String.format(&quot;%s\n\n%s&quot;, headerMessage, logMessage));</span>
+<span class="fc" id="L75">        }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

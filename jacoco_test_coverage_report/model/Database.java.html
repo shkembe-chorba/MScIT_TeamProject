@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Database.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Top Trumps Application Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Database.java</span></div><h1>Database.java</h1><pre class="source lang-java linenums">package model;
+
+import java.sql.*;
+
+/**
+ * This class holds the database functionality for the TopTrumpsGame. It has methods to
+ * connect/disconnect to/from a PostgreSQL database and upload/download game statistics to/from it.
+ */
+public class Database {
+
+    // Default database Connection parameters.
+    private static final String URL = &quot;jdbc:postgresql://localhost:5432/project&quot;;
+    private static final String USER = &quot;postgres&quot;;
+    private static final String PASS = &quot;zoid_berg1&quot;;
+
+<span class="fc" id="L16">    private Connection connection = null;</span>
+
+    // Database Connection parameters.
+    private String url;
+    private String user;
+    private String pass;
+
+    /**
+     * Database constructor.
+     *
+     * @param url  database url
+     * @param user database username
+     * @param pass database password
+     */
+<span class="fc" id="L30">    public Database(String url, String user, String pass) {</span>
+<span class="fc" id="L31">        this.url = url;</span>
+<span class="fc" id="L32">        this.user = user;</span>
+<span class="fc" id="L33">        this.pass = pass;</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Default database constructor for TopTrumps.
+     */
+    public Database() {
+<span class="fc" id="L40">        this(URL, USER, PASS);</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Getter for the database connection.
+     *
+     * @return the database connection
+     */
+    protected Connection getConnection() {
+<span class="fc" id="L49">        return connection;</span>
+    }
+
+    /**
+     * This methods sets up a connection to the PostgreSQL database. It needs to be run prior to any
+     * other methods.
+     */
+    public void connect() throws SQLException {
+
+        // Get connection.
+<span class="fc" id="L59">        connection = DriverManager.getConnection(url, user, pass);</span>
+        // System.out.println(&quot;Connected to database.&quot;);
+
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * This method closes the connection to the PostgreSQL database. It needs to be run after a
+     * code-user has finished with the Database class.
+     */
+    public void disconnect() {
+        try {
+<span class="fc" id="L70">            connection.close();</span>
+<span class="pc" id="L71">        } catch (SQLException e) {</span>
+<span class="nc" id="L72">            e.printStackTrace();</span>
+        }
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * This method uploads the persistent game statistics to the PostgreSQL database.
+     *
+     * @param draws   the number of draws in the game
+     * @param rounds  the number of rounds in the game
+     * @param winner  the winner of the game
+     * @param players an array holding all of the players in the game
+     */
+    public void uploadGameStats(int draws, int rounds, String winner, Player[] players) {
+        try {
+            // Create statement.
+<span class="fc" id="L87">            Statement statement = connection.createStatement();</span>
+
+            // Default gid for first game.
+<span class="fc" id="L90">            int gid = 1;</span>
+
+            // Get max gid up to now from the database
+            // and make the gid variable larger by 1
+<span class="fc" id="L94">            String sqlString = &quot;SELECT max(gid) FROM game&quot;;</span>
+<span class="fc" id="L95">            ResultSet result = statement.executeQuery(sqlString);</span>
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L98">                gid = result.getInt(&quot;max&quot;) + 1;</span>
+            }
+            // Add a statement to update the game relation in the statement batch.
+<span class="fc" id="L101">            sqlString = &quot;INSERT INTO game(gid,draws,rounds,winner) VALUES (&quot; + gid + &quot;,&quot; + draws</span>
+<span class="fc" id="L102">                    + &quot;,&quot; + rounds + &quot;,'&quot; + winner + &quot;'); &quot;;</span>
+<span class="fc" id="L103">            statement.addBatch(sqlString);</span>
+
+            // Add statements to update the rounds_won relation in the statement batch.
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            for (Player player : players) {</span>
+<span class="fc" id="L107">                sqlString = &quot;INSERT INTO rounds_won(gid,player,r_won) VALUES (&quot; + gid + &quot;,'&quot;</span>
+<span class="fc" id="L108">                        + player.toString() + &quot;',&quot; + player.getRoundsWon() + &quot;); &quot;;</span>
+<span class="fc" id="L109">                statement.addBatch(sqlString);</span>
+            }
+
+<span class="fc" id="L112">            statement.executeBatch();</span>
+<span class="pc" id="L113">        } catch (SQLException e) {</span>
+<span class="nc" id="L114">            e.printStackTrace();</span>
+        }
+<span class="fc" id="L116">    }</span>
+
+    /**
+     * Method creates an object that contains the retrieved overall game stats (5 metrics)
+     *
+     * @return object containing stats
+     */
+    public RetrievedGameStatistics retrieveGameStats() {
+<span class="fc" id="L124">        RetrievedGameStatistics retrievedGameStatistics = null;</span>
+        try {
+<span class="fc" id="L126">            int gamesPlayed = 0;</span>
+<span class="fc" id="L127">            int aiWins = 0;</span>
+<span class="fc" id="L128">            int userWins = 0;</span>
+<span class="fc" id="L129">            int maxRounds = 0;</span>
+<span class="fc" id="L130">            double avgDraws = 0;</span>
+
+<span class="fc" id="L132">            Statement statement = connection.createStatement();</span>
+
+            // Obtains the number of games played overall
+<span class="fc" id="L135">            String sqlStringMaxGid = &quot;SELECT max(gid) FROM game&quot;;</span>
+<span class="fc" id="L136">            ResultSet result = statement.executeQuery(sqlStringMaxGid);</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L138">                gamesPlayed = result.getInt(&quot;max&quot;);</span>
+            }
+
+            // Obtains the number of games won by AIs
+<span class="fc" id="L142">            String sqlStringAIWins = &quot;select count(winner) from game where winner!='USER' &quot;;</span>
+<span class="fc" id="L143">            result = statement.executeQuery(sqlStringAIWins);</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L145">                aiWins = result.getInt(&quot;count&quot;);</span>
+            }
+
+            // Obtains the number of games won by the human user
+<span class="fc" id="L149">            String sqlStringUserWins = &quot;select count(winner) from game where winner='USER'&quot;;</span>
+<span class="fc" id="L150">            result = statement.executeQuery(sqlStringUserWins);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L152">                userWins = result.getInt(&quot;count&quot;);</span>
+            }
+
+            // Obtains the average draw number
+<span class="fc" id="L156">            String sqlStringAvgDraws = &quot;select avg(draws) from game&quot;;</span>
+<span class="fc" id="L157">            result = statement.executeQuery(sqlStringAvgDraws);</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L159">                avgDraws = result.getDouble(&quot;avg&quot;);</span>
+            }
+
+            // Obtains the max number of rounds
+<span class="fc" id="L163">            String sqlStringMaxRounds = &quot;select max(rounds) from game&quot;;</span>
+<span class="fc" id="L164">            result = statement.executeQuery(sqlStringMaxRounds);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            if (result.next()) {</span>
+<span class="fc" id="L166">                maxRounds = result.getInt(&quot;max&quot;);</span>
+            }
+
+<span class="fc" id="L169">            retrievedGameStatistics =</span>
+<span class="fc" id="L170">                    new RetrievedGameStatistics(gamesPlayed, aiWins, userWins, avgDraws, maxRounds);</span>
+<span class="pc" id="L171">        } catch (SQLException e) {</span>
+<span class="nc" id="L172">            e.printStackTrace();</span>
+        }
+<span class="fc" id="L174">        return retrievedGameStatistics;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
