@@ -8,11 +8,6 @@ import java.util.stream.Collectors;
 import commandline.utils.Logger;
 
 /**
- * Top Trumps game - MSc IT+ Masters Team Project
- *
- * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
- * 2200528b: Tereza Buckova 2493194s:Gareth Sears
- *
  * Class that represents the game model, initiliazes the game with players, distributes the deck
  * between players and communal pile and handles the progression of each round.
  */
@@ -49,6 +44,7 @@ public class GameModel {
         // The contents of the complete deck once it has been read in and constructed
         Logger.log("COMPLETE GAME DECK AFTER LOAD:", wholeDeck.toString());
 
+        // Initialise the default values
         reset();
     }
 
@@ -77,40 +73,64 @@ public class GameModel {
         drawRound = 0;
     }
 
+    /**
+     * Returns the USER Player
+     */
     public Player getHumanPlayer() {
         return humanPlayer;
     }
 
+    /**
+     * Returns the round number
+     */
     public int getRoundNumber() {
         return roundNumber;
     }
 
+    /**
+     * Returns the number of draws in a game so far
+     */
     public int getDraws() {
         return drawRound;
     }
 
+    /**
+     * Returns the communal pile size
+     */
     public int getCommunalPileSize() {
         return communalPile.size();
     }
 
+    /**
+     * Returns the player who has the current turn.
+     */
     public Player getActivePlayer() {
         return activePlayer;
     }
 
+    /**
+     * Return the winning card following a round
+     */
     public Card getWinningCard() {
         return winningCard;
     }
 
+    /**
+     * Returns all players, including eliminated players.
+     */
     public Player[] getPlayers() {
         return players;
     }
 
+    /**
+     * Returns players still in the game. Does not include eliminated players.
+     */
     public ArrayList<Player> getPlayersInGame() {
         return playersInGame;
     }
 
     /**
-     * Checks whether human player is still in game
+     * Checks whether human player is still in game.
      */
     public boolean userStillInGame() {
         return playersInGame.contains(humanPlayer);
@@ -158,7 +178,7 @@ public class GameModel {
     /**
      * Takes in attribute and compares the values of the top card of all players in the given
      * attribute to play a round.
-     * 
+     *
      * @param chosenAttribute
      * @return the round winner or null if there is a draw.
      */

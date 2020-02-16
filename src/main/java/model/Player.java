@@ -1,13 +1,8 @@
 package model;
 
 /**
- * Top Trumps game - MSc IT+ Masters Team Project
- *
- * Contributors: 2175499m: Filip Marinov 2504299a:Ventsislav Antov 2172605d:Nadezhda Dimitrova
- * 2200528b: Tereza Buckova 2493194s:Gareth Sears
- *
- * Player class that represents the human player and is a superclass of the AIPlayer class. It allows
- * assigning a pile of cards to the Player, creating new players and retrieving them.
+ * Player class that represents the human player and is a superclass of the AIPlayer class. It
+ * allows assigning a pile of cards to the Player, creating new players and retrieving them.
  */
 
 public class Player {
@@ -15,6 +10,11 @@ public class Player {
     private int roundsWon;
     private Pile playerDeck = new Pile();
 
+    /**
+     * Create a new Player.
+     * 
+     * @param name The player name.
+     */
     public Player(String name) {
         this.name = name;
     }
@@ -75,13 +75,14 @@ public class Player {
 
     /**
      * Returns the size of the deck of the player without their top card.
+     *
      * @return
      */
     public int getRemainingDeckSize() {
         return playerDeck.size() - 1;
     }
 
-    //Getter.
+    // Getter.
     public Pile getDeck() {
         return playerDeck;
     }

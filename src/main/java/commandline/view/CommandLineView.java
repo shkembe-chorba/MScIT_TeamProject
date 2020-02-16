@@ -4,25 +4,35 @@ import commandline.utils.ListUtility;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
+/**
+ * A class which encapsulates reading and writing from the IO streams and provides an API for simple
+ * commandline user interfaces, such as displaying messages and fetching user input from a prompt.
+ */
 public class CommandLineView {
 
+    // The prompt to display for user input.
     public static final String USER_PROMPT = ">> ";
+    // The divider to print when displayDivider is called.
     public static final String DEFAULT_MESSAGE_DIVIDER = "---";
 
-    // A tree set which orders commands alphabetically.
+    // A set which includes any GlobalCommand objects. Used to implement an observer pattern where
+    // the input of any global command will call its handler and 'short circuit' the usual flow of
+    // control.
     private Collection<GlobalCommand> globalCommands = new HashSet<GlobalCommand>();
 
     private Scanner scanner;
     private PrintStream printStream;
 
     /**
-     * An object which allows high level interfacing with the i/o streams.
+     * Create a CommandLineView object which provides a high level api for displaying information to
+     * the user and prompting them for input.
      *
      * @param inputStream
      * @param printStream
@@ -32,6 +42,10 @@ public class CommandLineView {
         this.scanner = new Scanner(inputStream);
     }
 
+    /**
+     * As in {@link #CommandLineView(InputStream, PrintStream)}, but with the default System.in and
+     * System.out IO streams.
+     */
     public CommandLineView() {
         this(System.in, System.out);
     }
@@ -39,7 +53,7 @@ public class CommandLineView {
     /**
      * Outputs a message to the user. Always finishes with a new line.
      *
-     * @param message
+     * @param message The message to show the user.
      */
     public void displayMessage(String message) {
         printStream.println(message);
@@ -54,7 +68,7 @@ public class CommandLineView {
 
     /**
      * Outputs an enumerated list of the .toString() method of each item in 'list'. Indicates the
-     * selected index with an arrow: <--
+     * selected index with an arrow: <code><--</code>
      *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
@@ -75,7 +89,7 @@ public class CommandLineView {
 
     /**
      * Outputs a bullet point list of the .toString() method of each item in 'list'. Indicates the
-     * selected index with an arrow: <--
+     * selected index with an arrow: <code><--</code>
      *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
@@ -96,7 +110,7 @@ public class CommandLineView {
 
     /**
      * Outputs an indented list of the .toString() method of each item in 'list'. Indicates the
-     * selected index with an arrow: <--
+     * selected index with an arrow: <code><--</code>
      *
      * @param list          the list of items whose .toString() methods will be displayed
      * @param selectedIndex the index of the selected item in the list
@@ -116,10 +130,10 @@ public class CommandLineView {
     }
 
     /**
-     * Prompts the user for input. If there are any global commands added (using
-     * {@link #addGlobalCommand(GlobalCommand)}), then the input is checked to see if it matches any
-     * of those commands. If it does, the GlobalCommand listeners are notified. The user is then
-     * reprompted for new input.
+     * Prompts the user for input, displaying the USER_PROMPT (>>). If there are any global commands
+     * added (using {@link #addGlobalCommand(GlobalCommand)}), then the input is checked to see if
+     * it matches any of those commands. If it does, the GlobalCommand listeners are notified. The
+     * user is then reprompted for new input.
      *
      * @return The user input, trimmed of whitespace
      */
@@ -128,10 +142,12 @@ public class CommandLineView {
 
         String input = scanner.nextLine().trim();
 
+        // Check the input to see if a GlobalCommand has been entered (i.e. 'quit')
         GlobalCommand matchingGlobalCommand = getMatchingGlobalCommand(input);
         // If the input is a global command, notify any listeners.
         while (matchingGlobalCommand != null) {
             matchingGlobalCommand.notifyCommandListeners();
+            // Reprompt for next input (which may be another global command...)
             input = getUserInput();
             matchingGlobalCommand = getMatchingGlobalCommand(input);
         }
@@ -140,9 +156,12 @@ public class CommandLineView {
     }
 
     /**
-     * Prompts the user for input, displaying the USER_PROMPT (>>). The user's input is passed to
-     * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
-     * displayed an error message and prompted for input again.
+     * Prompts the user for input, displaying the USER_PROMPT (>>). If there are any global commands
+     * added (using {@link #addGlobalCommand(GlobalCommand)}), then the input is checked to see if
+     * it matches any of those commands.
+     *
+     * The user's input is also passed to the errorCheck function. If it passes, their input is
+     * returned. Otherwise, the user is displayed an error message and prompted for input again.
      *
      * @param errorCheck   A lambda function for acceptable input.
      * @param errorMessage The error message displayed to the user
@@ -163,9 +182,8 @@ public class CommandLineView {
     }
 
     /**
-     * Prompts the user for input, displaying the USER_PROMPT (>>). The user's input is passed to
-     * the errorCheck function. If it passes, their input is returned. Otherwise, the user is
-     * prompted for input again.
+     * As with {@link #getUserInput(Predicate, String), but no error message is displayed to the
+     * user.
      *
      * @param errorCheck
      * @return The user input.
@@ -212,8 +230,8 @@ public class CommandLineView {
     }
 
     /**
-     * Displays an enumerated list of items to the user for selection, prompting them for a choice.
-     * A convenience method for directly returning the object
+     * As with {@link #getUserSelectionIndex(List)}, but directly returns the indexed object rather
+     * than the index.
      *
      * @param list The list of possible user choices
      * @return The list object selected
@@ -222,14 +240,13 @@ public class CommandLineView {
         return list.get(getUserSelectionIndex(list));
     }
 
-    // Global Command Functionality
+    // GLOBAL COMMAND FUNCTIONALITY
 
     /**
      * Add a GlobalCommand which can notify its GlobalCommandListeners when it is entered in the
      * command prompt, for short circuiting game flow.
      *
-     * @param command
-     * @param description a description of the command's functionality
+     * @param gc The global command, whose listener will be notified when it is entered.
      * @throws IllegalArgumentException if the global command already exists
      */
     public void addGlobalCommand(GlobalCommand gc) {
@@ -242,8 +259,7 @@ public class CommandLineView {
     /**
      * Removes a GlobalCommand.
      *
-     * @param command
-     * @param description a description of the command's functionality
+     * @param gc The GlobalCommand object to be removed.
      * @return
      */
     public boolean removeGlobalCommand(GlobalCommand gc) {

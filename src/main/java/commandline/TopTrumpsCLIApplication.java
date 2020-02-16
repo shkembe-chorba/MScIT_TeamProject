@@ -1,10 +1,12 @@
 package commandline;
 
 import com.google.gson.JsonObject;
+
 import commandline.controller.CliController;
 import commandline.utils.JsonUtility;
 import commandline.utils.Logger;
 import commandline.view.TopTrumpsView;
+
 import model.GameModel;
 
 import java.io.IOException;
@@ -69,9 +71,6 @@ public class TopTrumpsCLIApplication {
 		// Get deck file from json config
 		// ----------
 
-		// final String CWD = System.getProperty("user.dir");
-		// final File configPath = new File(CWD, JSON_CONFIG_NAME);
-
 		JsonObject jsonConfig = null;
 		String deckFile = null;
 		int numAIPlayers = 4;
@@ -81,19 +80,21 @@ public class TopTrumpsCLIApplication {
 			deckFile = jsonConfig.get("deckFile").getAsString();
 			numAIPlayers = jsonConfig.get("numAIPlayers").getAsInt();
 
-			// Don't think we need to append cwd...
-			// deckFile = new File(CWD, deckFileName).toString();
-
 		} catch (IOException e) {
 			System.err.println(DECK_READ_ERROR);
 			System.exit(DECK_READ_ERROR_CODE);
 		}
+
+		// Setup MVC
+		// ---------
 
 		GameModel model = new GameModel(deckFile, numAIPlayers);
 		CliController controller = new CliController(model);
 		TopTrumpsView view = new TopTrumpsView(controller);
 		controller.setView(view);
 
+		// Initialise Application
+		// ----------------------
 		try {
 			controller.run();
 		} catch (SQLException e) {
@@ -104,6 +105,9 @@ public class TopTrumpsCLIApplication {
 
 	}
 
+	/**
+	 * A helper method for displaying IO errors for the logger.
+	 */
 	private static void displayLoggerError(String message) {
 		System.out.println(message);
 		System.out.println("Please try again later or run without logging.");

@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.function.IntFunction;
 
 /**
- * A utility for returning formatted string lists from Collections. Created because a lot of array
- * outputs will follow a list format, either with bullet points or enumeration.
+ * A utility for returning formatted strings representing Lists. Created because a lot of outputs
+ * will follow a list format, either with bullet points or enumeration.
  *
- * @author Shkembe Chorba
  */
 public class ListUtility {
 
@@ -27,57 +26,91 @@ public class ListUtility {
     }
 
     /**
-     * Returns an enumerated list in the form: <code> {@code
+     * Returns an enumerated list in the form:
+     *
+     * <code> {@code
      *      1: item1
      *      2: item2
      *      3: item3 <--
-     * }<code> Where <-- denotes the item given by the selection index.
+     * }</code>
      *
-     * @param indent    the indentation amount
-     * @param selection the index of the selected item
+     * Where <code><--</code> denotes the item given by the selection index.
+     *
+     * @param indent         the indentation amount
+     * @param selectionIndex the index of the selected item
      * @return a string formatted as an enumerated list
      */
     public String getEnumeratedList(int indent, int selectionIndex) {
         return getList(indent, x -> Integer.toString(x + 1) + ": ", selectionIndex);
     }
 
+    /**
+     * As {@link #getEnumeratedList(int, int)}, with a default indent of 1.
+     *
+     * @param selectionIndex the index of the selected item
+     * @return a string formatted as an enumerated list
+     */
     public String getEnumeratedList(int selectionIndex) {
         return getEnumeratedList(1, selectionIndex);
     }
 
+    /**
+     * As {@link #getEnumeratedList(int, int)}, with a default indent of 1 and no selection.
+     *
+     * @return a string formatted as an enumerated list
+     */
     public String getEnumeratedList() {
         return getEnumeratedList(-1);
     }
 
     /**
-     * Returns an bullet list in the form: <code> {@code
+     * Returns an bullet list in the form:
+     *
+     * <code> {@code
     *      > item1
     *      > item2
     *      > item3 <--
-    * }<code> Where <-- denotes the item given by the selection index.
+    * }</code>
      *
-     * @param indent    the indentation amount
-     * @param selection the index of the selected item
+     * Where <code><--</code> denotes the item given by the selection index.
+     *
+     * @param indent         the indentation amount
+     * @param selectionIndex the index of the selected item
      * @return a string formatted as a bullet list
      */
     public String getBulletList(int indent, int selectionIndex) {
         return getList(indent, x -> BULLET_STRING, selectionIndex);
     }
 
+    /**
+     * As {@link #getBulletList(int, int)}, with a default indent of 1.
+     *
+     * @param selectionIndex the index of the selected item
+     * @return a string formatted as an enumerated list
+     */
     public String getBulletList(int selectionIndex) {
         return getBulletList(1, selectionIndex);
     }
 
+    /**
+     * As {@link #getBulletList(int, int)}, with a default indent of 1 and no selection.
+     *
+     * @return a string formatted as an enumerated list
+     */
     public String getBulletList() {
         return getBulletList(-1);
     }
 
     /**
-     * Returns an indented list in the form: <code> {@code
+     * Returns an indented list in the form:
+     *
+     * <code> {@code
     *      item1
     *      item2
     *      item3 <--
-    * }<code> Where <-- denotes the item given by the selection index.
+    * }</code>
+     *
+     * Where <code><--</code> denotes the item given by the selection index.
      *
      * @param indent    the indentation amount
      * @param selection the index of the selected item
@@ -87,20 +120,35 @@ public class ListUtility {
         return getList(indent, x -> "", selection);
     }
 
+    /**
+     * As {@link #getIndentedList(int, int)}, with a default indent of 1.
+     *
+     * @param selectionIndex the index of the selected item
+     * @return a string formatted as an enumerated list
+     */
     public String getIndentedList(int selectionIndex) {
         return getIndentedList(1, selectionIndex);
     }
 
+    /**
+     * As {@link #getIndentedList(int, int)}, with a default indent of 1 and no selection.
+     *
+     * @return a string formatted as an enumerated list
+     */
     public String getIndentedList() {
         return getIndentedList(-1);
     }
 
     /**
-     * Returns a String with a formatted list. in the form: <code> {@code
+     * Returns a String with a formatted list. in the form:
+     *
+     * <code> {@code
      *      item1
      *      item2
      *      item3 <--
-     * }<code> Where <-- denotes the item given by the selection index.
+     * }</code>
+     *
+     * Where <code><--</code> denotes the item given by the selection index.
      *
      * Each item may be preceded with a string which is given from the indexBulletFunction. The
      * function is passed an integer which allows for formatting said string based on index.
@@ -133,6 +181,14 @@ public class ListUtility {
         private final String text;
         private boolean isSelected = false;
 
+        /**
+         * Creates a list item to be displayed within a list type.
+         * 
+         * @param text           The body of the list item.
+         * @param indent         The spacing it has.
+         * @param listItemString The string which prefixes each list item.
+         * @param isSelected     Indicates if a marker should be included as a list item suffix.
+         */
         public ListItem(String text, int indent, String listItemString, boolean isSelected) {
             this.text = text;
             this.indent = indent;

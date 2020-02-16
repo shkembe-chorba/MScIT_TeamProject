@@ -10,6 +10,8 @@ import java.util.Collection;
  *
  * This allows certain commands to bypass usual program flow. For example, 'quit' terminating the
  * application.
+ *
+ * Follows the observer pattern.
  */
 public class GlobalCommand {
 
@@ -32,6 +34,11 @@ public class GlobalCommand {
         this.description = description;
     }
 
+    /**
+     * As with {@link #GlobalCommand(String, String)}, but with no description.
+     *
+     * @param command
+     */
     public GlobalCommand(String command) {
         this(command, "");
     }
