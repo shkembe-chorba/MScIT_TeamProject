@@ -118,7 +118,7 @@ public class TopTrumpsView {
      * Display a welcome message and how to quit.
      */
     private void displayWelcomeMessage() {
-        cli.displayMessage("Welcome to Top Trumps!");
+        cli.displayMessage("--- MAIN MENU ---\n");
         cli.displayMessage("To quit type in \"quit\" at any prompt.\n");
     }
 
