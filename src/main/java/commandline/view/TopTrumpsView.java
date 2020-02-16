@@ -19,10 +19,13 @@ import java.util.List;
  */
 public class TopTrumpsView {
 
+    // Constants for GlobalCommands
     public static final String QUIT_COMMAND = "quit";
     public static final String QUIT_COMMAND_DESCRIPTION = "quits the program";
 
     private CliController controller;
+
+    // A CommandLineView which takes care of low level IO
     private CommandLineView cli = new CommandLineView();
 
     /**
@@ -32,10 +35,13 @@ public class TopTrumpsView {
      */
     public TopTrumpsView(CliController controller) {
         this.controller = controller;
+        // Add the 'quit' command.
         setupQuitCommand();
     }
 
-    // Adds the quit command, much like adding a Button in Swing.
+    /**
+     * Adds a 'quit' command, in a pattern similar to to adding a 'button' to a Jframe.
+     */
     private void setupQuitCommand() {
         GlobalCommand quitCommand = new GlobalCommand(QUIT_COMMAND, QUIT_COMMAND_DESCRIPTION);
         quitCommand.addCommandListener(new GlobalCommandListener() {
@@ -96,10 +102,24 @@ public class TopTrumpsView {
         cli.displayDivider();
     }
 
+    /**
+     * Displays the main menu, a welcome graphic, and how to quit the app.
+     *
+     * @return
+     */
     public int displayMenu() {
+        displayLogo();
         cli.displayMessage("Do you want to see past results or play a game?");
         List<String> options = Arrays.asList(new String[] {"Print Game Statistics", "Play game"});
         return cli.getUserSelectionIndex(options);
+    }
+
+    /**
+     * Display the title logo and how to quit.
+     */
+    private void displayLogo() {
+        cli.displayMessage("\n\n\n--------------------\n" + "--- Top Trumps   ---\n"
+                + "--------------------\n\n" + "To quit type in \"quit\" at any prompt.\n");
     }
 
     /**
@@ -111,11 +131,11 @@ public class TopTrumpsView {
         cli.displayMessage(player.toString() + " is the active player!");
     }
 
-    public void displayLogo() {
-        cli.displayMessage("\n\n\n--------------------\n" + "--- Top Trumps   ---\n"
-                + "--------------------\n\n" + "To quit type in \"quit\" at any prompt.\n");
-    }
-
+    /**
+     * Displays the game statistics.
+     * 
+     * @param stats A bean which contains the retrieved game statistics.
+     */
     public void displayStatistics(RetrievedGameStatistics stats) {
 
         List<String> statsList = new LinkedList<>();
