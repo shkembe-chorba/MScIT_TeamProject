@@ -108,18 +108,18 @@ public class TopTrumpsView {
      * @return
      */
     public int displayMenu() {
-        displayLogo();
+        displayWelcomeMessage();
         cli.displayMessage("Do you want to see past results or play a game?");
         List<String> options = Arrays.asList(new String[] {"Print Game Statistics", "Play game"});
         return cli.getUserSelectionIndex(options);
     }
 
     /**
-     * Display the title logo and how to quit.
+     * Display a welcome message and how to quit.
      */
-    private void displayLogo() {
-        cli.displayMessage("\n\n\n--------------------\n" + "--- Top Trumps   ---\n"
-                + "--------------------\n\n" + "To quit type in \"quit\" at any prompt.\n");
+    private void displayWelcomeMessage() {
+        cli.displayMessage("--- MAIN MENU ---\n");
+        cli.displayMessage("To quit type in \"quit\" at any prompt.\n");
     }
 
     /**
@@ -133,7 +133,7 @@ public class TopTrumpsView {
 
     /**
      * Displays the game statistics.
-     * 
+     *
      * @param stats A bean which contains the retrieved game statistics.
      */
     public void displayStatistics(RetrievedGameStatistics stats) {

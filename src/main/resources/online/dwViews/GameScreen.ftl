@@ -51,7 +51,7 @@
 	<!-- JS etc. IMPORTS -->
 
 	<!-- Import our Pseudo Player class and style sheet -->
-	<link rel="stylesheet" href="assets/components/Player/player.css" />
+	<link rel="stylesheet" href="./assets/components/Player/Player.css" />
 	<script type="text/javascript" src="./assets/components/Player/Player.js"> </script>
 	<!-- Import our Pseudo PlayButton class -->
 	<script type="text/javascript" src="./assets/components/PlayButton/PlayButton.js"> </script>
@@ -106,7 +106,7 @@
 		}
 
 
-		// Binds handlers to the NewGame modal 
+		// Binds handlers to the NewGame modal
 		function initialiseNewGameModal() {
 
 			// Redirect if the user aborts
@@ -232,7 +232,7 @@
 		}
 
 		function setupButtonView(chosenAttributeName, attributes) {
-			// If the AI returned a chosen attribute during the setup round api call, 
+			// If the AI returned a chosen attribute during the setup round api call,
 			// then the next round button displayed as the user has no input.
 			if (chosenAttributeName !== null) {
 				PLAY_BUTTON.setPlayRoundButton();
