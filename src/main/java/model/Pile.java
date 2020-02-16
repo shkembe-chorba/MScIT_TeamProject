@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Represents a pile of cards in the game,
- * e.g. deck, player deck, communal pile.
+ * Represents a pile of cards in the game, e.g. deck, player deck, communal pile.
  */
 public class Pile {
 
@@ -21,6 +20,7 @@ public class Pile {
 
     /**
      * Return the top card of the pile.
+     *
      * @return top card
      */
     public Card peek() {
@@ -29,6 +29,7 @@ public class Pile {
 
     /**
      * Remove the top card from the pile and return it.
+     *
      * @return top card
      */
     public Card pop() {
@@ -37,6 +38,7 @@ public class Pile {
 
     /**
      * Add another pile to the current's bottom.
+     *
      * @param anotherPile
      */
     public void add(Pile anotherPile) {
@@ -45,6 +47,7 @@ public class Pile {
 
     /**
      * Add card to top of pile.
+     *
      * @param card
      */
     public void add(Card card) {
@@ -53,6 +56,7 @@ public class Pile {
 
     /**
      * Return size of pile.
+     *
      * @return size of pile
      */
     public int size() {
@@ -63,10 +67,9 @@ public class Pile {
     // and an extra pile with remained cards
 
     /**
-     * Returns an ArrayList of piles:
-     * the last one will become the communal pile
-     * and the rest will become player decks
-     * at the beginning of the game
+     * Returns an ArrayList of piles: the last one will become the communal pile and the rest will
+     * become player decks at the beginning of the game
+     *
      * @param numberOfPlayers
      * @return list of card piles
      */
@@ -93,6 +96,7 @@ public class Pile {
 
     /**
      * Returns a pile of cards from a deck file with the given path(deckPath).
+     *
      * @param deckPath
      * @return
      * @throws IOException
@@ -120,10 +124,16 @@ public class Pile {
     }
 
     /**
-     * toString
-     * @return appended String of the toStrings of the cards in the pile,
-     * separated by new lines, starting with -------- START OF PILE --------
-     * and ending with -------- END OF PILE --------
+     * Returns the toString() version of the cards in the pile, separated by new lines, starting
+     * with:
+     *
+     * <code>-------- START OF PILE --------</code>
+     *
+     * and ending with:
+     *
+     * <code>-------- END OF PILE --------</code>
+     *
+     * @return the full pile with dividers
      */
     @Override
     public String toString() {
@@ -138,7 +148,11 @@ public class Pile {
         return output;
     }
 
-    //Getter
+    /**
+     * Returns the current card list.
+     * 
+     * @return the card list
+     */
     public LinkedList<Card> getCards() {
         return cardList;
     }

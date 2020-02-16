@@ -1,7 +1,7 @@
 package model;
 
 /**
- * This immutable class contains the overall game stats, passed in the constructor
+ * This immutable 'bean' which contains the overall game stats, passed in the constructor
  */
 public class RetrievedGameStatistics {
 
