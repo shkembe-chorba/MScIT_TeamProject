@@ -1,10 +1,16 @@
 package commandline.controller;
 
-import commandline.view.TopTrumpsView;
-import model.*;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import commandline.view.TopTrumpsView;
+
+import model.AIPlayer;
+import model.Attribute;
+import model.Database;
+import model.GameModel;
+import model.Player;
+import model.RetrievedGameStatistics;
 
 /**
  * The Controller of the CLI version of the Top Trumps Game.
@@ -12,14 +18,13 @@ import java.util.ArrayList;
 public class CliController {
 
     // Fields.
-    private static final int NUM_AI_PLAYERS = 4;
     private final GameModel model;
     private TopTrumpsView view;
     private Database database;
 
     /**
      * Constructor.
-     * 
+     *
      * @param model the game model
      */
     public CliController(GameModel model) {
@@ -28,7 +33,7 @@ public class CliController {
 
     /**
      * Sets the game view.
-     * 
+     *
      * @param view
      */
     public void setView(TopTrumpsView view) {
@@ -37,7 +42,7 @@ public class CliController {
 
     /**
      * Runs the controller and begins the game.
-     * 
+     *
      * @throws SQLException when the database cannot be connected to
      */
     public void run() throws SQLException {
@@ -78,7 +83,6 @@ public class CliController {
                 default:
                     continue;
             }
-
         }
     }
 
@@ -139,7 +143,7 @@ public class CliController {
 
     /**
      * Checks if a player is an AI player.
-     * 
+     *
      * @param player
      * @return whether a player is an AI
      */
